@@ -206,7 +206,7 @@
     async function sheetsRequest(path,options={},retry=true){
       if(!oauth.accessToken||Date.now()>oauth.expiresAt-60000)await requestOAuthAccess('');
       const headers={Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{}),Authorization:`Bearer ${oauth.accessToken}`};
-      const response=await fetch(`${SHEETS_API}/${path}`,{...options,headers});
+      const response=await fetch(`${SHEETS_API}/${SPREADSHEET_ID}/${path}`,{...options,headers});
       if(response.status===401&&retry){oauth.accessToken='';oauth.expiresAt=0;return sheetsRequest(path,options,false)}
       const raw=await response.text();let body={};try{body=raw?JSON.parse(raw):{}}catch{}
       if(!response.ok){const detail=body.error?.message||body.error_description||raw.slice(0,240)||'Google 未提供詳細訊息';throw new Error(`Google Sheets API 錯誤（${response.status}）：${detail}`)}
