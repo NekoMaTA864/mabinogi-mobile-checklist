@@ -208,9 +208,9 @@
       const headers={Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{}),Authorization:`Bearer ${oauth.accessToken}`};
       const response=await fetch(`${SHEETS_API}/${path}`,{...options,headers});
       if(response.status===401&&retry){oauth.accessToken='';oauth.expiresAt=0;return sheetsRequest(path,options,false)}
-      const body=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(body.error?.message||`Google Sheets API 錯誤（${response.status}）`);
-      return body;
+      const raw=await response.text();let body={};try{body=raw?JSON.parse(raw):{}}catch{}
+      if(!response.ok){const detail=body.error?.message||body.error_description||raw.slice(0,240)||'Google 未提供詳細訊息';throw new Error(`Google Sheets API 錯誤（${response.status}）：${detail}`)}
+      return raw?JSON.parse(raw):{};
     }
 
     function sheetTitle(){return `'${HISTORY_SHEET.replace(/'/g,"''")}'`}
