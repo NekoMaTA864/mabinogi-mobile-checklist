@@ -54,9 +54,14 @@
     .sync-actions button.primary { background:#2170a8; color:white; border-color:#2170a8; }
     .sync-status { margin-top:.75rem; padding:.6rem .7rem; border-radius:8px; background:#f2f7fa; color:#486476; font-size:.8rem; }
     .sync-steps { margin:.8rem 0 0; padding-left:1.2rem; color:#486476; font-size:.82rem; }
+    .oauth-account { padding:.65rem .7rem; border-radius:8px; background:#eef6fb; color:#31566d; font-size:.84rem; }
+    .legacy-sync { margin-top:1rem; border-top:1px solid var(--line); padding-top:.8rem; color:#486476; font-size:.82rem; }
+    .legacy-sync summary { cursor:pointer; font-weight:700; color:#245675; }
+    .sync-actions button:disabled { opacity:.5; cursor:not-allowed; }
     .hint { color:var(--muted); font-size:.76rem; text-align:center; margin:1rem 0 0; }
     @media (min-width:700px) { main { padding:1.25rem 1.5rem 2.5rem; } header { padding:1.35rem 1.5rem; } .rolebar { padding-left:1.5rem; padding-right:1.5rem; } }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="app">
@@ -67,10 +72,24 @@
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
       <nav class="tabs" aria-label="檢視"><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
-      <p class="hint">未設定同步時，勾選與進度會留在目前裝置；設定後可與 Google Sheets 同步。</p>
+      <p class="hint">未登入或未設定同步時，勾選與進度會留在目前裝置；使用 Google OAuth 登入後可與 Google Sheets 同步。</p>
     </main>
   </div>
   <script>
+    // OAuth Client ID 是公開識別資訊，可放在 GitHub Pages；Client Secret 絕對不能放在前端。
+    const GOOGLE_OAUTH_CLIENT_ID = 'REPLACE_WITH_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com';
+    // 填入需要使用本工具的 1～2 個 Google 帳號；留空時由 Google Sheet 共用權限作為實際限制。
+    const ALLOWED_GOOGLE_EMAILS = [
+      // 'primary@example.com',
+      // 'second@example.com'
+    ];
+    const SPREADSHEET_ID = '1j_cvx66Lov33ctQ5inba3sBn56qhLqWf0_gOlC_Rt8g';
+    const HISTORY_SHEET = '歷史紀錄';
+    const GOOGLE_SHEETS_SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
+    const GOOGLE_OAUTH_SCOPE = `${GOOGLE_SHEETS_SCOPE} https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile openid`;
+    const SHEETS_API = 'https://sheets.googleapis.com/v4/spreadsheets';
+    const USERINFO_API = 'https://openidconnect.googleapis.com/v1/userinfo';
+
     const roles=[
       {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'金屬／礦石',detail:'金屬、礦石、錠、鍛造原料',rule:'可轉移生活材料請轉入此角色。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3]]},
       {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'草藥／藥劑',detail:'藥草、蘑菇、花粉、濃縮液',rule:'所有藥劑素材集中此處。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1]]},
@@ -82,27 +101,179 @@
     const baseDaily=['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底'];
     const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1]];
     roles.forEach(r=>{r.daily??=baseDaily;r.weekly??=baseWeekly});
-    let active='main',view='daily'; const key='mabi-mobile-web-demo-v1'; const state=JSON.parse(localStorage.getItem(key)||'{}');
-    const syncKey='mabi-mobile-sync-v1'; const syncConfig=JSON.parse(localStorage.getItem(syncKey)||'{}'); let syncStatus='尚未設定同步';
-    const save=()=>localStorage.setItem(key,JSON.stringify(state)); const get=(k,d)=>state[k]??d; const set=(k,v)=>{state[k]=v;save();render()};
+
+    let active='main',view='daily';
+    const key='mabi-mobile-web-demo-v1';
+    const syncKey='mabi-mobile-sync-v1';
+    const state=loadObject(key);
+    const syncConfig=loadObject(syncKey);
+    let syncStatus='尚未設定同步';
+    const oauth={accessToken:'',expiresAt:0,user:null,tokenClient:null};
+
+    function loadObject(storageKey){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
+    const save=()=>localStorage.setItem(key,JSON.stringify(state));
+    const get=(k,d)=>state[k]??d;
+    const set=(k,v)=>{state[k]=v;save();render()};
+    const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const oauthConfigured=()=>Boolean(GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_WITH_'));
+    const oauthSignedIn=()=>Boolean(oauth.accessToken&&oauth.user);
+    const allowedEmails=()=>ALLOWED_GOOGLE_EMAILS.map(email=>email.trim().toLowerCase()).filter(Boolean);
+
     function syncReady(){return Boolean(syncConfig.url&&syncConfig.token)}
     function jsonp(params){return new Promise((resolve,reject)=>{if(!syncReady())return reject(new Error('請先填入同步網址與密鑰'));const cb='mabiSync_'+Date.now()+'_'+Math.random().toString(36).slice(2);const script=document.createElement('script');const url=new URL(syncConfig.url);Object.entries({...params,callback:cb,token:syncConfig.token}).forEach(([k,v])=>url.searchParams.set(k,String(v)));let timer;const cleanup=()=>{clearTimeout(timer);delete window[cb];script.remove()};window[cb]=data=>{cleanup();resolve(data)};script.onerror=()=>{cleanup();reject(new Error('無法連線到 Apps Script'))};script.src=url.toString();document.body.appendChild(script);timer=setTimeout(()=>{cleanup();reject(new Error('同步逾時'))},12000)})}
-    async function syncRead(){if(!syncReady()){syncStatus='請先儲存同步網址與密鑰';render();return}syncStatus='讀取 Google Sheets 中…';render();try{const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');result.items.forEach(item=>{const r=roles.find(x=>x.sheetRole===item.role);if(!r)return;if(item.cycle==='每日'){const i=r.daily.indexOf(item.task);if(i>=0)state[`${r.id}-d-${i}`]=Boolean(item.complete)}else{const i=r.weekly.findIndex(([name])=>name===item.task);if(i>=0)state[`${r.id}-w-${i}`]=Number(item.progress||0)}});save();syncStatus=`已同步：${result.items.length} 筆（${result.gameDate}）`;render()}catch(err){syncStatus='同步失敗：'+err.message;render()}}
-    async function syncWrite(r,task,cycle,progress,target){if(!syncReady())return;try{await jsonp({action:'save',role:r.sheetRole,task,cycle,progress,target});syncStatus='已同步至 Google Sheets';if(view==='sync')render()}catch(err){syncStatus='寫入失敗：'+err.message;if(view==='sync')render()}}
-    function gameDate(){const n=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Taipei'}));if(n.getHours()<6)n.setDate(n.getDate()-1);return n.toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'})}
-    document.querySelector('#date').textContent='遊戲日 '+gameDate();
-    function progress(){const r=roles.find(x=>x.id===active);if(view==='daily'){const done=r.daily.filter((_,i)=>get(`${active}-d-${i}`,false)).length;return [done,r.daily.length]} const done=r.weekly.filter(([,target],i)=>get(`${active}-w-${i}`,0)>=target).length;return [done,r.weekly.length]}
-    function render(){const r=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
-      document.querySelector('#identity').innerHTML=`<strong>${r.name} <span style="color:#607487;font-weight:500">｜${r.job}</span></strong><p>倉庫分工：<b>${r.store}</b>　${r.rule}</p>`;
-      document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===view)); const [done,total]=progress();document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='sync'?syncStatus:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
-      const root=document.querySelector('#view');
-      if(view==='daily')root.innerHTML=`<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div><div class="card">${r.daily.map((t,i)=>`<label class="task ${get(`${active}-d-${i}`,false)?'done':''}"><input type="checkbox" ${get(`${active}-d-${i}`,false)?'checked':''} data-d="${i}"><span><span class="task-name">${t}</span><span class="task-note">${t.includes('坑洞')?'每日保底':'角色個別計算'}</span></span><span class="pill">每日</span></label>`).join('')}</div>`;
-      if(view==='weekly')root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="card">${r.weekly.map(([t,target],i)=>{const v=Math.min(get(`${active}-w-${i}`,0),target);return `<div class="week ${v>=target?'complete':''}"><div><div class="week-name">${t}</div><small>${v>=target?'已完成':'尚未達標'} · ${v} / ${target}</small></div><div class="stepper"><button aria-label="減少 ${t}" data-step="${i}" data-delta="-1">−</button><output>${v}</output><button aria-label="增加 ${t}" data-step="${i}" data-delta="1">＋</button></div><progress value="${v}" max="${target}"></progress></div>`}).join('')}</div>`;
-      if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${r.store} 倉</h2><p>${r.detail}</p></div><div class="rule">${r.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(x=>`<div><b>${x.name}｜${x.store}</b><span>${x.detail}</span></div>`).join('')}</div>`;
-      if(view==='sync')root.innerHTML=`<div class="sync-panel"><h2>Google Sheets 同步</h2><p>先在同一份試算表建立 Apps Script 網頁應用程式，再把網址與密鑰填在這裡。設定只保存在此瀏覽器，不會寫入 GitHub。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${syncConfig.url||''}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${syncConfig.token||''}"><div class="sync-actions"><button class="primary" data-sync-save>儲存設定</button><button data-sync-read>從 Google Sheets 讀取</button></div><div class="sync-status">${syncStatus}</div><ol class="sync-steps"><li>在 Google Sheet 開啟「擴充功能 → Apps Script」，貼上 GitHub 裡的 <b>Code.gs</b>。</li><li>執行 <b>setSyncToken()</b> 設定密鑰，再部署成網頁應用程式。</li><li>每台裝置填入同一組網址與密鑰；勾選或調整進度後會同步。</li></ol></div>`;
-      document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{active=b.dataset.role;render()});document.querySelectorAll('[data-d]').forEach(c=>c.onchange=()=>{const r=roles.find(x=>x.id===active);const task=r.daily[Number(c.dataset.d)];set(`${active}-d-${c.dataset.d}`,c.checked);syncWrite(r,task,'每日',c.checked?1:0,1)});document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.step),target=r.weekly[i][1],old=get(`${active}-w-${i}`,0),next=Math.max(0,Math.min(target,old+Number(b.dataset.delta)));set(`${active}-w-${i}`,next);syncWrite(r,r.weekly[i][0],'每週',next,target)});document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'同步設定已儲存':'請完整填入網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncRead);
+
+    async function syncReadLegacy(){
+      if(!syncReady()){syncStatus='請先儲存備援同步網址與密鑰';render();return}
+      syncStatus='讀取 Google Sheets 中…';render();
+      try{const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');applyItems(result.items);syncStatus=`Token 備援已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
+      catch(err){syncStatus='Token 備援讀取失敗：'+err.message;render()}
     }
-    document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{view=b.dataset.view;render()});render();
+
+    async function syncWriteLegacy(r,task,cycle,progress,target){
+      if(!syncReady())return;
+      try{await jsonp({action:'save',role:r.sheetRole,task,cycle,progress,target});syncStatus='已由 Token 備援同步至 Google Sheets';if(view==='sync')render()}
+      catch(err){syncStatus='Token 備援寫入失敗：'+err.message;if(view==='sync')render()}
+    }
+
+    function waitForGoogleIdentity(){
+      return new Promise((resolve,reject)=>{const start=Date.now();const check=()=>{if(window.google?.accounts?.oauth2)return resolve();if(Date.now()-start>12000)return reject(new Error('Google Identity Services 尚未載入，請重新整理頁面'));setTimeout(check,100)};check()})
+    }
+
+    async function fetchUserInfo(token){
+      const response=await fetch(USERINFO_API,{headers:{Authorization:`Bearer ${token}`}});
+      const body=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(body.error_description||'無法取得 Google 帳號資訊');
+      const email=String(body.email||'').trim().toLowerCase();
+      const allowlist=allowedEmails();
+      if(allowlist.length&&!allowlist.includes(email))throw new Error(`帳號 ${email||'未知'} 不在允許清單中`);
+      return {...body,email};
+    }
+
+    async function requestOAuthAccess(prompt='select_account'){
+      if(!oauthConfigured())throw new Error('尚未設定 Google OAuth Client ID，請修改 index.html 的 GOOGLE_OAUTH_CLIENT_ID');
+      await waitForGoogleIdentity();
+      if(!oauth.tokenClient)oauth.tokenClient=window.google.accounts.oauth2.initTokenClient({client_id:GOOGLE_OAUTH_CLIENT_ID,scope:GOOGLE_OAUTH_SCOPE,callback:()=>{}});
+      return new Promise((resolve,reject)=>{
+        oauth.tokenClient.callback=async response=>{
+          if(response.error){reject(new Error(response.error_description||response.error));return}
+          try{oauth.accessToken=response.access_token;oauth.expiresAt=Date.now()+Number(response.expires_in||3600)*1000;oauth.user=await fetchUserInfo(oauth.accessToken);resolve(oauth.user)}
+          catch(err){oauth.accessToken='';oauth.expiresAt=0;oauth.user=null;reject(err)}
+        };
+        oauth.tokenClient.requestAccessToken({prompt});
+      });
+    }
+
+    function logoutOAuth(){
+      const token=oauth.accessToken;
+      oauth.accessToken='';oauth.expiresAt=0;oauth.user=null;
+      if(token&&window.google?.accounts?.oauth2?.revoke)window.google.accounts.oauth2.revoke(token,()=>{});
+      syncStatus='已登出 Google';render();
+    }
+
+    async function sheetsRequest(path,options={},retry=true){
+      if(!oauth.accessToken||Date.now()>oauth.expiresAt-60000)await requestOAuthAccess('');
+      const headers={Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{}),Authorization:`Bearer ${oauth.accessToken}`};
+      const response=await fetch(`${SHEETS_API}/${path}`,{...options,headers});
+      if(response.status===401&&retry){oauth.accessToken='';oauth.expiresAt=0;return sheetsRequest(path,options,false)}
+      const body=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(body.error?.message||`Google Sheets API 錯誤（${response.status}）`);
+      return body;
+    }
+
+    function sheetTitle(){return `'${HISTORY_SHEET.replace(/'/g,"''")}'`}
+    function encodedRange(range){return encodeURIComponent(range)}
+    function sheetRange(){return `${sheetTitle()}!A:Z`}
+    function columnName(index){let name='';let n=index+1;while(n){const remainder=(n-1)%26;name=String.fromCharCode(65+remainder)+name;n=Math.floor((n-1)/26)}return name}
+    function text(value){return value===null||value===undefined?'':String(value).trim()}
+    function number(value){const n=Number(value);return Number.isFinite(n)?n:0}
+    function dateText(value){const s=text(value).replace(/\//g,'-');const match=s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);return match?`${match[1]}-${String(match[2]).padStart(2,'0')}-${String(match[3]).padStart(2,'0')}`:s}
+    function completeValue(value){return value===true||text(value).toUpperCase()==='TRUE'||text(value)==='1'}
+
+    function gameDateKey(){
+      const local=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Taipei'}));
+      if(local.getHours()<6)local.setDate(local.getDate()-1);
+      return `${local.getFullYear()}-${String(local.getMonth()+1).padStart(2,'0')}-${String(local.getDate()).padStart(2,'0')}`;
+    }
+    function gameDateLabel(){return new Date(`${gameDateKey()}T12:00:00`).toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'})}
+    function weekStart(dateKey){const date=new Date(`${dateKey}T12:00:00`);const mondayOffset=(date.getDay()+6)%7;date.setDate(date.getDate()-mondayOffset);return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
+    function findHeader(values){
+      for(let rowIndex=0;rowIndex<Math.min(values.length,12);rowIndex++){
+        const row=(values[rowIndex]||[]).map(text);
+        if(row.includes('重置日')&&row.includes('角色')&&row.includes('任務名稱')){
+          const cols={};row.forEach((name,index)=>{if(name)cols[name]=index});
+          ['重置日','角色','任務名稱','週期','進度','目標','完成'].forEach(name=>{if(cols[name]===undefined)throw new Error(`歷史紀錄缺少欄位：${name}`)});
+          return {rowIndex,cols,width:Math.max(row.length,8)};
+        }
+      }
+      throw new Error('找不到歷史紀錄標題列');
+    }
+
+    async function readOAuthSheet(){
+      const result=await sheetsRequest(`values/${encodedRange(sheetRange())}?majorDimension=ROWS`);
+      const values=result.values||[];const header=findHeader(values);const currentDate=gameDateKey();const weeklyDate=weekStart(currentDate);const items=[];
+      for(let index=header.rowIndex+1;index<values.length;index++){
+        const row=values[index]||[];const cycle=text(row[header.cols['週期']]);const date=dateText(row[header.cols['重置日']]);
+        if((cycle==='每日'&&date!==currentDate)||(cycle==='每週'&&date!==weeklyDate))continue;
+        if(cycle!=='每日'&&cycle!=='每週')continue;
+        items.push({resetDate:date,role:text(row[header.cols['角色']]),task:text(row[header.cols['任務名稱']]),cycle,progress:number(row[header.cols['進度']]),target:number(row[header.cols['目標']]),complete:completeValue(row[header.cols['完成']])});
+      }
+      return {items,gameDate:currentDate};
+    }
+
+    function applyItems(items){
+      (items||[]).forEach(item=>{const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;if(item.cycle==='每日'){const index=role.daily.indexOf(item.task);if(index>=0)state[`${role.id}-d-${index}`]=Boolean(item.complete)}else if(item.cycle==='每週'){const index=role.weekly.findIndex(([name])=>name===item.task);if(index>=0)state[`${role.id}-w-${index}`]=number(item.progress)}});save()}
+
+    async function oauthLogin(){
+      syncStatus='等待 Google 授權…';render();
+      try{await requestOAuthAccess('select_account');const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已登入 ${oauth.user.email}，讀取 ${result.items.length} 筆`;render()}
+      catch(err){syncStatus='OAuth 登入失敗：'+err.message;render()}
+    }
+
+    async function oauthRead(){
+      if(!oauthSignedIn()){syncStatus='請先使用 Google 登入';render();return}
+      syncStatus='OAuth 讀取 Google Sheets 中…';render();
+      try{const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
+      catch(err){syncStatus='OAuth 讀取失敗：'+err.message;render()}
+    }
+
+    async function oauthSaveItem(role,task,cycle,progress,target){
+      if(!oauthSignedIn())return;
+      const result=await sheetsRequest(`values/${encodedRange(sheetRange())}?majorDimension=ROWS`);const values=result.values||[];const header=findHeader(values);const resetDate=cycle==='每日'?gameDateKey():weekStart(gameDateKey());const boundedProgress=Math.max(0,Math.min(Math.max(1,number(target)),number(progress)));const complete=boundedProgress>=Math.max(1,number(target));
+      const keyValue=`${resetDate}\u0000${role.sheetRole}\u0000${task}`;let targetIndex=-1;
+      for(let index=header.rowIndex+1;index<values.length;index++){const row=values[index]||[];const rowKey=`${dateText(row[header.cols['重置日']])}\u0000${text(row[header.cols['角色']])}\u0000${text(row[header.cols['任務名稱']])}`;if(rowKey===keyValue&&text(row[header.cols['週期']])===cycle){targetIndex=index;break}}
+      if(targetIndex<0){const row=Array(header.width).fill('');row[header.cols['重置日']]=resetDate;row[header.cols['角色']]=role.sheetRole;row[header.cols['任務名稱']]=task;row[header.cols['週期']]=cycle;row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;if(header.cols['備註']!==undefined)row[header.cols['備註']]='由 GitHub Pages OAuth 同步建立';await sheetsRequest(`values/${encodedRange(sheetRange())}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
+      else{const row=Array(Math.max(header.width,(values[targetIndex]||[]).length)).fill('');(values[targetIndex]||[]).forEach((value,index)=>{row[index]=value});row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;const range=`${sheetTitle()}!A${targetIndex+1}:${columnName(row.length-1)}${targetIndex+1}`;await sheetsRequest(`values/${encodedRange(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
+    }
+
+    async function syncWrite(role,task,cycle,progress,target){
+      if(oauthSignedIn()){try{await oauthSaveItem(role,task,cycle,progress,target);syncStatus='已由 OAuth 同步至 Google Sheets';if(view==='sync')render()}catch(err){syncStatus='OAuth 寫入失敗：'+err.message;if(view==='sync')render()}return}
+      await syncWriteLegacy(role,task,cycle,progress,target);
+    }
+
+    function progress(){const role=roles.find(x=>x.id===active);if(view==='daily'){const done=role.daily.filter((_,index)=>get(`${active}-d-${index}`,false)).length;return [done,role.daily.length]}const done=role.weekly.filter(([,target],index)=>get(`${active}-w-${index}`,0)>=target).length;return [done,role.weekly.length]}
+    function render(){
+      const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
+      document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
+      document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
+      const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;
+      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
+      const root=document.querySelector('#view');
+      if(view==='daily')root.innerHTML=`<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div><div class="card">${role.daily.map((task,index)=>`<label class="task ${get(`${active}-d-${index}`,false)?'done':''}"><input type="checkbox" ${get(`${active}-d-${index}`,false)?'checked':''} data-d="${index}"><span><span class="task-name">${task}</span><span class="task-note">${task.includes('坑洞')?'每日保底':'角色個別計算'}</span></span><span class="pill">每日</span></label>`).join('')}</div>`;
+      if(view==='weekly')root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="card">${role.weekly.map(([task,target],index)=>{const value=Math.min(get(`${active}-w-${index}`,0),target);return `<div class="week ${value>=target?'complete':''}"><div><div class="week-name">${task}</div><small>${value>=target?'已完成':'尚未達標'} · ${value} / ${target}</small></div><div class="stepper"><button aria-label="減少 ${task}" data-step="${index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${task}" data-step="${index}" data-delta="1">＋</button></div><progress value="${value}" max="${target}"></progress></div>`}).join('')}</div>`;
+      if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
+      if(view==='sync'){
+        const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
+        root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2><p>使用固定 Google 帳號登入後，直接讀寫指定的 Google Sheet。Access Token 只保存在目前頁面的記憶體，不寫入 localStorage。</p>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><ol class="sync-steps"><li>在 Google Cloud 建立 Web OAuth Client ID，將 GitHub Pages 的 origin 加入 Authorized JavaScript origins。</li><li>把需要使用的 1～2 個 Google 帳號加入 OAuth 測試使用者，並將同一份 Sheet 共用給它們。</li><li>在本檔案設定 <b>GOOGLE_OAUTH_CLIENT_ID</b>；若要加強介面限制，再填入 <b>ALLOWED_GOOGLE_EMAILS</b>。</li></ol><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
+      }
+      document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
+      document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
+      document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
+      document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
+      document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
+    }
+    document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
+    render();
   </script>
 </body>
 </html>
