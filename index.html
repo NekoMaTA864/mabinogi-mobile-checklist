@@ -200,6 +200,13 @@
     const save=()=>localStorage.setItem(key,JSON.stringify(state));
     const get=(k,d)=>state[k]??d;
     const set=(k,v)=>{state[k]=v;save();render()};
+    const WEEKLY_PERIOD_KEY='mabi-mobile-week-period-v1';
+    function resetStaleWeeklyState(){
+      const period=weekStart(gameDateKey());const previous=localStorage.getItem(WEEKLY_PERIOD_KEY);
+      if(previous&&previous!==period){roles.forEach(role=>role.weekly.forEach((_,index)=>delete state[`${role.id}-w-${index}`]));save()}
+      if(previous!==period)localStorage.setItem(WEEKLY_PERIOD_KEY,period)
+    }
+    resetStaleWeeklyState();
     if(state[ACCOUNT_STATE_KEY]===undefined){
       const legacyAccountChecked=roles.some(role=>role.daily.some((task,index)=>ACCOUNT_TASK_ALIASES.has(task)&&Boolean(state[`${role.id}-d-${index}`])));
       if(legacyAccountChecked){state[ACCOUNT_STATE_KEY]=true;save()}
