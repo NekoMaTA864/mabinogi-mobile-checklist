@@ -138,15 +138,15 @@
     const syncConfig=loadObject(syncKey);
     let syncStatus='尚未設定同步';
     const oauth={accessToken:'',expiresAt:0,user:null,tokenClient:null};
-    if(state[ACCOUNT_STATE_KEY]===undefined){
-      const legacyAccountChecked=roles.some(role=>role.daily.some((task,index)=>ACCOUNT_TASK_ALIASES.has(task)&&Boolean(state[`${role.id}-d-${index}`])));
-      if(legacyAccountChecked){state[ACCOUNT_STATE_KEY]=true;save()}
-    }
 
     function loadObject(storageKey){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
     const save=()=>localStorage.setItem(key,JSON.stringify(state));
     const get=(k,d)=>state[k]??d;
     const set=(k,v)=>{state[k]=v;save();render()};
+    if(state[ACCOUNT_STATE_KEY]===undefined){
+      const legacyAccountChecked=roles.some(role=>role.daily.some((task,index)=>ACCOUNT_TASK_ALIASES.has(task)&&Boolean(state[`${role.id}-d-${index}`])));
+      if(legacyAccountChecked){state[ACCOUNT_STATE_KEY]=true;save()}
+    }
     const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const oauthConfigured=()=>Boolean(GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_WITH_'));
     const oauthSignedIn=()=>Boolean(oauth.accessToken&&oauth.user);
