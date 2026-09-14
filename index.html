@@ -150,15 +150,15 @@
     const USERINFO_API = 'https://openidconnect.googleapis.com/v1/userinfo';
 
     const roles=[
-      {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'金屬／礦石',detail:'金屬、礦石、錠、鍛造原料',rule:'可轉移生活材料請轉入此角色。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3]]},
-      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'草藥／藥劑',detail:'藥草、蘑菇、花粉、濃縮液',rule:'所有藥劑素材集中此處。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1]]},
+      {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'金屬／礦石',detail:'金屬、礦石、錠、鍛造原料',rule:'可轉移生活材料請轉入此角色。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1]]},
+      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'草藥／藥劑',detail:'藥草、蘑菇、花粉、濃縮液',rule:'所有藥劑素材集中此處。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1]]},
       {id:'zz',name:'貓又老師zz',sheetRole:'貓又老師zz(長弓兵)',job:'長弓兵',store:'木材／皮革',detail:'木材、樹液、皮革、纖維',rule:'採集與製作原料集中此處。'},
       {id:'o',name:'貓又老師o',sheetRole:'貓又老師o(樂師)',job:'樂師',store:'料理食材',detail:'肉、鹽、糖、油、蔬果、料理成品',rule:'雜貨店料理材料轉入此處。'},
       {id:'p',name:'貓又老師p',sheetRole:'貓又老師p(祭司)',job:'祭司',store:'布料／染料',detail:'羊毛、線、布料、染料、裁縫副料',rule:'紡織與外觀材料集中此處。'},
       {id:'oo',name:'貓又老師oo',sheetRole:'貓又老師oo(修道士)',job:'修道士',store:'彈性／活動材料',detail:'活動材料、可交易製作材料、待分類物品',rule:'每週整理一次；不要把寶石、符文放進這裡。'}
     ];
     const baseDaily=['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底'];
-    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1]];
+    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1]];
     roles.forEach(r=>{r.daily??=baseDaily;r.weekly??=baseWeekly});
 
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
@@ -369,10 +369,10 @@
 
     const visibleDailyTasks=role=>role.daily.map((task,index)=>({task,index})).filter(item=>!HIDDEN_DAILY_TASKS.has(item.task));
     const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
-    const weeklyCategory=task=>task.includes('深淵')||task.includes('週末')?'本尊高難／活動':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'必做週課':'採購／一般週課';
+    const weeklyCategory=task=>task.includes('深淵')||task.includes('週末')||task==='格里斯貝恩'?'本尊高難／活動':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'必做週課':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
     function weeklyDisplayName(task){return task==='黑色坑洞'?'黑色坑洞（本週獎勵次數）':task}
-    function weeklyStatus(task,value,target){if(task==='黑色坑洞')return value>=target?'已達目前確認上限 · 手動記錄':'手動記錄 · 每日補 1 次＋週重置 7 次';return value>=target?'已完成':'尚未達標'}
+    function weeklyStatus(task,value,target){if(task==='黑色坑洞')return value>=target?'已達目前確認上限 · 手動記錄':'手動記錄 · 每日補 1 次＋週重置 7 次';if(task==='格里斯貝恩')return value>=target?'已完成 · 本週獎勵已領':'每週獎勵 1 次 · 參加不限次數';return value>=target?'已完成':'尚未達標'}
     function purchaseStateKey(item,roleId=active){
       const period=item.cycle==='每日'?gameDateKey():item.cycle==='每週'?weekStart(gameDateKey()):'info';
       return item.scope==='帳號'?`account-purchase-${item.id}-${period}`:`${roleId}-purchase-${item.id}-${period}`
@@ -411,7 +411,7 @@
       if(view==='weekly'){
         const weeklyItems=role.weekly.map(([task,target],index)=>({task,target,index}));
         const groups=groupedTasks(weeklyItems, weeklyCategory).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${weeklyDisplayName(item.task)}</div><small>${weeklyStatus(item.task,value,item.target)} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
-        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>改為手動記錄本週已取得獎勵的探索次數，使用上下箭頭填寫；目前依台服資料以 14 次為上限，不把可進場次數當成獎勵次數。</div>${groups}`;
+        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>改為手動記錄本週已取得獎勵的探索次數，使用上下箭頭填寫；目前依台服資料以 14 次為上限，不把可進場次數當成獎勵次數。<b>格里斯貝恩</b>（玩家俗稱「小格」）每角色每週記錄 1 次通關獎勵；深淵、週末深淵與格里斯貝恩等高難內容，六個角色一視同仁、各自計數。</div>${groups}`;
       }
       if(view==='exchange')root.innerHTML=renderExchange(role);
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
