@@ -165,8 +165,7 @@
     const ACCOUNT_ROLE='帳號共用';
     const ACCOUNT_DAILY_TASK={id:'daily_account_exchange',label:'帳號共用：今日必要採購／交換確認',note:'帳號完成一次即可，明細移至「採購」頁',category:'帳號共用'};
     const ACCOUNT_WEEKLY_TASKS=[
-      {id:'weekly_server_task',label:'每週任務',note:'伺服器共通，六個角色完成一次即可。'},
-      {id:'weekly_world_boss',label:'野外首領週戰利品',note:'不論挑戰哪一隻，伺服器每週總共只能領 1 次。'}
+      {id:'weekly_server_task',label:'每週任務',note:'伺服器共通，六個角色完成一次即可。'}
     ];
     const ACCOUNT_WEEKLY_STATE_KEYS=Object.fromEntries(ACCOUNT_WEEKLY_TASKS.map(item=>[item.label,`account-w-${item.id}`]));
     const ACCOUNT_WEEKLY_TASK_MAP=new Map(ACCOUNT_WEEKLY_TASKS.map(item=>[item.label,item]));
@@ -448,7 +447,7 @@
         const sharedWeeklyHtml=`<div class="shared-card"><div class="section-title"><h2>伺服器共通</h2><small>所有角色共用</small></div><div class="card">${ACCOUNT_WEEKLY_TASKS.map(item=>{const done=get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0)>=1;return `<label class="task ${done?'done':''}"><input type="checkbox" ${done?'checked':''} data-account-weekly="${escapeHtml(item.label)}"><span><span class="task-name">${escapeHtml(item.label)}</span><span class="task-note">${escapeHtml(item.note)}</span></span><span class="pill">共通</span></label>`}).join('')}</div></div>`;
         const weeklyItems=role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task));
         const groups=groupedTasks(weeklyItems, weeklyCategory).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${weeklyDisplayName(item.task)}</div><small>${weeklyStatus(item.task,value,item.target)} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
-        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>改為手動記錄本週已取得獎勵的探索次數，使用上下箭頭填寫；目前依台服資料以 14 次為上限，不把可進場次數當成獎勵次數。<b>格里斯貝恩</b>（玩家俗稱「小格」）每角色每週記錄 1 次通關獎勵；伺服器共通區塊的每週任務與野外首領週戰利品各只記錄 1 次；深淵、週末深淵與格里斯貝恩等高難內容，六個角色一視同仁、各自計數。</div>${sharedWeeklyHtml}${groups}`;
+        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>改為手動記錄本週已取得獎勵的探索次數，使用上下箭頭填寫；目前依台服資料以 14 次為上限，不把可進場次數當成獎勵次數。<b>格里斯貝恩</b>（玩家俗稱「小格」）每角色每週記錄 1 次通關獎勵；野外首領週戰利品為每角色每週 1 次，不論挑哪一隻都只能領一次；每週任務則在伺服器共通區塊只記錄 1 次；深淵、週末深淵與格里斯貝恩等高難內容，六個角色一視同仁、各自計數。</div>${sharedWeeklyHtml}${groups}`;
       }
       if(view==='exchange')root.innerHTML=renderExchange(role);
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
