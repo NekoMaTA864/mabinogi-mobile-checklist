@@ -19,6 +19,18 @@ GitHub Pages：<https://nekomata864.github.io/mabinogi-mobile-checklist/>
 
 目前前端已加入 OAuth 原型。OAuth 版直接由 GitHub Pages 呼叫 Google Sheets API，Apps Script 不參與 OAuth 流程；原本的 Token／Apps Script 同步仍保留在「同步」頁的備援區塊。
 
+## Checklist v2 第一階段
+
+目前網頁已先加入幾項不破壞舊資料的改版：
+
+- 今日清單依「每日核心／供品／深層／機會型內容」分類，分類可以收合。
+- 泛用的每日採購確認改成單一「帳號共用」勾選，不再對六個角色重複顯示。
+- 銀幣清理不再顯示在主要 Checklist；既有歷史列仍保留，不會被刪除。
+- 新增「採購」入口，預留地區、NPC、商品、成本、週期與帳號／角色範圍欄位。
+- 採購頁目前不直接匯入韓服舊 Sheet；待台服實際資料核對後再加入，避免把過期資料當成正式內容。
+
+這一階段保留既有 LocalStorage key、角色任務索引與 `歷史紀錄` 欄位，因此既有 OAuth／Token 同步仍可讀取。新的帳號共用資料會以 `角色=帳號共用` 寫入同一張 `歷史紀錄`，不需要修改試算表欄位。
+
 啟用前需要完成：
 
 1. 在 Google Cloud 建立 OAuth consent screen。
