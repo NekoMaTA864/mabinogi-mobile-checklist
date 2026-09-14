@@ -28,7 +28,7 @@
     .meter { display:grid; grid-template-columns:1fr auto; gap:.5rem 1rem; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:.8rem .9rem; margin-bottom:1rem; }
     .meter b { font-size:.9rem; } .meter span { color:var(--muted); font-size:.83rem; }
     .track { grid-column:1/-1; height:7px; background:#e3edf4; overflow:hidden; border-radius:99px; } .fill { height:100%; background:linear-gradient(90deg,#2170a8,#4a9ccd); border-radius:99px; transition:width .2s; }
-    .tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; }
+    .tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; }
     .tab { border:0; background:transparent; color:#5a7081; padding:.53rem .2rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; }
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
@@ -43,6 +43,27 @@
     .week-name { font-weight:650; font-size:.94rem; } .week small { color:var(--muted); }
     .stepper { display:flex; align-items:center; border:1px solid #cbdbe6; border-radius:9px; overflow:hidden; background:white; } .stepper button { border:0; background:#eef5fa; color:#245675; min-width:2rem; min-height:2rem; cursor:pointer; font-weight:800; } .stepper output { min-width:2.45rem; text-align:center; font-weight:750; font-size:.9rem; }
     .week progress { grid-column:1/-1; width:100%; height:7px; accent-color:#2c82b9; } .week.complete { background:var(--mint); } .week.complete .week-name { color:var(--mint-ink); }
+    .task-group { margin-bottom:.75rem; }
+    .task-group:last-child { margin-bottom:0; }
+    .task-group summary { list-style:none; display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:.68rem .8rem; background:#edf4f8; border:1px solid var(--line); border-radius:12px 12px 0 0; color:#31566d; font-weight:750; font-size:.86rem; }
+    .task-group summary::-webkit-details-marker { display:none; }
+    .task-group summary::after { content:'⌄'; color:#6d8494; font-size:1rem; transform:rotate(0deg); transition:transform .15s; }
+    .task-group:not([open]) summary { border-radius:12px; }
+    .task-group:not([open]) summary::after { transform:rotate(-90deg); }
+    .task-group .card { border-top:0; border-radius:0 0 12px 12px; }
+    .shared-card { margin-bottom:.8rem; }
+    .shared-card .task { background:#fffaf0; }
+    .shared-card .task-name { color:#704d00; }
+    .shared-card .pill { background:#fff0c7; color:#815400; }
+    .exchange-intro, .exchange-empty { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem; }
+    .exchange-intro { margin-bottom:.8rem; background:#eef6fb; border-color:#cfe1ef; }
+    .exchange-intro h3, .exchange-empty h3 { margin:0 0 .3rem; font-size:.98rem; }
+    .exchange-intro p, .exchange-empty p { margin:.25rem 0 0; color:#486476; font-size:.84rem; }
+    .exchange-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem; margin-top:.8rem; }
+    .exchange-field { padding:.55rem .65rem; border:1px dashed #b8cddc; border-radius:9px; color:#486476; font-size:.8rem; }
+    .exchange-field b { display:block; color:#31566d; margin-bottom:.08rem; }
+    .exchange-empty { text-align:center; }
+    .exchange-empty p + p { margin-top:.65rem; }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
     .sync-panel { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem; }
@@ -70,7 +91,7 @@
     <main>
       <section class="identity" id="identity"></section>
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
-      <nav class="tabs" aria-label="檢視"><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
+      <nav class="tabs" aria-label="檢視"><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
       <p class="hint">未登入或未設定同步時，勾選與進度會留在目前裝置；使用 Google OAuth 登入後可與 Google Sheets 同步。</p>
     </main>
@@ -102,6 +123,14 @@
     const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',3],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1]];
     roles.forEach(r=>{r.daily??=baseDaily;r.weekly??=baseWeekly});
 
+    // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
+    const ACCOUNT_ROLE='帳號共用';
+    const ACCOUNT_DAILY_TASK={id:'daily_account_exchange',label:'帳號共用：今日必要採購／交換確認',note:'帳號完成一次即可，明細移至「採購」頁',category:'帳號共用'};
+    const ACCOUNT_STATE_KEY=`account-d-${ACCOUNT_DAILY_TASK.id}`;
+    const ACCOUNT_TASK_ALIASES=new Set(['每日限購／免費商品檢查',ACCOUNT_DAILY_TASK.label]);
+    const HIDDEN_DAILY_TASKS=new Set(['銀幣清理（狩獵場／地下城）',...ACCOUNT_TASK_ALIASES]);
+    const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
+
     let active='main',view='daily';
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
@@ -109,6 +138,10 @@
     const syncConfig=loadObject(syncKey);
     let syncStatus='尚未設定同步';
     const oauth={accessToken:'',expiresAt:0,user:null,tokenClient:null};
+    if(state[ACCOUNT_STATE_KEY]===undefined){
+      const legacyAccountChecked=roles.some(role=>role.daily.some((task,index)=>ACCOUNT_TASK_ALIASES.has(task)&&Boolean(state[`${role.id}-d-${index}`])));
+      if(legacyAccountChecked){state[ACCOUNT_STATE_KEY]=true;save()}
+    }
 
     function loadObject(storageKey){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
     const save=()=>localStorage.setItem(key,JSON.stringify(state));
@@ -173,7 +206,7 @@
     async function sheetsRequest(path,options={},retry=true){
       if(!oauth.accessToken||Date.now()>oauth.expiresAt-60000)await requestOAuthAccess('');
       const headers={Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{}),Authorization:`Bearer ${oauth.accessToken}`};
-      const response=await fetch(`${SHEETS_API}/${SPREADSHEET_ID}/${path}`,{...options,headers});
+      const response=await fetch(`${SHEETS_API}/${path}`,{...options,headers});
       if(response.status===401&&retry){oauth.accessToken='';oauth.expiresAt=0;return sheetsRequest(path,options,false)}
       const body=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(body.error?.message||`Google Sheets API 錯誤（${response.status}）`);
@@ -221,7 +254,19 @@
     }
 
     function applyItems(items){
-      (items||[]).forEach(item=>{const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;if(item.cycle==='每日'){const index=role.daily.indexOf(item.task);if(index>=0)state[`${role.id}-d-${index}`]=Boolean(item.complete)}else if(item.cycle==='每週'){const index=role.weekly.findIndex(([name])=>name===item.task);if(index>=0)state[`${role.id}-w-${index}`]=number(item.progress)}});save()}
+      let accountItem=null;let legacyAccountSeen=false;let legacyAccountComplete=false;
+      (items||[]).forEach(item=>{
+        if(item.cycle==='每日'&&ACCOUNT_TASK_ALIASES.has(item.task)){
+          if(item.role===ACCOUNT_ROLE)accountItem=item;else{legacyAccountSeen=true;if(item.complete)legacyAccountComplete=true}
+          return;
+        }
+        const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;
+        if(item.cycle==='每日'){const index=role.daily.indexOf(item.task);if(index>=0&&!HIDDEN_DAILY_TASKS.has(item.task))state[`${role.id}-d-${index}`]=Boolean(item.complete)}
+        else if(item.cycle==='每週'){const index=role.weekly.findIndex(([name])=>name===item.task);if(index>=0)state[`${role.id}-w-${index}`]=number(item.progress)}
+      });
+      if(accountItem)state[ACCOUNT_STATE_KEY]=Boolean(accountItem.complete);else if(legacyAccountSeen)state[ACCOUNT_STATE_KEY]=legacyAccountComplete;
+      save()
+    }
 
     async function oauthLogin(){
       syncStatus='等待 Google 授權…';render();
@@ -250,17 +295,31 @@
       await syncWriteLegacy(role,task,cycle,progress,target);
     }
 
-    function progress(){const role=roles.find(x=>x.id===active);if(view==='daily'){const done=role.daily.filter((_,index)=>get(`${active}-d-${index}`,false)).length;return [done,role.daily.length]}const done=role.weekly.filter(([,target],index)=>get(`${active}-w-${index}`,0)>=target).length;return [done,role.weekly.length]}
+    const visibleDailyTasks=role=>role.daily.map((task,index)=>({task,index})).filter(item=>!HIDDEN_DAILY_TASKS.has(item.task));
+    const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
+    const weeklyCategory=task=>task.includes('深淵')||task.includes('週末')?'本尊高難／活動':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'必做週課':'採購／一般週課';
+    function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
+    function progress(){const role=roles.find(x=>x.id===active);if(view==='daily'){const tasks=visibleDailyTasks(role);const done=tasks.filter(item=>get(`${active}-d-${item.index}`,false)).length+(get(ACCOUNT_STATE_KEY,false)?1:0);return [done,tasks.length+1]}if(view==='weekly'){const done=role.weekly.filter(([,target],index)=>get(`${active}-w-${index}`,0)>=target).length;return [done,role.weekly.length]}return [0,0]}
     function render(){
       const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
       document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;
-      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?'台服資料待核對':view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):view==='exchange'?'0%':`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
-      if(view==='daily')root.innerHTML=`<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div><div class="card">${role.daily.map((task,index)=>`<label class="task ${get(`${active}-d-${index}`,false)?'done':''}"><input type="checkbox" ${get(`${active}-d-${index}`,false)?'checked':''} data-d="${index}"><span><span class="task-name">${task}</span><span class="task-note">${task.includes('坑洞')?'每日保底':'角色個別計算'}</span></span><span class="pill">每日</span></label>`).join('')}</div>`;
-      if(view==='weekly')root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="card">${role.weekly.map(([task,target],index)=>{const value=Math.min(get(`${active}-w-${index}`,0),target);return `<div class="week ${value>=target?'complete':''}"><div><div class="week-name">${task}</div><small>${value>=target?'已完成':'尚未達標'} · ${value} / ${target}</small></div><div class="stepper"><button aria-label="減少 ${task}" data-step="${index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${task}" data-step="${index}" data-delta="1">＋</button></div><progress value="${value}" max="${target}"></progress></div>`}).join('')}</div>`;
+      if(view==='daily'){
+        const accountDone=get(ACCOUNT_STATE_KEY,false);
+        const accountHtml=`<div class="shared-card"><div class="section-title"><h2>帳號共用</h2><small>完成一次即可</small></div><div class="card"><label class="task ${accountDone?'done':''}"><input type="checkbox" ${accountDone?'checked':''} data-account-daily><span><span class="task-name">${ACCOUNT_DAILY_TASK.label}</span><span class="task-note">${ACCOUNT_DAILY_TASK.note}</span></span><span class="pill">帳號</span></label></div></div>`;
+        const groups=groupedTasks(visibleDailyTasks(role),dailyCategory).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-d-${item.index}`,false)).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const checked=get(`${active}-d-${item.index}`,false);return `<label class="task ${checked?'done':''}"><input type="checkbox" ${checked?'checked':''} data-d="${item.index}"><span><span class="task-name">${item.task}</span><span class="task-note">${item.task.includes('坑洞')?'有遇到再處理':'角色個別計算'}</span></span><span class="pill">每日</span></label>`}).join('')}</div></details>`).join('');
+        root.innerHTML=`<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div>${accountHtml}${groups}`;
+      }
+      if(view==='weekly'){
+        const weeklyItems=role.weekly.map(([task,target],index)=>({task,target,index}));
+        const groups=groupedTasks(weeklyItems, item=>weeklyCategory(item.task)).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${item.task}</div><small>${value>=item.target?'已完成':'尚未達標'} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${item.task}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${item.task}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
+        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div>${groups}`;
+      }
+      if(view==='exchange')root.innerHTML=`<div class="section-title"><h2>採購／交換</h2><small>地區 → NPC → 商品</small></div><div class="exchange-intro"><h3>先記真正需要記憶的交換</h3><p>這裡會放台服已確認的 NPC、商品、成本與每日／每週限制；今日頁只保留一個帳號共用的完成確認，不再讓六個角色重複勾選泛用採購。</p><div class="exchange-fields"><div class="exchange-field"><b>資料範圍</b>地區／NPC／商品</div><div class="exchange-field"><b>成本</b>材料與數量</div><div class="exchange-field"><b>週期</b>每日／每週／活動</div><div class="exchange-field"><b>追蹤方式</b>帳號／角色</div></div></div><div class="exchange-empty"><h3>交換路線資料尚未加入</h3><p>目前不直接把韓服舊 Sheet 翻成台服正式資料，避免顯示過期或錯誤的 NPC 內容。</p><p>你確認台服實際項目後，再把它們填入這個入口；OAuth 與既有歷史紀錄不會因此被改寫。</p></div>`;
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -268,6 +327,7 @@
       }
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
+      document.querySelectorAll('[data-account-daily]').forEach(checkbox=>checkbox.onchange=()=>{set(ACCOUNT_STATE_KEY,checkbox.checked);syncWrite(ACCOUNT_ROLE_RECORD,ACCOUNT_DAILY_TASK.label,'每日',checkbox.checked?1:0,1)});
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
       document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
