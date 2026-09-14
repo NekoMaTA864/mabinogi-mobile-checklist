@@ -64,6 +64,42 @@
     .exchange-field b { display:block; color:#31566d; margin-bottom:.08rem; }
     .exchange-empty { text-align:center; }
     .exchange-empty p + p { margin-top:.65rem; }
+    .exchange-alert { margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #f0d99b; border-radius:12px; background:var(--amber); color:#6f5000; font-size:.82rem; }
+    .exchange-alert b { display:block; margin-bottom:.15rem; color:#624600; }
+    .exchange-filters { display:flex; gap:.45rem; overflow:auto; padding:.15rem 0 .75rem; scrollbar-width:none; }
+    .exchange-filters::-webkit-scrollbar { display:none; }
+    .exchange-filter { flex:0 0 auto; border:1px solid var(--line); border-radius:999px; padding:.38rem .65rem; background:white; color:#527083; cursor:pointer; font-size:.8rem; font-weight:700; }
+    .exchange-filter.active { border-color:var(--blue); background:var(--blue); color:white; }
+    .exchange-group { margin-bottom:.75rem; }
+    .exchange-group:last-child { margin-bottom:0; }
+    .exchange-group h3 { display:flex; justify-content:space-between; align-items:center; margin:0; padding:.62rem .75rem; border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; background:#edf4f8; color:#31566d; font-size:.86rem; }
+    .exchange-group h3 small { color:#6d8494; font-size:.74rem; font-weight:500; }
+    .exchange-list { background:white; border:1px solid var(--line); border-radius:0 0 12px 12px; overflow:hidden; }
+    .exchange-card { display:grid; grid-template-columns:1fr auto; gap:.65rem; align-items:center; padding:.78rem .75rem; border-bottom:1px solid #e8eff4; }
+    .exchange-card:last-child { border-bottom:0; }
+    .exchange-card.done { background:var(--mint); }
+    .exchange-card.done .exchange-product { color:var(--mint-ink); }
+    .exchange-product { font-weight:750; font-size:.9rem; }
+    .exchange-route { margin-top:.12rem; color:#486476; font-size:.78rem; }
+    .exchange-meta { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.38rem; }
+    .exchange-meta span, .evidence { display:inline-block; padding:.18rem .38rem; border-radius:999px; background:#eef5fa; color:#47677d; font-size:.7rem; }
+    .evidence.official { background:#e7f5ed; color:#176043; }
+    .evidence.player { background:#fff0c7; color:#815400; }
+    .exchange-control { justify-self:end; }
+    .exchange-control input[type=checkbox] { appearance:none; width:1.25rem; height:1.25rem; border:2px solid #8fa8ba; border-radius:5px; display:grid; place-content:center; cursor:pointer; margin:0; }
+    .exchange-control input[type=checkbox]::before { content:""; width:.58rem; height:.32rem; border-left:2px solid white; border-bottom:2px solid white; transform:rotate(-45deg) scale(0); margin-top:-.13rem; }
+    .exchange-control input[type=checkbox]:checked { background:#2170a8; border-color:#2170a8; }
+    .exchange-control input[type=checkbox]:checked::before { transform:rotate(-45deg) scale(1); }
+    .exchange-control .stepper { margin-left:auto; }
+    .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
+    .exchange-source { margin-top:.8rem; padding:.78rem .8rem; border:1px solid var(--line); border-radius:12px; background:#fff; color:#486476; font-size:.78rem; }
+    .exchange-source summary { cursor:pointer; color:#245675; font-weight:750; }
+    .exchange-source p { margin:.5rem 0 0; }
+    .exchange-source ul { margin:.45rem 0 0; padding-left:1.2rem; }
+    .exchange-source a { color:#1e5d8f; }
+    .material-chips { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.55rem; }
+    .material-chip { padding:.24rem .45rem; border:1px solid #d4e2eb; border-radius:999px; background:#f7fafc; color:#527083; font-size:.72rem; }
+    @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
     .sync-panel { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem; }
@@ -131,7 +167,26 @@
     const HIDDEN_DAILY_TASKS=new Set(['銀幣清理（狩獵場／地下城）',...ACCOUNT_TASK_ALIASES]);
     const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
 
-    let active='main',view='daily';
+    // 以台服 2026-09-09 官方更新為主；玩家整理資料只放在參考區，不直接計入完成度。
+    const OFFICIAL_UPDATE_URL='https://tw.nexon.com/mabinogimobile/home/news/update/3541097';
+    const DCINSIDE_SHEET_URL='https://docs.google.com/spreadsheets/d/10CnCmKW50VteKT8SLLaPuPdKx-LlDI5_64jRVGF16ok/edit?usp=sharing';
+    const MABITW_DAILY_URL='https://mabitw.com/daily';
+    const MABITW_LIFE_URL='https://mabitw.com/life';
+    const BOBO_MATERIALS_URL='https://bobogameguides.com/mabinogi-mobile/guides/materials-keep.html';
+    const BAHA_BANKOR_URL='https://forum.gamer.com.tw/C.php?bsn=32564&snA=2836';
+    const PROCUREMENT_ITEMS=[
+      {id:'jennifer-light-meat',group:'每日交換',region:'班克爾',npc:'珍妮佛的酒館',product:'清淡的肉 ×15',cost:'黃豆 ×10',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'台服 9/9 更新資料；實際兌換前以遊戲內商店為準。',source:OFFICIAL_UPDATE_URL},
+      {id:'ellen-silver-special-steel',group:'每日交換',region:'班克爾',npc:'艾琳的金屬工坊',product:'銀合金錠 ×1',cost:'特殊鋼錠 ×3',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'台服 9/9 更新資料；屬於角色個別限制。',source:OFFICIAL_UPDATE_URL},
+      {id:'ellen-silver-alloy-steel',group:'每日交換',region:'班克爾',npc:'艾琳的金屬工坊',product:'銀合金錠 ×1',cost:'合金鋼錠 ×30',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'台服 9/9 更新資料；屬於角色個別限制。',source:OFFICIAL_UPDATE_URL},
+      {id:'aiton-silver-fish-soup',group:'每週交換',region:'班克爾',npc:'艾頓的鐵匠鋪',product:'銀合金錠 ×10',cost:'鱸魚辣魚湯 ×1',limit:'每角色每週 1 次',cycle:'每週',scope:'角色',target:1,track:true,evidence:'台服官方',note:'台服 9/9 更新資料；週一 06:00 重新計算。',source:OFFICIAL_UPDATE_URL},
+      {id:'gilmor-highest-leather',group:'金幣商店',region:'班克爾',npc:'吉爾摩的雜貨店',product:'最高級生皮 ×1',cost:'金幣 900',limit:'每角色每週 30 次',cycle:'每週',scope:'角色',target:30,track:true,evidence:'台服官方',note:'以角色分開記錄購買次數。',source:OFFICIAL_UPDATE_URL},
+      {id:'gilmor-highest-spider-web',group:'金幣商店',region:'班克爾',npc:'吉爾摩的雜貨店',product:'最高級蜘蛛網 ×1',cost:'金幣 900',limit:'每角色每週 30 次',cycle:'每週',scope:'角色',target:30,track:true,evidence:'台服官方',note:'以角色分開記錄購買次數。',source:OFFICIAL_UPDATE_URL},
+      {id:'gilmor-fine-tool-part',group:'資訊',region:'班克爾',npc:'吉爾摩的雜貨店',product:'精巧道具部件 ×1',cost:'金幣 9,600',limit:'需生活技能等級 7,000',cycle:'條件',scope:'資訊',target:0,evidence:'玩家整理／待核對',note:'不列入每日／每週完成度；請以台服遊戲內商店顯示為準。',source:MABITW_LIFE_URL},
+      {id:'bangor-facility-upgrade-book',group:'資訊',region:'班克爾',npc:'班克爾一般商店',product:'設施升級書',cost:'心之印章 ×15',limit:'玩家回報，限制待核對',cycle:'條件',scope:'資訊',target:0,evidence:'玩家整理／待核對',note:'只作查詢提示，不建立同步勾選。',source:MABITW_LIFE_URL}
+    ];
+    const MATERIAL_KEEP_LIST=['蜘蛛網','羊毛／高級羊毛','原木／高級原木','生皮／高級生皮','布料','麵粉','煤炭','鐵礦石','鋼錠','單寧粉末','高級絲綢','特殊鋼錠','銅礦石','耐熱繃帶'];
+
+    let active='main',view='daily',exchangeFilter='all';
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
     const state=loadObject(key);
@@ -260,6 +315,14 @@
           if(item.role===ACCOUNT_ROLE)accountItem=item;else{legacyAccountSeen=true;if(item.complete)legacyAccountComplete=true}
           return;
         }
+        if(text(item.task).startsWith('採購｜')){
+          const procurement=PROCUREMENT_ITEMS.find(candidate=>`採購｜${candidate.id}`===item.task);
+          if(!procurement||!procurement.track)return;
+          const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          if(procurement.scope==='帳號'&&item.role===ACCOUNT_ROLE)state[purchaseStateKey(procurement,'account')]=Math.min(procurement.target,number(item.progress));
+          else if(procurement.scope==='角色'&&role)state[purchaseStateKey(procurement,role.id)]=Math.min(procurement.target,number(item.progress));
+          return;
+        }
         const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;
         if(item.cycle==='每日'){const index=role.daily.indexOf(item.task);if(index>=0&&!HIDDEN_DAILY_TASKS.has(item.task))state[`${role.id}-d-${index}`]=Boolean(item.complete)}
         else if(item.cycle==='每週'){const index=role.weekly.findIndex(([name])=>name===item.task);if(index>=0)state[`${role.id}-w-${index}`]=number(item.progress)}
@@ -299,13 +362,33 @@
     const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
     const weeklyCategory=task=>task.includes('深淵')||task.includes('週末')?'本尊高難／活動':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'必做週課':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
-    function progress(){const role=roles.find(x=>x.id===active);if(view==='daily'){const tasks=visibleDailyTasks(role);const done=tasks.filter(item=>get(`${active}-d-${item.index}`,false)).length+(get(ACCOUNT_STATE_KEY,false)?1:0);return [done,tasks.length+1]}if(view==='weekly'){const done=role.weekly.filter(([,target],index)=>get(`${active}-w-${index}`,0)>=target).length;return [done,role.weekly.length]}return [0,0]}
+    function purchaseStateKey(item,roleId=active){
+      const period=item.cycle==='每日'?gameDateKey():item.cycle==='每週'?weekStart(gameDateKey()):'info';
+      return item.scope==='帳號'?`account-purchase-${item.id}-${period}`:`${roleId}-purchase-${item.id}-${period}`
+    }
+    function purchaseValue(item,roleId=active){return Math.min(item.target,number(get(purchaseStateKey(item,roleId),0)))}
+    function purchaseDone(item,roleId=active){return item.track&&purchaseValue(item,roleId)>=item.target}
+    function purchaseTask(item){return `採購｜${item.id}`}
+    function exchangeMatchesFilter(item){return exchangeFilter==='all'||(exchangeFilter==='daily'&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.cycle==='每週')||(exchangeFilter==='info'&&!item.track)}
+    function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>`}
+    function exchangeCard(item,role){
+      const value=item.track?purchaseValue(item,role.id):0;const done=item.track&&value>=item.target;
+      const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
+      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.region)} · ${escapeHtml(item.npc)}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
+    }
+    function renderExchange(role){
+      const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter);const groups=new Map();items.forEach(item=>{if(!groups.has(item.group))groups.set(item.group,[]);groups.get(item.group).push(item)});
+      const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);
+      const groupsHtml=[...groups.entries()].map(([group,groupItems])=>{const trackedGroup=groupItems.filter(item=>item.track);const summary=trackedGroup.length?`${trackedGroup.filter(item=>purchaseDone(item,role.id)).length} / ${trackedGroup.length} 完成`:'查詢資訊';return `<section class="exchange-group"><h3>${escapeHtml(group)}<small>${summary}</small></h3><div class="exchange-list">${groupItems.map(item=>exchangeCard(item,role)).join('')}</div></section>`}).join('');
+      return `<div class="section-title"><h2>採購／交換</h2><small>台服 9/9 更新基準</small></div><div class="exchange-intro"><h3>班克爾採購與以物易物</h3><p>可追蹤項目會依目前角色記錄；每日／每週進度寫入既有「歷史紀錄」，因此 OAuth 登入後可跨設備讀取。</p><div class="exchange-fields"><div class="exchange-field"><b>目前資料</b>${tracked.length} 個可追蹤項目</div><div class="exchange-field"><b>限制範圍</b>每日／每週以角色計算</div><div class="exchange-field"><b>重置時間</b>每日／週一 06:00</div><div class="exchange-field"><b>資料原則</b>官方優先，玩家資料待核對</div></div></div><div class="exchange-alert"><b>版本提醒</b>銀合金錠相關交換在台服 9/9 前後曾調整／回收；舊韓服 Excel 或玩家表可能不同。購買前請以遊戲內商店當下顯示為準。</div><nav class="exchange-filters" aria-label="採購資料篩選"><button class="exchange-filter ${exchangeFilter==='all'?'active':''}" data-exchange-filter="all">全部</button><button class="exchange-filter ${exchangeFilter==='daily'?'active':''}" data-exchange-filter="daily">每日</button><button class="exchange-filter ${exchangeFilter==='weekly'?'active':''}" data-exchange-filter="weekly">每週</button><button class="exchange-filter ${exchangeFilter==='info'?'active':''}" data-exchange-filter="info">資訊</button></nav>${groupsHtml||'<div class="exchange-empty"><h3>這個篩選目前沒有資料</h3><p>請切回「全部」查看已核對項目。</p></div>'}<details class="exchange-source"><summary>參考來源、材料保留與舊 Tracker</summary><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊韓服資料」的順序；非官方項目只做提示，不會進入完成度或同步。</p><ul><li><a href="${OFFICIAL_UPDATE_URL}" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="${MABITW_DAILY_URL}" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="${MABITW_LIFE_URL}" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：設施與生活商店的玩家整理。</li><li><a href="${BAHA_BANKOR_URL}" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="${DCINSIDE_SHEET_URL}" target="_blank" rel="noreferrer">你提供的 DCInside Tracker Sheet</a>：只參考分類、收合與帳號／角色分層，未直接匯入韓服舊資料。</li></ul><p><a href="${BOBO_MATERIALS_URL}" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">${MATERIAL_KEEP_LIST.map(item=>`<span class="material-chip">${escapeHtml(item)}</span>`).join('')}</div></details>`
+    }
+    function progress(){const role=roles.find(x=>x.id===active);if(view==='daily'){const tasks=visibleDailyTasks(role);const done=tasks.filter(item=>get(`${active}-d-${item.index}`,false)).length+(get(ACCOUNT_STATE_KEY,false)?1:0);return [done,tasks.length+1]}if(view==='weekly'){const done=role.weekly.filter(([,target],index)=>get(`${active}-w-${index}`,0)>=target).length;return [done,role.weekly.length]}if(view==='exchange'){const items=PROCUREMENT_ITEMS.filter(item=>item.track);return [items.filter(item=>purchaseDone(item,role.id)).length,items.length]}return [0,0]}
     function render(){
       const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
       document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;
-      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?'台服資料待核對':view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):view==='exchange'?'0%':`${total?done/total*100:0}%`;
+      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
       if(view==='daily'){
@@ -319,7 +402,7 @@
         const groups=groupedTasks(weeklyItems, item=>weeklyCategory(item.task)).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${item.task}</div><small>${value>=item.target?'已完成':'尚未達標'} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${item.task}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${item.task}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
         root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div>${groups}`;
       }
-      if(view==='exchange')root.innerHTML=`<div class="section-title"><h2>採購／交換</h2><small>地區 → NPC → 商品</small></div><div class="exchange-intro"><h3>先記真正需要記憶的交換</h3><p>這裡會放台服已確認的 NPC、商品、成本與每日／每週限制；今日頁只保留一個帳號共用的完成確認，不再讓六個角色重複勾選泛用採購。</p><div class="exchange-fields"><div class="exchange-field"><b>資料範圍</b>地區／NPC／商品</div><div class="exchange-field"><b>成本</b>材料與數量</div><div class="exchange-field"><b>週期</b>每日／每週／活動</div><div class="exchange-field"><b>追蹤方式</b>帳號／角色</div></div></div><div class="exchange-empty"><h3>交換路線資料尚未加入</h3><p>目前不直接把韓服舊 Sheet 翻成台服正式資料，避免顯示過期或錯誤的 NPC 內容。</p><p>你確認台服實際項目後，再把它們填入這個入口；OAuth 與既有歷史紀錄不會因此被改寫。</p></div>`;
+      if(view==='exchange')root.innerHTML=renderExchange(role);
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -329,6 +412,9 @@
       document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
       document.querySelectorAll('[data-account-daily]').forEach(checkbox=>checkbox.onchange=()=>{set(ACCOUNT_STATE_KEY,checkbox.checked);syncWrite(ACCOUNT_ROLE_RECORD,ACCOUNT_DAILY_TASK.label,'每日',checkbox.checked?1:0,1)});
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
+      document.querySelectorAll('[data-exchange-filter]').forEach(button=>button.onclick=()=>{exchangeFilter=button.dataset.exchangeFilter;render()});
+      document.querySelectorAll('[data-purchase-check]').forEach(checkbox=>checkbox.onchange=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===checkbox.dataset.purchaseCheck);if(!item)return;const currentRole=roles.find(x=>x.id===active);const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;const stateRole=item.scope==='帳號'?'account':active;set(purchaseStateKey(item,stateRole),checkbox.checked?1:0);syncWrite(roleForSync,purchaseTask(item),item.cycle,checkbox.checked?1:0,item.target)});
+      document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));set(purchaseStateKey(item,stateRole),next);syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole,purchaseTask(item),item.cycle,next,item.target)});
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
       document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
     }
