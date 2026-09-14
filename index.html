@@ -173,7 +173,7 @@
     async function sheetsRequest(path,options={},retry=true){
       if(!oauth.accessToken||Date.now()>oauth.expiresAt-60000)await requestOAuthAccess('');
       const headers={Accept:'application/json',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{}),Authorization:`Bearer ${oauth.accessToken}`};
-      const response=await fetch(`${SHEETS_API}/${path}`,{...options,headers});
+      const response=await fetch(`${SHEETS_API}/${SPREADSHEET_ID}/${path}`,{...options,headers});
       if(response.status===401&&retry){oauth.accessToken='';oauth.expiresAt=0;return sheetsRequest(path,options,false)}
       const body=await response.json().catch(()=>({}));
       if(!response.ok)throw new Error(body.error?.message||`Google Sheets API 錯誤（${response.status}）`);
