@@ -99,6 +99,8 @@
     .exchange-source a { color:#1e5d8f; }
     .material-chips { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.55rem; }
     .material-chip { padding:.24rem .45rem; border:1px solid #d4e2eb; border-radius:999px; background:#f7fafc; color:#527083; font-size:.72rem; }
+    .weekly-tip { margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.8rem; }
+    .weekly-tip b { color:#31566d; }
     @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
@@ -164,7 +166,7 @@
     const ACCOUNT_DAILY_TASK={id:'daily_account_exchange',label:'帳號共用：今日必要採購／交換確認',note:'帳號完成一次即可，明細移至「採購」頁',category:'帳號共用'};
     const ACCOUNT_STATE_KEY=`account-d-${ACCOUNT_DAILY_TASK.id}`;
     const ACCOUNT_TASK_ALIASES=new Set(['每日限購／免費商品檢查',ACCOUNT_DAILY_TASK.label]);
-    const HIDDEN_DAILY_TASKS=new Set(['銀幣清理（狩獵場／地下城）',...ACCOUNT_TASK_ALIASES]);
+    const HIDDEN_DAILY_TASKS=new Set(['銀幣清理（狩獵場／地下城）','黑色坑洞：每日保底',...ACCOUNT_TASK_ALIASES]);
     const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
 
     // 以台服 2026-09-09 官方更新為主；玩家整理資料只放在參考區，不直接計入完成度。
@@ -362,6 +364,8 @@
     const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
     const weeklyCategory=task=>task.includes('深淵')||task.includes('週末')?'本尊高難／活動':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'必做週課':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
+    function weeklyDisplayName(task){return task==='黑色坑洞'?'黑色坑洞（本週獎勵次數）':task}
+    function weeklyStatus(task,value,target){if(task==='黑色坑洞')return value>=target?'已達目前確認上限 · 手動記錄':'手動記錄 · 每日補 1 次＋週重置 7 次';return value>=target?'已完成':'尚未達標'}
     function purchaseStateKey(item,roleId=active){
       const period=item.cycle==='每日'?gameDateKey():item.cycle==='每週'?weekStart(gameDateKey()):'info';
       return item.scope==='帳號'?`account-purchase-${item.id}-${period}`:`${roleId}-purchase-${item.id}-${period}`
@@ -399,8 +403,8 @@
       }
       if(view==='weekly'){
         const weeklyItems=role.weekly.map(([task,target],index)=>({task,target,index}));
-        const groups=groupedTasks(weeklyItems, item=>weeklyCategory(item.task)).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${item.task}</div><small>${value>=item.target?'已完成':'尚未達標'} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${item.task}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${item.task}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
-        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div>${groups}`;
+        const groups=groupedTasks(weeklyItems, item=>weeklyCategory(item.task)).map(([category,tasks])=>`<details class="task-group" open><summary>${category}<small>${tasks.filter(item=>get(`${active}-w-${item.index}`,0)>=item.target).length} / ${tasks.length}</small></summary><div class="card">${tasks.map(item=>{const value=Math.min(get(`${active}-w-${item.index}`,0),item.target);return `<div class="week ${value>=item.target?'complete':''}"><div><div class="week-name">${weeklyDisplayName(item.task)}</div><small>${weeklyStatus(item.task,value,item.target)} · ${value} / ${item.target}</small></div><div class="stepper"><button aria-label="減少 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${weeklyDisplayName(item.task)}" data-step="${item.index}" data-delta="1">＋</button></div><progress value="${value}" max="${item.target}"></progress></div>`}).join('')}</div></details>`).join('');
+        root.innerHTML=`<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>改為手動記錄本週已取得獎勵的探索次數，使用上下箭頭填寫；目前依台服資料以 14 次為上限，不把可進場次數當成獎勵次數。</div>${groups}`;
       }
       if(view==='exchange')root.innerHTML=renderExchange(role);
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
