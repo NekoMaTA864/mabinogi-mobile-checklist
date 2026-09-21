@@ -500,6 +500,13 @@
       return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
     }
     function weeklyRequiredItems(role){return roleWeeklyItems(role,false)}
+    function weeklyGroupSummary(tasks,roleId=active){
+      const required=tasks.filter(item=>!isOptionalWeeklyTask(item.task,roleId));
+      const optional=tasks.filter(item=>isOptionalWeeklyTask(item.task,roleId));
+      const requiredText=required.length?required.filter(item=>number(get(roleId+'-w-'+item.index,0))>=item.target).length+' / '+required.length:'';
+      const optionalText=optional.length?'選做 '+optional.filter(item=>number(get(roleId+'-w-'+item.index,0))>=item.target).length+' / '+optional.length:'';
+      return requiredText&&optionalText?requiredText+' · '+optionalText:requiredText||optionalText
+    }
     function rotationRole(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
       if(day===0)return null;
@@ -601,7 +608,7 @@
       if(view==='weekly'){
         const sharedWeeklyHtml='<div class="shared-card"><div class="section-title"><h2>伺服器共通</h2><small>所有角色共用</small></div><div class="card">'+ACCOUNT_WEEKLY_TASKS.map(item=>{const done=number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1;return '<label class="task '+(done?'done':'')+'"><input type="checkbox" '+(done?'checked':'')+' data-account-weekly="'+escapeHtml(item.label)+'"><span><span class="task-name">'+escapeHtml(item.label)+'</span><span class="task-note">'+escapeHtml(item.note)+'</span></span><span class="pill">共通</span></label>'}).join('')+'</div></div>';
         const weeklyItems=roleWeeklyItems(role,true);
-        const groups=groupedTasks(weeklyItems,weeklyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+tasks.filter(item=>number(get(active+'-w-'+item.index,0))>=item.target).length+' / '+tasks.length+'</small></summary><div class="card">'+tasks.map(item=>{
+        const groups=groupedTasks(weeklyItems,weeklyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+weeklyGroupSummary(tasks,active)+'</small></summary><div class="card">'+tasks.map(item=>{
           const rawValue=number(get(active+'-w-'+item.index,0));
           const completion=isWeeklyCompletionTask(item.task);
           const value=completion?(rawValue>=item.target?item.target:0):Math.min(rawValue,item.target);
