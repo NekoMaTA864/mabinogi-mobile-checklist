@@ -192,6 +192,8 @@
     const DAILY_BLACK_HOLE_TASK={id:'daily_black_hole_check',label:'黑色坑洞：今日確認',sheetTask:'黑色坑洞：每日保底',note:'只記錄今天是否實際處理，不併入本週累計。'};
     const HIDDEN_DAILY_TASKS=new Set(['每日任務','銀幣清理（狩獵場／地下城）',DAILY_BLACK_HOLE_TASK.sheetTask,...ACCOUNT_TASK_ALIASES]);
     const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
+    // 來源常數需先於特殊事件資料宣告，避免頁面初始化時提前讀取未初始化的 const。
+    const MABITW_ABYSS_URL='https://mabitw.com/abyss';
     const SPECIAL_WEEKLY_EVENTS=[
       {label:'通往深淵的黑色坑洞',status:'看到就打',note:'特殊／機會事件，不列入 Daily 或 Weekly 完成率。玩家資料回報入口有短時間窗，實際以遊戲內廣播與入口為準。',evidence:'玩家實測／非官方',source:MABITW_ABYSS_URL}
     ];
@@ -201,7 +203,6 @@
     const DCINSIDE_SHEET_URL='https://docs.google.com/spreadsheets/d/10CnCmKW50VteKT8SLLaPuPdKx-LlDI5_64jRVGF16ok/edit?usp=sharing';
     const MABITW_DAILY_URL='https://mabitw.com/daily';
     const MABITW_LIFE_URL='https://mabitw.com/life';
-    const MABITW_ABYSS_URL='https://mabitw.com/abyss';
     const OFFICIAL_UPDATE_0916_URL='https://tw.nexon.com/mabinogimobile/home/news/update/3545629';
     const BOBO_MATERIALS_URL='https://bobogameguides.com/mabinogi-mobile/guides/materials-keep.html';
     const BAHA_BANKOR_URL='https://forum.gamer.com.tw/C.php?bsn=32564&snA=2836';
