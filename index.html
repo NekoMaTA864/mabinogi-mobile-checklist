@@ -462,7 +462,9 @@
     const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
     function isAbyssWeeklyTask(task){return task==='深淵通關戰利品'||task==='週末深淵活動'||task==='白魅魔通關戰利品'}
     function isOptionalWeeklyTask(task,roleId=active){return roleId!=='main'&&isAbyssWeeklyTask(task)}
-    function isWeeklyCompletionTask(task){return task==='不詳的召喚結界'}
+    // 目前 Weekly 任務皆以數值進度追蹤；保留此擴充點以相容未來的純完成型任務。
+    const WEEKLY_CHECKBOX_TASKS=new Set([]);
+    function isWeeklyCompletionTask(task){return WEEKLY_CHECKBOX_TASKS.has(task)}
     const weeklyCategory=task=>isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'||task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
     function weeklyDisplayName(task){
@@ -472,6 +474,7 @@
     }
     function weeklyStatus(task,value,target,roleId=active){
       if(task==='黑色坑洞')return value>=target?'已達目前確認上限 · 手動記錄':'手動記錄 · 有效獎勵／探索次數 · 目前先沿用14（待遊戲內核對）';
+      if(task==='不詳的召喚結界')return value>=target?'已達本週 7 次獎勵':'手動記錄 · 每角色每週 7 次獎勵';
       if(isWeeklyCompletionTask(task))return value>=target?'本週已完成':'本週未完成 · 以遊戲內狀態確認';
       if(task==='格里斯貝恩'||task==='白魅魔通關戰利品')return value>=target?'已完成 · 本週獎勵已領':'每週獎勵 1 次 · 參加不限次數';
       if(isOptionalWeeklyTask(task,roleId))return value>=target?'選做 · 已完成':'選做 · 有空再做';
@@ -620,7 +623,7 @@
           const progressBar=completion?'':'<progress value="'+value+'" max="'+item.target+'"></progress>';
           return '<div class="week '+(value>=item.target?'complete ':'')+(optional?'optional':'')+'"><div><div class="week-name">'+escapeHtml(weeklyDisplayName(item.task))+'</div><small>'+escapeHtml(status)+amount+'</small></div>'+control+progressBar+'</div>'
         }).join('')+'</div></details>').join('');
-        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>以箭頭記錄本週有效獎勵／探索次數；目前先沿用 14 次上限，這是台服玩家資料、非官方固定值，請以遊戲內顯示為準。<b>不詳的召喚結界</b>改為本週完成／未完成顯示，內部仍保留舊有次數資料。<b>格里斯貝恩（小格）</b>與白魅魔都是每角色每週 1 次獎勵；野外首領也是每角色每週 1 次，不論挑哪一隻都只算一次。深淵相關內容分成本尊必做、分身選做。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
+        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>以箭頭記錄本週有效獎勵／探索次數；目前先沿用 14 次上限，這是台服玩家資料、非官方固定值，請以遊戲內顯示為準。<b>不詳的召喚結界</b>以箭頭記錄每角色本週 7 次獎勵，達到 7 次即算完成；既有次數資料會直接延續。<b>格里斯貝恩（小格）</b>與白魅魔都是每角色每週 1 次獎勵；野外首領也是每角色每週 1 次，不論挑哪一隻都只算一次。深淵相關內容分成本尊必做、分身選做。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
       }
       if(view==='exchange')root.innerHTML=renderExchange(role);
       if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
