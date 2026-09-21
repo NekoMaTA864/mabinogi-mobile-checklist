@@ -250,9 +250,9 @@
       {id:'raw-leather-wolfsone',group:'一般材料入口',region:'狼森',npc:'狐狸掉落',product:'一般生皮',cost:'戰鬥掉落',limit:'玩家回報；掉率待核對',cycle:'資訊',scope:'資訊',target:0,track:false,evidence:'玩家整理／待核對',note:'玩家回報的取得方式；不視為商店限購。',source:BOBO_MATERIALS_URL}
     ];
     const MATERIAL_KEEP_LIST=['蜘蛛網','羊毛／高級羊毛','原木／高級原木','生皮／高級生皮','布料','麵粉','煤炭','鐵礦石','鋼錠','單寧粉末','高級絲綢','特殊鋼錠','銅礦石','耐熱繃帶'];
-    const PROCUREMENT_PRIORITY_IDS=new Set(['gilmor-highest-leather','gilmor-highest-spider-web']);
+    const PROCUREMENT_PRIORITY_IDS=new Set(['gilmor-highest-leather','gilmor-highest-spider-web','cat-shop-mine-magic-stone','cat-shop-wilderness-magic-stone']);
     const PROCUREMENT_GUIDE=[
-      {tone:'priority',title:'稀缺優先｜每角色先檢查',materials:['最高級生皮','最高級蜘蛛網'],note:'目前最接近「每角色每週固定先買」的材料：台服資料列有每角色每週 30 次限購，玩家材料保留表也反覆列為有用途的常備素材。',source:OFFICIAL_UPDATE_URL},
+      {tone:'priority',title:'稀缺優先｜每角色先檢查',materials:['最高級生皮','最高級蜘蛛網','礦山的魔力石','曠野的魔力石'],note:'最高級生皮／蜘蛛網有每角色每週 30 次限購；兩種魔力石則有每角色每週 3 次限購，但需 65 等級以上與喵幣，六角色都養成時建議優先檢查。',source:OFFICIAL_UPDATE_URL},
       {tone:'recommend',title:'生活用途週限購｜有做再買',materials:['清淡的肉','辣椒粉','白蘿蔔','傷痕花','傷痕花粉末','增幅蘑菇','增幅蘑菇汁液'],note:'班克爾新增的角色週限購材料；對料理／加工有需求時值得買，但目前不把它們一律判定成六角色必買。',source:OFFICIAL_UPDATE_URL},
       {tone:'reference',title:'一般常備｜不設固定週目標',materials:['一般生皮','高麗菜','番茄'],note:'目前沒有足夠台服公開資料證明這三類是每角色固定每週必買；只提醒查庫與實際需求，不計入採購完成度。',source:BOBO_MATERIALS_URL}
     ];
