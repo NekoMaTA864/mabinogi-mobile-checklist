@@ -522,7 +522,7 @@
     function purchaseDone(item,roleId=active){return item.track&&purchaseValue(item,roleId)>=item.target}
     function purchaseTask(item){return `採購｜${item.id}`}
     function exchangeMatchesFilter(item){return exchangeFilter==='all'||(exchangeFilter==='daily'&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.cycle==='每週')||(exchangeFilter==='priority'&&PROCUREMENT_PRIORITY_IDS.has(item.id))||(exchangeFilter==='info'&&!item.track)}
-    function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>${procurementPriorityBadge(item)}
+    function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>${procurementPriorityBadge(item)}`}
     function exchangeCard(item,role){
       const value=item.track?purchaseValue(item,role.id):0;const done=item.track&&value>=item.target;
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
