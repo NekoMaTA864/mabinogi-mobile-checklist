@@ -107,6 +107,17 @@
     .exchange-control .stepper { margin-left:auto; }
     .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
     .exchange-source { margin-top:.8rem; padding:.78rem .8rem; border:1px solid var(--line); border-radius:12px; background:#fff; color:#486476; font-size:.78rem; }
+    .procurement-guide { display:grid; gap:.55rem; margin:.8rem 0; }
+    .procurement-guide-card { padding:.72rem .78rem; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:.8rem; }
+    .procurement-guide-card.priority { background:#fffaf0; border-color:#eadcae; }
+    .procurement-guide-card.recommend { background:#eef6fb; border-color:#cfe1ef; }
+    .procurement-guide-card.reference { background:#f7fafc; }
+    .procurement-guide-card h4 { margin:0; color:#31566d; font-size:.86rem; }
+    .procurement-guide-card p { margin:.25rem 0 0; color:#486476; }
+    .procurement-guide-card a { display:inline-block; margin-top:.35rem; color:#1e5d8f; font-size:.74rem; }
+    .evidence.priority { background:#fff0c7; color:#815400; }
+    .evidence.limited { background:#eef5fa; color:#47677d; }
+    .evidence.reference { background:#f1f4f6; color:#607487; }
     .exchange-source summary { cursor:pointer; color:#245675; font-weight:750; }
     .exchange-source p { margin:.5rem 0 0; }
     .exchange-source ul { margin:.45rem 0 0; padding-left:1.2rem; }
@@ -232,9 +243,32 @@
       {id:'gilmor-silk-lumber',group:'每日交換',region:'班克爾',npc:'吉爾摩的雜貨店',product:'最高級絲綢 ×5',cost:'最高級木材 ×10',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'9/9 更新；角色個別限制。',source:OFFICIAL_UPDATE_URL},
       {id:'gilmor-mine-stone-account',group:'每日交換',region:'班克爾',npc:'吉爾摩的雜貨店',product:'礦山的魔力石 ×1',cost:'生命的魔力石 ×1',limit:'每帳號每日 5 次',cycle:'每日',scope:'帳號',target:5,track:true,evidence:'台服官方',note:'9/9 更新；帳號共通限制。',source:OFFICIAL_UPDATE_URL},
       {id:'gilmor-wilderness-stone-account',group:'每日交換',region:'班克爾',npc:'吉爾摩的雜貨店',product:'曠野的魔力石 ×1',cost:'生命的魔力石 ×1',limit:'每帳號每日 10 次',cycle:'每日',scope:'帳號',target:10,track:true,evidence:'台服官方',note:'9/9 更新；帳號共通限制。',source:OFFICIAL_UPDATE_URL},
-      {id:'ibi-leaf-moth',group:'每日交換',region:'班克爾',npc:'伊比的僻靜山丘',product:'落葉蛾 ×10',cost:'用心準備的花束 ×1',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'9/9 更新；角色個別限制。',source:OFFICIAL_UPDATE_URL}
+      {id:'ibi-leaf-moth',group:'每日交換',region:'班克爾',npc:'伊比的僻靜山丘',product:'落葉蛾 ×10',cost:'用心準備的花束 ×1',limit:'每角色每日 1 次',cycle:'每日',scope:'角色',target:1,track:true,evidence:'台服官方',note:'9/9 更新；角色個別限制。',source:OFFICIAL_UPDATE_URL},
+      {id:'raw-leather-tir',group:'一般材料入口',region:'提爾克那',npc:'雜貨店',product:'一般生皮',cost:'商店條件以遊戲內為準',limit:'玩家回報；非固定週限購',cycle:'資訊',scope:'資訊',target:0,track:false,evidence:'玩家整理／待核對',note:'一般生皮取得入口之一；數量、價格與刷新請以台服當下商店顯示為準。',source:BOBO_MATERIALS_URL},
+      {id:'raw-leather-dub',group:'一般材料入口',region:'杜巴頓',npc:'雜貨店',product:'一般生皮',cost:'商店條件以遊戲內為準',limit:'玩家回報；非固定週限購',cycle:'資訊',scope:'資訊',target:0,track:false,evidence:'玩家整理／待核對',note:'一般生皮取得入口之一；數量、價格與刷新請以台服當下商店顯示為準。',source:BOBO_MATERIALS_URL},
+      {id:'raw-leather-tracy',group:'一般材料入口',region:'提爾克那',npc:'特蕾西的原木交換',product:'一般生皮',cost:'原木交換條件待核對',limit:'玩家回報；非固定週限購',cycle:'資訊',scope:'資訊',target:0,track:false,evidence:'玩家整理／待核對',note:'玩家表列的交換入口；不建立固定次數，請以遊戲內交換表為準。',source:BOBO_MATERIALS_URL},
+      {id:'raw-leather-wolfsone',group:'一般材料入口',region:'狼森',npc:'狐狸掉落',product:'一般生皮',cost:'戰鬥掉落',limit:'玩家回報；掉率待核對',cycle:'資訊',scope:'資訊',target:0,track:false,evidence:'玩家整理／待核對',note:'玩家回報的取得方式；不視為商店限購。',source:BOBO_MATERIALS_URL}
     ];
     const MATERIAL_KEEP_LIST=['蜘蛛網','羊毛／高級羊毛','原木／高級原木','生皮／高級生皮','布料','麵粉','煤炭','鐵礦石','鋼錠','單寧粉末','高級絲綢','特殊鋼錠','銅礦石','耐熱繃帶'];
+    const PROCUREMENT_PRIORITY_IDS=new Set(['gilmor-highest-leather','gilmor-highest-spider-web']);
+    const PROCUREMENT_GUIDE=[
+      {tone:'priority',title:'稀缺優先｜每角色先檢查',materials:['最高級生皮','最高級蜘蛛網'],note:'目前最接近「每角色每週固定先買」的材料：台服資料列有每角色每週 30 次限購，玩家材料保留表也反覆列為有用途的常備素材。',source:OFFICIAL_UPDATE_URL},
+      {tone:'recommend',title:'生活用途週限購｜有做再買',materials:['清淡的肉','辣椒粉','白蘿蔔','傷痕花','傷痕花粉末','增幅蘑菇','增幅蘑菇汁液'],note:'班克爾新增的角色週限購材料；對料理／加工有需求時值得買，但目前不把它們一律判定成六角色必買。',source:OFFICIAL_UPDATE_URL},
+      {tone:'reference',title:'一般常備｜不設固定週目標',materials:['一般生皮','高麗菜','番茄'],note:'目前沒有足夠台服公開資料證明這三類是每角色固定每週必買；只提醒查庫與實際需求，不計入採購完成度。',source:BOBO_MATERIALS_URL}
+    ];
+    function procurementPriority(item){
+      if(PROCUREMENT_PRIORITY_IDS.has(item.id))return '稀缺優先';
+      if(item.cycle==='每週'&&item.scope==='角色')return '角色週限購';
+      if(item.cycle==='每週'&&item.scope==='帳號')return '帳號週限購';
+      return item.track?'限購':'查詢';
+    }
+    function procurementPriorityBadge(item){
+      const tone=PROCUREMENT_PRIORITY_IDS.has(item.id)?'priority':item.track?'limited':'reference';
+      return '<span class="evidence '+tone+'">'+procurementPriority(item)+'</span>'
+    }
+    function procurementGuideHtml(){
+      return '<div class="procurement-guide">'+PROCUREMENT_GUIDE.map(item=>'<article class="procurement-guide-card '+item.tone+'"><h4>'+escapeHtml(item.title)+'</h4><p>'+escapeHtml(item.note)+'</p><div class="material-chips">'+item.materials.map(material=>'<span class="material-chip">'+escapeHtml(material)+'</span>').join('')+'</div><a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">查看依據</a></article>').join('')+'</div>'
+    }
 
     let active='main',view='daily',exchangeFilter='all';
     const key='mabi-mobile-web-demo-v1';
@@ -487,8 +521,8 @@
     function purchaseValue(item,roleId=active){return Math.min(item.target,number(get(purchaseStateKey(item,roleId),0)))}
     function purchaseDone(item,roleId=active){return item.track&&purchaseValue(item,roleId)>=item.target}
     function purchaseTask(item){return `採購｜${item.id}`}
-    function exchangeMatchesFilter(item){return exchangeFilter==='all'||(exchangeFilter==='daily'&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.cycle==='每週')||(exchangeFilter==='info'&&!item.track)}
-    function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>`}
+    function exchangeMatchesFilter(item){return exchangeFilter==='all'||(exchangeFilter==='daily'&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.cycle==='每週')||(exchangeFilter==='priority'&&PROCUREMENT_PRIORITY_IDS.has(item.id))||(exchangeFilter==='info'&&!item.track)}
+    function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>${procurementPriorityBadge(item)}
     function exchangeCard(item,role){
       const value=item.track?purchaseValue(item,role.id):0;const done=item.track&&value>=item.target;
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
@@ -496,9 +530,9 @@
     }
     function renderExchange(role){
       const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter);const groups=new Map();items.forEach(item=>{if(!groups.has(item.group))groups.set(item.group,[]);groups.get(item.group).push(item)});
-      const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);
+      const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);const priorityCount=PROCUREMENT_ITEMS.filter(item=>PROCUREMENT_PRIORITY_IDS.has(item.id)).length;
       const groupsHtml=[...groups.entries()].map(([group,groupItems])=>{const trackedGroup=groupItems.filter(item=>item.track);const summary=trackedGroup.length?`${trackedGroup.filter(item=>purchaseDone(item,role.id)).length} / ${trackedGroup.length} 完成`:'查詢資訊';return `<section class="exchange-group"><h3>${escapeHtml(group)}<small>${summary}</small></h3><div class="exchange-list">${groupItems.map(item=>exchangeCard(item,role)).join('')}</div></section>`}).join('');
-      return `<div class="section-title"><h2>採購／交換</h2><small>台服 9/9 更新基準</small></div><div class="exchange-intro"><h3>台服限購、NPC 商店與以物易物</h3><p>可追蹤項目依商品標示為角色或帳號 Scope；每日／每週進度寫入既有「歷史紀錄」，因此 OAuth 登入後可跨設備讀取。</p><div class="exchange-fields"><div class="exchange-field"><b>目前資料</b>${tracked.length} 個可追蹤項目</div><div class="exchange-field"><b>限制範圍</b>依商品標示角色／帳號</div><div class="exchange-field"><b>重置時間</b>每日／週一 06:00</div><div class="exchange-field"><b>資料原則</b>官方優先，玩家資料待核對</div></div></div><div class="exchange-alert"><b>版本提醒</b>銀合金錠相關交換在台服 9/9 前後曾調整／回收；舊韓服 Excel 或玩家表可能不同。購買前請以遊戲內商店當下顯示為準。</div><nav class="exchange-filters" aria-label="採購資料篩選"><button class="exchange-filter ${exchangeFilter==='all'?'active':''}" data-exchange-filter="all">全部</button><button class="exchange-filter ${exchangeFilter==='daily'?'active':''}" data-exchange-filter="daily">每日</button><button class="exchange-filter ${exchangeFilter==='weekly'?'active':''}" data-exchange-filter="weekly">每週</button><button class="exchange-filter ${exchangeFilter==='info'?'active':''}" data-exchange-filter="info">資訊</button></nav>${groupsHtml||'<div class="exchange-empty"><h3>這個篩選目前沒有資料</h3><p>請切回「全部」查看已核對項目。</p></div>'}<details class="exchange-source"><summary>參考來源、材料保留與舊 Tracker</summary><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊韓服資料」的順序；非官方項目只做提示，不會進入完成度或同步。</p><ul><li><a href="${OFFICIAL_UPDATE_URL}" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="${MABITW_DAILY_URL}" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="${MABITW_LIFE_URL}" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：設施與生活商店的玩家整理。</li><li><a href="${BAHA_BANKOR_URL}" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="${DCINSIDE_SHEET_URL}" target="_blank" rel="noreferrer">你提供的 DCInside Tracker Sheet</a>：只參考分類、收合與帳號／角色分層，未直接匯入韓服舊資料。</li></ul><p><a href="${BOBO_MATERIALS_URL}" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">${MATERIAL_KEEP_LIST.map(item=>`<span class="material-chip">${escapeHtml(item)}</span>`).join('')}</div></details>`
+      return `<div class="section-title"><h2>採購／交換</h2><small>台服 9/9 更新基準</small></div><div class="exchange-intro"><h3>台服限購、NPC 商店與以物易物</h3><p>可追蹤項目依商品標示為角色或帳號 Scope；每日／每週進度寫入既有「歷史紀錄」，因此 OAuth 登入後可跨設備讀取。</p><div class="exchange-fields"><div class="exchange-field"><b>目前資料</b>${tracked.length} 個可追蹤項目</div><div class="exchange-field"><b>稀缺優先</b>${priorityCount} 個項目</div><div class="exchange-field"><b>限制範圍</b>依商品標示角色／帳號</div><div class="exchange-field"><b>資料原則</b>官方優先，玩家資料待核對</div></div></div>${procurementGuideHtml()}<div class="exchange-alert"><b>版本提醒</b>銀合金錠相關交換在台服 9/9 前後曾調整／回收；一般生皮、高麗菜、番茄目前只作常備提醒，不會假設為固定週限購。購買前請以遊戲內商店當下顯示為準。</div><nav class="exchange-filters" aria-label="採購資料篩選"><button class="exchange-filter ${exchangeFilter==='all'?'active':''}" data-exchange-filter="all">全部</button><button class="exchange-filter ${exchangeFilter==='priority'?'active':''}" data-exchange-filter="priority">稀缺優先</button><button class="exchange-filter ${exchangeFilter==='daily'?'active':''}" data-exchange-filter="daily">每日</button><button class="exchange-filter ${exchangeFilter==='weekly'?'active':''}" data-exchange-filter="weekly">每週</button><button class="exchange-filter ${exchangeFilter==='info'?'active':''}" data-exchange-filter="info">資訊</button></nav>${groupsHtml||'<div class="exchange-empty"><h3>這個篩選目前沒有資料</h3><p>請切回「全部」查看已核對項目。</p></div>'}<details class="exchange-source"><summary>參考來源、材料保留與舊 Tracker</summary><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊韓服資料」的順序；非官方項目只作提示，不會進入完成度或同步。</p><ul><li><a href="${OFFICIAL_UPDATE_URL}" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="${MABITW_DAILY_URL}" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="${MABITW_LIFE_URL}" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="${BAHA_BANKOR_URL}" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="${DCINSIDE_SHEET_URL}" target="_blank" rel="noreferrer">你提供的 DCInside Tracker Sheet</a>：只參考分類、收合與帳號／角色分層，未直接匯入韓服舊資料。</li></ul><p><a href="${BOBO_MATERIALS_URL}" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">${MATERIAL_KEEP_LIST.map(item=>`<span class="material-chip">${escapeHtml(item)}</span>`).join('')}</div></details>`
     }
     function roleWeeklyItems(role,includeOptional=true){
       return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
