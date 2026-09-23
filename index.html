@@ -202,9 +202,14 @@
       {id:'p',name:'貓又老師p',sheetRole:'貓又老師p(祭司)',job:'祭司',store:'布料／染料',detail:'羊毛、線、布料、染料、裁縫副料',rule:'紡織與外觀材料集中此處。'},
       {id:'oo',name:'貓又老師oo',sheetRole:'貓又老師oo(修道士)',job:'修道士',store:'彈性／活動材料',detail:'活動材料、可交易製作材料、待分類物品',rule:'每週整理一次；不要把寶石、符文放進這裡。'}
     ];
+    const WEEKLY_ROLE_BARTER_TASK='以物易物交換（每週確認）';
     const baseDaily=['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'];
-    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1],['白魅魔通關戰利品',1]];
-    roles.forEach(r=>{r.daily??=baseDaily;r.weekly??=baseWeekly});
+    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1],['白魅魔通關戰利品',1],[WEEKLY_ROLE_BARTER_TASK,1]];
+    roles.forEach(role=>{
+      role.daily??=baseDaily;
+      role.weekly??=baseWeekly;
+      if(!role.weekly.some(([task])=>task===WEEKLY_ROLE_BARTER_TASK))role.weekly=[...role.weekly,[WEEKLY_ROLE_BARTER_TASK,1]]
+    });
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
@@ -219,7 +224,7 @@
     const isAccountWeeklyTask=task=>ACCOUNT_WEEKLY_TASK_MAP.has(task);
     const ACCOUNT_STATE_KEY=`account-d-${ACCOUNT_DAILY_TASK.id}`;
     const ACCOUNT_TASK_ALIASES=new Set(['每日限購／免費商品檢查',ACCOUNT_DAILY_TASK.label]);
-    const DAILY_BLACK_HOLE_TASK={id:'daily_black_hole_check',label:'黑色坑洞：今日確認',sheetTask:'黑色坑洞：每日保底',note:'只記錄今天是否實際處理，不併入本週累計。'};
+    const DAILY_BLACK_HOLE_TASK={id:'daily_black_hole_check',label:'黑色坑洞：至少完成 1 場',sheetTask:'黑色坑洞：每日保底',note:'帳號共通，每日 06:00 重置；任一角色完成一場即可。本週各角色累計仍在本週頁分開記錄。'};
     const HIDDEN_DAILY_TASKS=new Set(['每日任務','銀幣清理（狩獵場／地下城）',DAILY_BLACK_HOLE_TASK.sheetTask,...ACCOUNT_TASK_ALIASES]);
     const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
     // 來源常數需先於特殊事件資料宣告，避免頁面初始化時提前讀取未初始化的 const。
@@ -462,8 +467,11 @@
           return;
         }
         if(item.cycle==='每日'&&item.task===DAILY_BLACK_HOLE_TASK.sheetTask){
-          const role=roles.find(candidate=>candidate.sheetRole===item.role);
-          if(role)state[dailyBlackHoleStateKey(role.id)]=Boolean(item.complete);
+          if(item.role===ACCOUNT_ROLE)state[accountDailyBlackHoleStateKey()]=Boolean(item.complete||number(item.progress)>=1);
+          else{
+            const role=roles.find(candidate=>candidate.sheetRole===item.role);
+            if(role)state[dailyBlackHoleStateKey(role.id)]=Boolean(item.complete||number(item.progress)>=1)
+          }
           return;
         }
         if(item.cycle==='每週'&&isAccountWeeklyTask(item.task)){
@@ -517,6 +525,7 @@
     }
 
     function dailyBlackHoleStateKey(roleId=active){return roleId+'-black-hole-d-'+gameDateKey()}
+    function accountDailyBlackHoleStateKey(){return 'account-black-hole-d-'+gameDateKey()}
     function roleDailyPurchaseStateKey(roleId=active){return roleId+'-daily-procurement-'+gameDateKey()}
     const DAILY_DISPLAY_NAMES={
       '兼職：聖水／重要兼職':'兼職已處理',
@@ -534,7 +543,7 @@
     function isAbyssWeeklyTask(task){return task==='深淵通關戰利品'||task==='週末深淵活動'||task==='白魅魔通關戰利品'}
     function isOptionalWeeklyTask(task,roleId=active){return roleId!=='main'&&isAbyssWeeklyTask(task)}
     // 目前 Weekly 任務皆以數值進度追蹤；保留此擴充點以相容未來的純完成型任務。
-    const WEEKLY_CHECKBOX_TASKS=new Set([]);
+    const WEEKLY_CHECKBOX_TASKS=new Set([WEEKLY_ROLE_BARTER_TASK]);
     function isWeeklyCompletionTask(task){return WEEKLY_CHECKBOX_TASKS.has(task)}
     const weeklyCategory=task=>isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'||task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
@@ -546,6 +555,7 @@
     function weeklyStatus(task,value,target,roleId=active){
       if(task==='黑色坑洞')return value>=target?'已達目前確認上限 · 手動記錄':'手動記錄 · 有效獎勵／探索次數 · 目前先沿用14（待遊戲內核對）';
       if(task==='不詳的召喚結界')return value>=target?'已達本週 7 次獎勵':'手動記錄 · 每角色每週 7 次獎勵';
+      if(task===WEEKLY_ROLE_BARTER_TASK)return value>=target?'本週已確認':'每角色每週確認一次即可';
       if(isWeeklyCompletionTask(task))return value>=target?'本週已完成':'本週未完成 · 以遊戲內狀態確認';
       if(task==='格里斯貝恩'||task==='白魅魔通關戰利品')return value>=target?'已完成 · 本週獎勵已領':'每週獎勵 1 次 · 參加不限次數';
       if(isOptionalWeeklyTask(task,roleId))return value>=target?'選做 · 已完成':'選做 · 有空再做';
@@ -652,8 +662,8 @@
     }
     function dailyRoleProgress(role){
       const tasks=visibleDailyTasks(role);
-      const done=tasks.filter(item=>get(role.id+'-d-'+item.index,false)).length+(get(roleDailyPurchaseStateKey(role.id),false)?1:0);
-      return {done,total:tasks.length+1}
+      const done=tasks.filter(item=>get(role.id+'-d-'+item.index,false)).length;
+      return {done,total:tasks.length}
     }
     function weeklyRoleProgress(role,optional=false){
       const tasks=roleWeeklyItems(role,true).filter(item=>isOptionalWeeklyTask(item.task,role.id)===optional);
@@ -661,26 +671,31 @@
       return {done,total:tasks.length}
     }
     function overviewProgress(){
-      return roles.reduce((sum,role)=>{const current=dailyRoleProgress(role);sum[0]+=current.done;sum[1]+=current.total;return sum},[0,0])
+      const progress=roles.reduce((sum,role)=>{const current=dailyRoleProgress(role);sum[0]+=current.done;sum[1]+=current.total;return sum},[0,0]);
+      progress[0]+=get(accountDailyBlackHoleStateKey(),false)?1:0;
+      progress[1]+=1;
+      return progress
     }
     function overviewHtml(){
       const focus=rotationRole();
       const focusText=focus?'今日值日角色：'+escapeHtml(focus.name)+'。先處理該角色，再依時間補其他角色。':'今天是週日：查看六角色週課進度並補漏。';
+      const dailyBlackHoleDone=Boolean(get(accountDailyBlackHoleStateKey(),false));
+      const sharedDaily='<div class="overview-shared"><span>帳號共通每日保底：黑色坑洞至少 1 場</span><b>'+(dailyBlackHoleDone?'1 / 1 已完成':'0 / 1 待處理')+'</b></div>';
       const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
-      const shared='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
+      const sharedWeekly='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
       const cards=roles.map(role=>{
         const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),optional=weeklyRoleProgress(role,true),isFocus=focus?.id===role.id;
         const optionalProgress=optional.total?'<div class="overview-progress optional"><span>深淵／高難選做</span><b>'+optional.done+' / '+optional.total+'</b><progress value="'+optional.done+'" max="'+optional.total+'"></progress></div>':'';
         return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+optionalProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
-      return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+shared+'<div class="overview-grid">'+cards+'</div>'
+      return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+sharedDaily+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
     function progress(){
       const role=roles.find(x=>x.id===active);
       if(view==='overview')return overviewProgress();
       if(view==='daily'){
         const tasks=visibleDailyTasks(role);
-        const done=tasks.filter(item=>get(active+'-d-'+item.index,false)).length+(get(roleDailyPurchaseStateKey(active),false)?1:0);
+        const done=tasks.filter(item=>get(active+'-d-'+item.index,false)).length+(get(accountDailyBlackHoleStateKey(),false)?1:0);
         return [done,tasks.length+1]
       }
       if(view==='weekly'){
@@ -706,10 +721,10 @@
       const root=document.querySelector('#view');
       if(view==='overview')root.innerHTML=overviewHtml();
       if(view==='daily'){
-        const rolePurchaseDone=Boolean(get(roleDailyPurchaseStateKey(active),false));
-        const rolePurchaseHtml='<div class="shared-card role-marker"><div class="section-title"><h2>今日角色確認</h2><small>每個角色各自記錄</small></div><div class="card"><label class="task '+(rolePurchaseDone?'done':'')+'"><input type="checkbox" '+(rolePurchaseDone?'checked':'')+' data-role-purchase><span><span class="task-name">'+DAILY_ROLE_PURCHASE_TASK.label+'</span><span class="task-note">'+DAILY_ROLE_PURCHASE_TASK.note+'</span></span><span class="pill">角色</span></label></div></div>';
+        const dailyBlackHoleDone=Boolean(get(accountDailyBlackHoleStateKey(),false));
+        const dailyBlackHoleHtml='<div class="shared-card"><div class="section-title"><h2>帳號共通每日保底</h2><small>每日 06:00 重置</small></div><div class="card"><label class="task '+(dailyBlackHoleDone?'done':'')+'"><input type="checkbox" '+(dailyBlackHoleDone?'checked':'')+' data-account-black-hole><span><span class="task-name">'+DAILY_BLACK_HOLE_TASK.label+'</span><span class="task-note">'+DAILY_BLACK_HOLE_TASK.note+'</span></span><span class="pill">帳號</span></label></div></div>';
         const groups=groupedTasks(visibleDailyTasks(role),dailyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+tasks.filter(item=>get(active+'-d-'+item.index,false)).length+' / '+tasks.length+'</small></summary><div class="card">'+tasks.map(item=>{const checked=get(active+'-d-'+item.index,false);return '<label class="task '+(checked?'done':'')+'"><input type="checkbox" '+(checked?'checked':'')+' data-d="'+item.index+'"><span><span class="task-name">'+escapeHtml(dailyDisplayName(item.task))+'</span><span class="task-note">'+escapeHtml(dailyTaskNote(item.task))+'</span></span><span class="pill">每日</span></label>'}).join('')+'</div></details>').join('');
-        root.innerHTML='<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div>'+rolePurchaseHtml+groups
+        root.innerHTML='<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div>'+dailyBlackHoleHtml+groups
       }
       if(view==='weekly'){
         const sharedWeeklyHtml='<div class="shared-card"><div class="section-title"><h2>伺服器共通</h2><small>所有角色共用</small></div><div class="card">'+ACCOUNT_WEEKLY_TASKS.map(item=>{const done=number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1;return '<label class="task '+(done?'done':'')+'"><input type="checkbox" '+(done?'checked':'')+' data-account-weekly="'+escapeHtml(item.label)+'"><span><span class="task-name">'+escapeHtml(item.label)+'</span><span class="task-note">'+escapeHtml(item.note)+'</span></span><span class="pill">共通</span></label>'}).join('')+'</div></div>';
@@ -736,7 +751,7 @@
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
       document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
-      document.querySelectorAll('[data-role-purchase]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);set(roleDailyPurchaseStateKey(active),checkbox.checked);syncWrite(currentRole,DAILY_ROLE_PURCHASE_TASK.sheetTask,'每日',checkbox.checked?1:0,1)});
+      document.querySelectorAll('[data-account-black-hole]').forEach(checkbox=>checkbox.onchange=()=>{const value=checkbox.checked?1:0;set(accountDailyBlackHoleStateKey(),checkbox.checked);syncWrite(ACCOUNT_ROLE_RECORD,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',value,1)});
       document.querySelectorAll('[data-account-weekly]').forEach(checkbox=>checkbox.onchange=()=>{const task=ACCOUNT_WEEKLY_TASKS.find(item=>item.label===checkbox.dataset.accountWeekly);if(!task)return;const value=checkbox.checked?1:0;set(ACCOUNT_WEEKLY_STATE_KEYS[task.label],value);syncWrite(ACCOUNT_ROLE_RECORD,task.label,'每週',value,1)});
       document.querySelectorAll('[data-week-complete]').forEach(checkbox=>checkbox.onchange=()=>{const index=Number(checkbox.dataset.weekComplete),target=role.weekly[index][1],next=checkbox.checked?target:0;set(active+'-w-'+index,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
