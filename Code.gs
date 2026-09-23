@@ -65,8 +65,8 @@ function readCurrent_() {
     const row = values[i];
     const cycle = text_(row[header.cols['週期']]);
     const date = dateText_(row[header.cols['重置日']]);
-    if ((cycle === '每日' && date !== gameDate) || (cycle === '每週' && date !== weeklyDate)) continue;
-    if (cycle !== '每日' && cycle !== '每週') continue;
+    if ((cycle === '每日' && date !== gameDate) || (cycle === '每週' && date !== weeklyDate) || (cycle === '常駐' && date !== '永久')) continue;
+    if (cycle !== '每日' && cycle !== '每週' && cycle !== '常駐') continue;
     items.push({
       resetDate: date,
       role: text_(row[header.cols['角色']]),
@@ -82,13 +82,13 @@ function readCurrent_() {
 
 function saveItem_(p) {
   const cycle = text_(p.cycle);
-  if (cycle !== '每日' && cycle !== '每週') throw new Error('週期只能是每日或每週。');
+  if (cycle !== '每日' && cycle !== '每週' && cycle !== '常駐') throw new Error('週期只能是每日、每週或常駐。');
   const role = text_(p.role);
   const task = text_(p.task);
   if (!role || !task) throw new Error('角色與任務名稱不可空白。');
   const target = Math.max(1, number_(p.target));
   const progress = Math.max(0, Math.min(target, number_(p.progress)));
-  const resetDate = cycle === '每日' ? gameDate_() : weekStart_(gameDate_());
+  const resetDate = cycle === '常駐' ? '永久' : cycle === '每日' ? gameDate_() : weekStart_(gameDate_());
   const complete = progress >= target;
   const lock = LockService.getScriptLock();
   lock.waitLock(5000);
