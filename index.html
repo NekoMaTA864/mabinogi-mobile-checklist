@@ -346,6 +346,7 @@
     ];
     const COMMUNITY_TOOLS=[
       {category:'以物易物查詢',title:'以物換物反查資料庫',href:'https://mabinogimobile.nipponhashi.com/barter/',description:'可從手上材料或目標產物反查交換項目，並按城鎮與推薦分類篩選。資料由社群整理，官方沒有公布完整交換表，台服實際內容仍以遊戲內為準。'},
+      {category:'以物易物資料',title:'瑪奇 Mobile 繁中交換資料庫',href:'https://mabi.yenyen.dev/',description:'整理投入材料、產物、NPC、地區與建議次數；玩家資料僅作路線參考，台服狀態以遊戲內為準。'},
       {category:'料理規劃',title:'料理採購規劃器',href:'https://starmoon.game-db.tw/tools/cooking-planner/',description:'依想做的料理整理 NPC 採買額度、加工食材與其他原料。規劃器以單一帳號計算；六角色的限額請再按遊戲內範圍核對。'},
       {category:'製作規劃',title:'製造物加工時間一覽',href:'https://starmoon.game-db.tw/tools/crafting/',description:'展開製作鏈、基礎素材與加工時間，適合安排長時間製作。資料站標示蕾拉伺服器，材料與數值請以台服遊戲內資訊為準。'},
       {category:'職業養成',title:'精靈痕跡計算機',href:'https://starmoon.game-db.tw/tools/spirit-trace/',description:'估算職業等級規劃所需的精靈痕跡。'},
@@ -365,7 +366,8 @@
       {id:'foggus-iron-ore',npc:'佛格斯',region:'提爾克那',input:'分解的裝備零件 ×1',output:'鐵礦石 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'偏向把分解零件換成鍛造材料。',source:BARTER_DATABASE_URL},
       {id:'almis-metal-blueprint',npc:'阿爾米斯',region:'庫漢',input:'煤炭 ×20',output:'金屬加工設備設計圖（3級）',cycle:'一次性',limit:'資料列帳號一次性',note:'一次性解鎖類路線；若已換過就不必重複準備。',source:BARTER_DATABASE_URL},
       {id:'elwyn-leather-blueprint',npc:'艾爾文',region:'杜加德走廊',input:'布料+ ×5',output:'皮革加工設備設計圖（3級）',cycle:'一次性',limit:'資料列帳號一次性',note:'一次性解鎖類路線；若已換過就不必重複準備。',source:BARTER_DATABASE_URL},
-      {id:'lisa-catalyst',npc:'麗莎',region:'提爾克那',input:'蘋果汁 ×1',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'資料庫也列出鍊金術碎屑 ×3 的替代投入路線。',source:BARTER_DATABASE_URL}
+      {id:'lisa-catalyst',npc:'麗莎',region:'提爾克那',input:'蘋果汁 ×1',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'蘋果汁交換路線。',source:BARTER_DATABASE_URL},
+      {id:'lisa-catalyst-fragments',npc:'麗莎',region:'提爾克那',input:'鍊金術碎屑 ×3',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'可與蘋果汁路線擇一，次數以遊戲內顯示為準。',source:BARTER_DATABASE_URL}
     ];
     const BARTER_ROUTES=[
       ...PROCUREMENT_ITEMS.filter(item=>item.group.includes('交換')).map(item=>({id:'tracked-'+item.id,npc:item.npc,region:item.region,input:item.cost,output:item.product,cycle:item.cycle,limit:item.limit,note:item.note,source:item.source,evidence:item.evidence,tracked:true})),
