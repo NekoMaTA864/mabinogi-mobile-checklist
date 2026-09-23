@@ -84,10 +84,15 @@
     .exchange-filters::-webkit-scrollbar { display:none; }
     .exchange-filter { flex:0 0 auto; border:1px solid var(--line); border-radius:999px; padding:.38rem .65rem; background:white; color:#527083; cursor:pointer; font-size:.8rem; font-weight:700; }
     .exchange-filter.active { border-color:var(--blue); background:var(--blue); color:white; }
-    .exchange-group { margin-bottom:.75rem; }
-    .exchange-group:last-child { margin-bottom:0; }
-    .exchange-group h3 { display:flex; justify-content:space-between; align-items:center; margin:0; padding:.62rem .75rem; border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; background:#edf4f8; color:#31566d; font-size:.86rem; }
-    .exchange-group h3 small { color:#6d8494; font-size:.74rem; font-weight:500; }
+    .exchange-region { margin-bottom:.75rem; }
+    .exchange-region:last-child { margin-bottom:0; }
+    .exchange-region-heading { display:flex; justify-content:space-between; align-items:center; margin:0; padding:.62rem .75rem; border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; background:#edf4f8; color:#31566d; font-size:.86rem; }
+    .exchange-region-heading small { color:#6d8494; font-size:.74rem; font-weight:500; }
+    .exchange-region-content { padding:.42rem; border:1px solid var(--line); border-radius:0 0 12px 12px; background:#f7fafc; }
+    .exchange-vendor { overflow:hidden; border:1px solid var(--line); border-radius:10px; background:white; }
+    .exchange-vendor + .exchange-vendor { margin-top:.42rem; }
+    .exchange-vendor-heading { display:flex; justify-content:space-between; align-items:center; gap:.5rem; margin:0; padding:.52rem .68rem; border-bottom:1px solid #e8eff4; color:#31566d; font-size:.82rem; }
+    .exchange-vendor-heading small { color:#6d8494; font-size:.71rem; font-weight:500; text-align:right; }
     .exchange-list { background:white; border:1px solid var(--line); border-radius:0 0 12px 12px; overflow:hidden; }
     .exchange-card { display:grid; grid-template-columns:1fr auto; gap:.65rem; align-items:center; padding:.78rem .75rem; border-bottom:1px solid #e8eff4; }
     .exchange-card:last-child { border-bottom:0; }
@@ -305,7 +310,7 @@
       {tone:'reference',title:'一般材料｜只作庫存參考',materials:['一般生皮','高麗菜','番茄'],note:'一般生皮、高麗菜、番茄目前都只作查詢／常備提醒，不假設為每角色固定每週必買，也不計入採購完成度。',source:BOBO_MATERIALS_URL}
     ];
     const COMMUNITY_TOOLS=[
-      {category:'兌換路線',title:'物資兌換手冊',href:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2936',description:'查兌換物資對應的 NPC 與移動路線。連結開啟巴哈原帖，工具入口在文內；作者仍在持續調整。'},
+      {category:'以物易物查詢',title:'以物換物反查資料庫',href:'https://mabinogimobile.nipponhashi.com/barter/',description:'可從手上材料或目標產物反查交換項目，並按城鎮與推薦分類篩選。資料由社群整理，官方沒有公布完整交換表，台服實際內容仍以遊戲內為準。'},
       {category:'料理規劃',title:'料理採購規劃器',href:'https://starmoon.game-db.tw/tools/cooking-planner/',description:'依想做的料理整理 NPC 採買額度、加工食材與其他原料。規劃器以單一帳號計算；六角色的限額請再按遊戲內範圍核對。'},
       {category:'製作規劃',title:'製造物加工時間一覽',href:'https://starmoon.game-db.tw/tools/crafting/',description:'展開製作鏈、基礎素材與加工時間，適合安排長時間製作。資料站標示蕾拉伺服器，材料與數值請以台服遊戲內資訊為準。'},
       {category:'職業養成',title:'精靈痕跡計算機',href:'https://starmoon.game-db.tw/tools/spirit-trace/',description:'估算職業等級規劃所需的精靈痕跡。'},
@@ -592,14 +597,14 @@
     function exchangeCard(item,role){
       const value=item.track?purchaseValue(item,role.id):0;const done=item.track&&value>=item.target;
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
-      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.region)} · ${escapeHtml(item.npc)}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
+      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
     }
     function renderExchange(role){
-      const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter);const groups=new Map();items.forEach(item=>{if(!groups.has(item.group))groups.set(item.group,[]);groups.get(item.group).push(item)});
+      const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter);const regions=new Map();items.forEach(item=>{if(!regions.has(item.region))regions.set(item.region,new Map());const vendors=regions.get(item.region);if(!vendors.has(item.npc))vendors.set(item.npc,[]);vendors.get(item.npc).push(item)});
       const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);const catalogCount=PROCUREMENT_ITEMS.filter(item=>item.catalogTier).length;const priorityCount=PROCUREMENT_ITEMS.filter(item=>PROCUREMENT_PRIORITY_IDS.has(item.id)).length;
       const filterLabels={priority:'稀缺優先',cooking:'料理常備',conditional:'需求補買',daily:'每日限購',weekly:'每週限購',info:'材料參考'};
       const filterButtons=Object.entries(filterLabels).map(([id,label])=>'<button class="exchange-filter '+(exchangeFilter===id?'active':'')+'" data-exchange-filter="'+id+'">'+label+'</button>').join('');
-      const groupsHtml=[...groups.entries()].map(([group,groupItems])=>{const trackedGroup=groupItems.filter(item=>item.track);const summary=trackedGroup.length?trackedGroup.filter(item=>purchaseDone(item,role.id)).length+' / '+trackedGroup.length+' 完成':'查詢資訊';return '<section class="exchange-group"><h3>'+escapeHtml(group)+'<small>'+summary+'</small></h3><div class="exchange-list">'+groupItems.map(item=>exchangeCard(item,role)).join('')+'</div></section>'}).join('');
+      const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const trackedGroup=npcItems.filter(item=>item.track);const summary=trackedGroup.length?trackedGroup.filter(item=>purchaseDone(item,role.id)).length+' / '+trackedGroup.length+' 項已完成':'查詢資料';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
       const currentLabel=filterLabels[exchangeFilter]||'稀缺優先';
       const emptyHtml='<div class="exchange-empty"><h3>這個分類目前沒有資料</h3><p>請切換其他分類查看。</p></div>';
       return '<div class="section-title"><h2>採購／交換</h2><small>'+currentLabel+'</small></div><nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+'<details class="exchange-source"><summary>資料來源與使用規則</summary><p>已確認的台服限購才會進入同步追蹤；料理與一般食材目錄只作採購參考，不會影響六角色完成度，也不會寫入 LocalStorage／Google Sheets。</p><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊 Tracker」的順序；公開 Tracker 的舊價格、庫存數、城鎮／NPC 位置與刷新週期，不直接視為目前台服規則。</p><ul><li><a href="'+escapeHtml(OFFICIAL_UPDATE_URL)+'" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="'+escapeHtml(MABITW_DAILY_URL)+'" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="'+escapeHtml(MABITW_LIFE_URL)+'" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="'+escapeHtml(BAHA_BANKOR_URL)+'" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="'+escapeHtml(DCINSIDE_SHEET_URL)+'" target="_blank" rel="noreferrer">公開 Tracker Sheet</a>：料理材料候選與配方頻率參考；舊表數值不當作台服規則。</li></ul><p><a href="'+escapeHtml(BOBO_MATERIALS_URL)+'" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">'+MATERIAL_KEEP_LIST.map(item=>'<span class="material-chip">'+escapeHtml(item)+'</span>').join('')+'</div></details>'
