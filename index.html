@@ -42,7 +42,7 @@
     .meter { display:grid; grid-template-columns:1fr auto; gap:.5rem 1rem; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:.8rem .9rem; margin-bottom:1rem; }
     .meter b { font-size:.9rem; } .meter span { color:var(--muted); font-size:.83rem; }
     .track { grid-column:1/-1; height:7px; background:#e3edf4; overflow:hidden; border-radius:99px; } .fill { height:100%; background:linear-gradient(90deg,#2170a8,#4a9ccd); border-radius:99px; transition:width .2s; }
-    .tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; }
+    .tabs { display:grid; grid-template-columns:repeat(6,1fr); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; }
     .tab { border:0; background:transparent; color:#5a7081; padding:.53rem .2rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; }
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
@@ -126,6 +126,25 @@
     .material-chip { padding:.24rem .45rem; border:1px solid #d4e2eb; border-radius:999px; background:#f7fafc; color:#527083; font-size:.72rem; }
     .weekly-tip { margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.8rem; }
     .weekly-tip b { color:#31566d; }
+    .overview-intro { margin-bottom:.8rem; padding:.78rem .85rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#31566d; font-size:.82rem; }
+    .overview-intro strong { display:block; margin-bottom:.12rem; font-size:.9rem; }
+    .overview-shared { display:flex; justify-content:space-between; align-items:center; gap:.6rem; margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #eadcae; border-radius:12px; background:#fffaf0; color:#704d00; font-size:.82rem; }
+    .overview-shared b { font-size:.86rem; }
+    .overview-grid { display:grid; grid-template-columns:1fr; gap:.65rem; }
+    .overview-card { min-width:0; padding:.78rem; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .overview-card.focus { border-color:#d8bd72; box-shadow:0 0 0 2px #fff5d8; }
+    .overview-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; margin-bottom:.55rem; }
+    .overview-card-head h3 { margin:0; font-size:.91rem; }
+    .overview-card-head small { display:block; margin-top:.12rem; color:var(--muted); font-size:.73rem; }
+    .overview-badge { flex:none; padding:.18rem .42rem; border-radius:999px; background:#fff0c7; color:#815400; font-size:.68rem; font-weight:750; }
+    .overview-progress { display:grid; grid-template-columns:1fr auto; gap:.18rem .5rem; margin:.48rem 0; color:#486476; font-size:.77rem; }
+    .overview-progress b { color:var(--ink); font-size:.76rem; }
+    .overview-progress progress { grid-column:1/-1; width:100%; height:.42rem; accent-color:#2170a8; }
+    .overview-progress.optional progress { accent-color:#a8873d; }
+    .overview-actions { display:flex; justify-content:flex-end; gap:.4rem; margin-top:.58rem; }
+    .overview-actions button { border:1px solid #b7cddd; border-radius:8px; padding:.38rem .58rem; background:#f4f8fb; color:#245675; cursor:pointer; font-size:.75rem; font-weight:700; }
+    .overview-actions button.primary { border-color:#2170a8; background:#2170a8; color:white; }
+    @media (min-width:700px) { .overview-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
     @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
@@ -155,7 +174,7 @@
       <section class="identity" id="identity"></section>
       <section class="focus-banner" id="focus-banner" aria-live="polite"></section>
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
-      <nav class="tabs" aria-label="檢視"><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
+      <nav class="tabs" aria-label="檢視"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
       <p class="hint">未登入或未設定同步時，勾選與進度會留在目前裝置；使用 Google OAuth 登入後可與 Google Sheets 同步。</p>
     </main>
@@ -631,8 +650,34 @@
       const cards=SPECIAL_WEEKLY_EVENTS.map(item=>'<div class="task"><span class="pill">事件</span><span><span class="task-name">'+escapeHtml(item.label)+'｜'+escapeHtml(item.status)+'</span><span class="task-note">'+escapeHtml(item.note)+' '+escapeHtml(item.evidence)+' · <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">來源</a></span></span><span class="pill">不計分</span></div>').join('');
       return '<div class="shared-card special-event"><div class="section-title"><h2>特殊事件</h2><small>不影響完成率</small></div><div class="card">'+cards+'</div></div>'
     }
+    function dailyRoleProgress(role){
+      const tasks=visibleDailyTasks(role);
+      const done=tasks.filter(item=>get(role.id+'-d-'+item.index,false)).length+(get(roleDailyPurchaseStateKey(role.id),false)?1:0);
+      return {done,total:tasks.length+1}
+    }
+    function weeklyRoleProgress(role,optional=false){
+      const tasks=roleWeeklyItems(role,true).filter(item=>isOptionalWeeklyTask(item.task,role.id)===optional);
+      const done=tasks.filter(item=>number(get(role.id+'-w-'+item.index,0))>=item.target).length;
+      return {done,total:tasks.length}
+    }
+    function overviewProgress(){
+      return roles.reduce((sum,role)=>{const current=dailyRoleProgress(role);sum[0]+=current.done;sum[1]+=current.total;return sum},[0,0])
+    }
+    function overviewHtml(){
+      const focus=rotationRole();
+      const focusText=focus?'今日值日角色：'+escapeHtml(focus.name)+'。先處理該角色，再依時間補其他角色。':'今天是週日：查看六角色週課進度並補漏。';
+      const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
+      const shared='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
+      const cards=roles.map(role=>{
+        const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),optional=weeklyRoleProgress(role,true),isFocus=focus?.id===role.id;
+        const optionalProgress=optional.total?'<div class="overview-progress optional"><span>深淵／高難選做</span><b>'+optional.done+' / '+optional.total+'</b><progress value="'+optional.done+'" max="'+optional.total+'"></progress></div>':'';
+        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+optionalProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
+      }).join('');
+      return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+shared+'<div class="overview-grid">'+cards+'</div>'
+    }
     function progress(){
       const role=roles.find(x=>x.id===active);
+      if(view==='overview')return overviewProgress();
       if(view==='daily'){
         const tasks=visibleDailyTasks(role);
         const done=tasks.filter(item=>get(active+'-d-'+item.index,false)).length+(get(roleDailyPurchaseStateKey(active),false)?1:0);
@@ -656,9 +701,10 @@
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;
-      document.querySelector('#meter-title').textContent=view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
+      if(view==='overview')root.innerHTML=overviewHtml();
       if(view==='daily'){
         const rolePurchaseDone=Boolean(get(roleDailyPurchaseStateKey(active),false));
         const rolePurchaseHtml='<div class="shared-card role-marker"><div class="section-title"><h2>今日角色確認</h2><small>每個角色各自記錄</small></div><div class="card"><label class="task '+(rolePurchaseDone?'done':'')+'"><input type="checkbox" '+(rolePurchaseDone?'checked':'')+' data-role-purchase><span><span class="task-name">'+DAILY_ROLE_PURCHASE_TASK.label+'</span><span class="task-note">'+DAILY_ROLE_PURCHASE_TASK.note+'</span></span><span class="pill">角色</span></label></div></div>';
@@ -688,6 +734,7 @@
         root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2><p>使用固定 Google 帳號登入後，直接讀寫指定的 Google Sheet。Access Token 只保存在目前頁面的記憶體，不寫入 localStorage。</p>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><ol class="sync-steps"><li>在 Google Cloud 建立 Web OAuth Client ID，將 GitHub Pages 的 origin 加入 Authorized JavaScript origins。</li><li>把需要使用的 1～2 個 Google 帳號加入 OAuth 測試使用者，並將同一份 Sheet 共用給它們。</li><li>在本檔案設定 <b>GOOGLE_OAUTH_CLIENT_ID</b>；若要加強介面限制，再填入 <b>ALLOWED_GOOGLE_EMAILS</b>。</li></ol><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
+      document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
       document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
       document.querySelectorAll('[data-role-purchase]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);set(roleDailyPurchaseStateKey(active),checkbox.checked);syncWrite(currentRole,DAILY_ROLE_PURCHASE_TASK.sheetTask,'每日',checkbox.checked?1:0,1)});
       document.querySelectorAll('[data-account-weekly]').forEach(checkbox=>checkbox.onchange=()=>{const task=ACCOUNT_WEEKLY_TASKS.find(item=>item.label===checkbox.dataset.accountWeekly);if(!task)return;const value=checkbox.checked?1:0;set(ACCOUNT_WEEKLY_STATE_KEYS[task.label],value);syncWrite(ACCOUNT_ROLE_RECORD,task.label,'每週',value,1)});
