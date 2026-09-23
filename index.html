@@ -171,6 +171,18 @@
     .barter-route-source { display:inline-block; margin-top:.28rem; color:#1e5d8f; font-size:.7rem; }
     .barter-no-results { padding:.8rem; border:1px dashed #b8cddc; border-radius:10px; color:#607487; background:#fff; text-align:center; font-size:.78rem; }
     .barter-no-results[hidden] { display:none; }
+    .barter-plan-control { display:flex; justify-content:space-between; align-items:center; gap:.5rem; margin-top:.5rem; padding-top:.45rem; border-top:1px solid #e8eff4; color:#527083; font-size:.72rem; }
+    .barter-plan-control .stepper button { min-width:1.8rem; min-height:1.8rem; }
+    .barter-plan-control .stepper output { min-width:2rem; }
+    .barter-plan-summary { margin:.65rem 0 .8rem; padding:.75rem; border:1px solid #cfe1ef; border-radius:12px; background:#fff; }
+    .barter-plan-summary h4 { margin:0; color:#31566d; font-size:.85rem; }
+    .barter-plan-summary p { margin:.22rem 0 .5rem; color:#607487; font-size:.72rem; }
+    .barter-plan-list { display:grid; gap:.3rem; }
+    .barter-plan-row { display:grid; grid-template-columns:1fr auto auto; gap:.45rem; align-items:center; padding:.42rem .5rem; border-radius:8px; background:#f5f9fb; font-size:.73rem; }
+    .barter-plan-row.short { background:#fff4d7; color:#704d00; }
+    .barter-plan-row b { white-space:nowrap; }
+    .barter-plan-clear { margin-top:.5rem; border:1px solid #c9dae6; border-radius:8px; padding:.38rem .58rem; background:#f8fbfd; color:#527083; cursor:pointer; font-size:.72rem; font-weight:700; }
+    .barter-plan-empty { padding:.55rem; border:1px dashed #d4e2eb; border-radius:8px; color:#6d8494; font-size:.73rem; }
     .weekly-tip { margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.8rem; }
     .weekly-tip b { color:#31566d; }
     .overview-intro { margin-bottom:.8rem; padding:.78rem .85rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#31566d; font-size:.82rem; }
@@ -195,6 +207,22 @@
     @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
+    .inventory-intro { margin-bottom:.75rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.78rem; }
+    .inventory-group { margin-bottom:.65rem; }
+    .inventory-group summary { display:flex; justify-content:space-between; align-items:center; gap:.5rem; padding:.62rem .72rem; border:1px solid var(--line); border-radius:12px; background:#edf4f8; color:#31566d; cursor:pointer; font-size:.82rem; font-weight:750; }
+    .inventory-group[open] summary { border-radius:12px 12px 0 0; }
+    .inventory-group summary small { color:#6d8494; font-size:.7rem; font-weight:500; }
+    .inventory-list { overflow:hidden; border:1px solid var(--line); border-top:0; border-radius:0 0 12px 12px; background:white; }
+    .inventory-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(9rem,auto); gap:.55rem; align-items:center; padding:.58rem .65rem; border-bottom:1px solid #e8eff4; }
+    .inventory-row:last-child { border-bottom:0; }
+    .inventory-row b { display:block; font-size:.82rem; }
+    .inventory-row small { display:block; margin-top:.08rem; color:#6d8494; font-size:.67rem; }
+    .inventory-edit { display:grid; grid-template-columns:minmax(5rem,1fr) 4.7rem; gap:.3rem; }
+    .inventory-edit select,.inventory-edit input { min-width:0; width:100%; padding:.38rem .4rem; border:1px solid #cbdbe6; border-radius:7px; background:#fff; color:var(--ink); font-size:.74rem; }
+    .inventory-edit input { text-align:right; }
+    .inventory-total { color:#31566d!important; font-weight:750; }
+    .inventory-key { display:flex; justify-content:space-between; gap:.5rem; align-items:center; margin:.8rem 0 .4rem; color:#31566d; font-size:.82rem; font-weight:750; }
+    @media (max-width:450px) { .inventory-row { grid-template-columns:1fr; gap:.32rem; } .inventory-edit { grid-template-columns:1fr 5.5rem; } }
     .sync-panel { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem; }
     .sync-panel h2 { margin:0 0 .35rem; font-size:1rem; } .sync-panel p { margin:.3rem 0 .8rem; color:#486476; font-size:.84rem; }
     .sync-panel label { display:block; margin:.7rem 0 .25rem; font-size:.8rem; color:#486476; font-weight:700; }
@@ -373,6 +401,32 @@
       ...PROCUREMENT_ITEMS.filter(item=>item.group.includes('交換')).map(item=>({id:'tracked-'+item.id,npc:item.npc,region:item.region,input:item.cost,output:item.product,cycle:item.cycle,limit:item.limit,note:item.note,source:item.source,evidence:item.evidence,tracked:true})),
       ...CURATED_BARTER_ROUTES.map(item=>({...item,evidence:'社群資料庫',tracked:false}))
     ];
+    const BARTER_PLAN_TARGET=9999;
+    const MATERIAL_ROLE_BY_NAME={
+      '原木':'zz','高級原木':'zz','最高級木材':'zz','布料+':'p',
+      '銅礦石':'main','礦石':'main','分解的裝備零件':'main','煤炭':'main','特殊鋼錠':'main','合金鋼錠':'main','生命的魔力石':'main',
+      '鍊金術碎屑':'z','用心準備的花束':'z',
+      '牛奶':'o','凱琳特製全麥麵包':'o','蘋果汁':'o','鱸魚辣魚湯':'o','黃豆':'o',
+      '魔物討伐證明':'oo'
+    };
+    const MATERIAL_ID_BY_NAME={
+      '原木':'raw-log','銅礦石':'copper-ore','牛奶':'milk','凱琳特製全麥麵包':'kaelin-whole-wheat-bread','高級原木':'high-grade-log','礦石':'ore','分解的裝備零件':'disassembled-equipment-parts','煤炭':'coal','布料+':'cloth-plus','蘋果汁':'apple-juice','鍊金術碎屑':'alchemy-fragments','黃豆':'soybeans','特殊鋼錠':'special-steel-ingot','合金鋼錠':'alloy-steel-ingot','鱸魚辣魚湯':'spicy-perch-soup','最高級木材':'highest-grade-lumber','生命的魔力石':'life-magic-stone','用心準備的花束':'carefully-prepared-bouquet','魔物討伐證明':'monster-subjugation-proof'
+    };
+    function parseMaterialAmounts(value,multiplier=1){
+      const result=[];const pattern=/([^×，、,]+?)\s*×\s*([\d,]+)/g;let match;
+      while((match=pattern.exec(String(value||'')))!==null){const name=match[1].trim();const quantity=Number(match[2].replace(/,/g,''));if(name&&quantity>0)result.push({name,quantity:quantity*multiplier})}
+      return result
+    }
+    const MATERIAL_CATALOG=(()=>{
+      const names=new Set();BARTER_ROUTES.forEach(route=>parseMaterialAmounts(route.input).forEach(item=>names.add(item.name)));
+      return [...names].map(name=>({id:MATERIAL_ID_BY_NAME[name]||'material-'+encodeURIComponent(name),name,defaultRole:MATERIAL_ROLE_BY_NAME[name]||'oo'}))
+    })();
+    function inventoryStateKey(materialId,roleId){return `inventory-${materialId}-${roleId}`}
+    function inventoryRoleKey(materialId){return `inventory-role-${materialId}`}
+    function inventoryValue(materialId,roleId){return Math.max(0,Math.floor(number(get(inventoryStateKey(materialId,roleId),0))))}
+    function inventoryTotal(materialId){return roles.reduce((total,role)=>total+inventoryValue(materialId,role.id),0)}
+    function barterPlanStateKey(routeId){return `barter-plan-${routeId}`}
+    function barterPlanValue(routeId){return Math.max(0,Math.min(BARTER_PLAN_TARGET,Math.floor(number(get(barterPlanStateKey(routeId),0)))))}
     function procurementPriority(item){
       if(PROCUREMENT_PRIORITY_IDS.has(item.id))return '稀缺優先';
       if(item.catalogTier==='frequent')return '料理常備';
@@ -395,12 +449,21 @@
     function barterRouteHtml(route){
       const evidenceTone=route.evidence?.includes('官方')?'official':'player';
       const searchable=[route.input,route.output,route.npc,route.region,route.note,route.limit].join(' ');
-      return '<article class="barter-route" data-barter-route data-cycle="'+escapeHtml(route.cycle)+'" data-input="'+escapeHtml([route.input,route.npc,route.region].join(' '))+'" data-output="'+escapeHtml([route.output,route.npc,route.region].join(' '))+'" data-search="'+escapeHtml(searchable)+'"><div class="barter-route-head"><span>'+escapeHtml(route.region)+' · '+escapeHtml(route.npc)+'</span><span class="evidence '+evidenceTone+'">'+escapeHtml(route.evidence||'社群資料庫')+'</span></div><div class="barter-route-flow"><span>'+escapeHtml(route.input)+'</span><b class="barter-route-arrow">→</b><span>'+escapeHtml(route.output)+'</span></div><div class="barter-route-meta"><span>'+escapeHtml(route.limit)+'</span>'+(route.tracked?'<span>採購頁已有額度記錄</span>':'<span>僅供查路線</span>')+'</div><p class="barter-route-note">'+escapeHtml(route.note)+'</p><a class="barter-route-source" href="'+escapeHtml(route.source)+'" target="_blank" rel="noopener noreferrer">查看來源 ↗</a></article>'
+      const planned=barterPlanValue(route.id);
+      return '<article class="barter-route" data-barter-route data-cycle="'+escapeHtml(route.cycle)+'" data-input="'+escapeHtml([route.input,route.npc,route.region].join(' '))+'" data-output="'+escapeHtml([route.output,route.npc,route.region].join(' '))+'" data-search="'+escapeHtml(searchable)+'"><div class="barter-route-head"><span>'+escapeHtml(route.region)+' · '+escapeHtml(route.npc)+'</span><span class="evidence '+evidenceTone+'">'+escapeHtml(route.evidence||'社群資料庫')+'</span></div><div class="barter-route-flow"><span>'+escapeHtml(route.input)+'</span><b class="barter-route-arrow">→</b><span>'+escapeHtml(route.output)+'</span></div><div class="barter-route-meta"><span>'+escapeHtml(route.limit)+'</span>'+(route.tracked?'<span>採購頁已有額度記錄</span>':'<span>僅供查路線</span>')+'</div><p class="barter-route-note">'+escapeHtml(route.note)+'</p><a class="barter-route-source" href="'+escapeHtml(route.source)+'" target="_blank" rel="noopener noreferrer">查看來源 ↗</a><div class="barter-plan-control"><span>帳號計畫次數</span><div class="stepper"><button type="button" data-plan-route="'+escapeHtml(route.id)+'" data-delta="-1" aria-label="減少 '+escapeHtml(route.output)+' 計畫次數">−</button><output>'+planned+'</output><button type="button" data-plan-route="'+escapeHtml(route.id)+'" data-delta="1" aria-label="增加 '+escapeHtml(route.output)+' 計畫次數">＋</button></div></div></article>'
+    }
+    function barterPlanSummaryHtml(){
+      const plans=BARTER_ROUTES.map(route=>({route,count:barterPlanValue(route.id)})).filter(item=>item.count>0);
+      if(!plans.length)return '<section class="barter-plan-summary"><h4>交換計畫／缺料估算</h4><p>先用路線卡片右下角的＋加入預計交換次數；所需材料會自動扣除六倉庫存。</p><div class="barter-plan-empty">尚未加入路線。每條路線的材料數量以資料列標示為準。</div></section>';
+      const needed=new Map();let plannedCount=0;
+      plans.forEach(({route,count})=>{plannedCount+=count;parseMaterialAmounts(route.input,count).forEach(item=>needed.set(item.name,(needed.get(item.name)||0)+item.quantity))});
+      const rows=[...needed.entries()].map(([name,quantity])=>{const material=MATERIAL_CATALOG.find(item=>item.name===name);const stock=material?inventoryTotal(material.id):0;const shortage=Math.max(0,quantity-stock);return {name,quantity,stock,shortage}}).sort((a,b)=>b.shortage-a.shortage||a.name.localeCompare(b.name,'zh-TW'));
+      return '<section class="barter-plan-summary"><h4>交換計畫／缺料估算 · '+plannedCount+' 次</h4><p>只計算投入欄明確標成「材料 × 數量」的項目；金幣或未標數量成本不納入。庫存請只填可用、可轉移的數量。</p><div class="barter-plan-list">'+(rows.length?rows.map(item=>'<div class="barter-plan-row '+(item.shortage?'short':'')+'"><span>'+escapeHtml(item.name)+'</span><b>需 '+item.quantity+' · 庫存 '+item.stock+'</b><span>'+ (item.shortage?'缺 '+item.shortage:'足夠')+'</span></div>').join(''):'<div class="barter-plan-empty">目前路線沒有明確標示可計算的材料數量。</div>')+'</div><button class="barter-plan-clear" type="button" data-clear-barter-plan>清空交換計畫</button></section>'
     }
     function barterFinderHtml(){
       const cadenceButtons=[['all','全部週期'],['每日','資料列每日限額'],['每週','資料列每週限額'],['一次性','一次性解鎖']].map(([value,label])=>'<button class="barter-filter-button '+(barterCadenceFilter===value?'active':'')+'" type="button" data-barter-cycle-filter="'+value+'" aria-pressed="'+(barterCadenceFilter===value)+'">'+label+'</button>').join('');
       const directionButtons=[['all','所有欄位'],['input','找投入材料'],['output','找目標產物']].map(([value,label])=>'<button class="barter-filter-button '+(barterDirectionFilter===value?'active':'')+'" type="button" data-barter-direction-filter="'+value+'" aria-pressed="'+(barterDirectionFilter===value)+'">'+label+'</button>').join('');
-      return '<section class="barter-finder" aria-label="站內以物易物路線搜尋"><h3>站內以物易物路線搜尋</h3><p class="barter-finder-intro">查手上材料能換什麼、某項產物要去哪裡換。這裡只列路線，不新增日課或完成率；每角色每週仍在「本週」勾一次以物易物確認。</p><label class="barter-search-label" for="barter-query">材料、產物、NPC 或地區</label><input class="barter-search-input" id="barter-query" type="search" value="'+escapeHtml(barterQuery)+'" placeholder="例如：原木、高級生皮、煤炭、聖水、班克爾"><div class="barter-filter-row" role="group" aria-label="搜尋欄位">'+directionButtons+'</div><div class="barter-filter-row" role="group" aria-label="交換週期">'+cadenceButtons+'</div><p class="barter-result-count" id="barter-result-count" role="status"></p><div class="barter-route-list">'+BARTER_ROUTES.map(barterRouteHtml).join('')+'</div><div class="barter-no-results" id="barter-no-results" hidden>找不到符合的路線。試試材料別名、NPC 名稱，或切換搜尋欄位／週期。</div></section>'
+      return '<section class="barter-finder" aria-label="站內以物易物路線搜尋"><h3>站內以物易物路線搜尋</h3><p class="barter-finder-intro">查手上材料能換什麼、某項產物要去哪裡換。這裡不新增日課或完成率；每角色每週仍在「本週」勾一次以物易物確認。加入計畫後會彙總材料需求與六倉缺料。</p><label class="barter-search-label" for="barter-query">材料、產物、NPC 或地區</label><input class="barter-search-input" id="barter-query" type="search" value="'+escapeHtml(barterQuery)+'" placeholder="例如：原木、高級生皮、煤炭、聖水、班克爾"><div class="barter-filter-row" role="group" aria-label="搜尋欄位">'+directionButtons+'</div><div class="barter-filter-row" role="group" aria-label="交換週期">'+cadenceButtons+'</div><p class="barter-result-count" id="barter-result-count" role="status"></p>'+barterPlanSummaryHtml()+'<div class="barter-route-list">'+BARTER_ROUTES.map(barterRouteHtml).join('')+'</div><div class="barter-no-results" id="barter-no-results" hidden>找不到符合的路線。試試材料別名、NPC 名稱，或切換搜尋欄位／週期。</div></section>'
     }
     function updateBarterRouteVisibility(){
       const needle=barterQuery.trim().toLocaleLowerCase('zh-TW');let visible=0;
@@ -421,6 +484,7 @@
     const state=loadObject(key);
     const syncConfig=loadObject(syncKey);
     let syncStatus='尚未設定同步';
+    let syncWriteQueue=Promise.resolve();
     const oauth={accessToken:'',expiresAt:0,user:null,tokenClient:null};
 
     function loadObject(storageKey){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
@@ -549,8 +613,8 @@
       const values=result.values||[];const header=findHeader(values);const currentDate=gameDateKey();const weeklyDate=weekStart(currentDate);const items=[];
       for(let index=header.rowIndex+1;index<values.length;index++){
         const row=values[index]||[];const cycle=text(row[header.cols['週期']]);const date=dateText(row[header.cols['重置日']]);
-        if((cycle==='每日'&&date!==currentDate)||(cycle==='每週'&&date!==weeklyDate))continue;
-        if(cycle!=='每日'&&cycle!=='每週')continue;
+        if((cycle==='每日'&&date!==currentDate)||(cycle==='每週'&&date!==weeklyDate)||(cycle==='常駐'&&date!=='永久'))continue;
+        if(cycle!=='每日'&&cycle!=='每週'&&cycle!=='常駐')continue;
         items.push({resetDate:date,role:text(row[header.cols['角色']]),task:text(row[header.cols['任務名稱']]),cycle,progress:number(row[header.cols['進度']]),target:number(row[header.cols['目標']]),complete:completeValue(row[header.cols['完成']])});
       }
       return {items,gameDate:currentDate};
@@ -560,6 +624,21 @@
       let accountItem=null;let legacyAccountSeen=false;let legacyAccountComplete=false;
       const sharedWeeklySeen=new Set();const sharedWeeklyProgress={};
       (items||[]).forEach(item=>{
+        if(item.cycle==='常駐'&&text(item.task).startsWith('庫存保管｜')){
+          const materialId=text(item.task).slice('庫存保管｜'.length);const material=MATERIAL_CATALOG.find(candidate=>candidate.id===materialId);const holder=roles[Math.round(number(item.progress))];
+          if(material&&holder)state[inventoryRoleKey(material.id)]=holder.id;
+          return
+        }
+        if(item.cycle==='常駐'&&text(item.task).startsWith('庫存｜')){
+          const materialId=text(item.task).slice('庫存｜'.length);const material=MATERIAL_CATALOG.find(candidate=>candidate.id===materialId);const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          if(material&&role)state[inventoryStateKey(material.id,role.id)]=Math.max(0,number(item.progress));
+          return
+        }
+        if(item.cycle==='常駐'&&item.role===ACCOUNT_ROLE&&text(item.task).startsWith('路線計畫｜')){
+          const routeId=text(item.task).slice('路線計畫｜'.length);const route=BARTER_ROUTES.find(candidate=>candidate.id===routeId);
+          if(route)state[barterPlanStateKey(route.id)]=Math.max(0,Math.min(BARTER_PLAN_TARGET,number(item.progress)));
+          return
+        }
         if(item.cycle==='每日'&&ACCOUNT_TASK_ALIASES.has(item.task)){
           if(item.role===ACCOUNT_ROLE)accountItem=item;else{legacyAccountSeen=true;if(item.complete)legacyAccountComplete=true}
           return;
@@ -615,16 +694,21 @@
 
     async function oauthSaveItem(role,task,cycle,progress,target){
       if(!oauthSignedIn())return;
-      const result=await sheetsRequest(`values/${encodedRange(sheetRange())}?majorDimension=ROWS`);const values=result.values||[];const header=findHeader(values);const resetDate=cycle==='每日'?gameDateKey():weekStart(gameDateKey());const boundedProgress=Math.max(0,Math.min(Math.max(1,number(target)),number(progress)));const complete=boundedProgress>=Math.max(1,number(target));
+      const result=await sheetsRequest(`values/${encodedRange(sheetRange())}?majorDimension=ROWS`);const values=result.values||[];const header=findHeader(values);const resetDate=cycle==='常駐'?'永久':cycle==='每日'?gameDateKey():weekStart(gameDateKey());const boundedProgress=Math.max(0,Math.min(Math.max(1,number(target)),number(progress)));const complete=boundedProgress>=Math.max(1,number(target));
       const keyValue=`${resetDate}\u0000${role.sheetRole}\u0000${task}`;let targetIndex=-1;
       for(let index=header.rowIndex+1;index<values.length;index++){const row=values[index]||[];const rowKey=`${dateText(row[header.cols['重置日']])}\u0000${text(row[header.cols['角色']])}\u0000${text(row[header.cols['任務名稱']])}`;if(rowKey===keyValue&&text(row[header.cols['週期']])===cycle){targetIndex=index;break}}
       if(targetIndex<0){const row=Array(header.width).fill('');row[header.cols['重置日']]=resetDate;row[header.cols['角色']]=role.sheetRole;row[header.cols['任務名稱']]=task;row[header.cols['週期']]=cycle;row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;if(header.cols['備註']!==undefined)row[header.cols['備註']]='由 GitHub Pages OAuth 同步建立';await sheetsRequest(`values/${encodedRange(sheetRange())}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
       else{const row=Array(Math.max(header.width,(values[targetIndex]||[]).length)).fill('');(values[targetIndex]||[]).forEach((value,index)=>{row[index]=value});row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;const range=`${sheetTitle()}!A${targetIndex+1}:${columnName(row.length-1)}${targetIndex+1}`;await sheetsRequest(`values/${encodedRange(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
     }
 
-    async function syncWrite(role,task,cycle,progress,target){
+    async function performSyncWrite(role,task,cycle,progress,target){
       if(oauthSignedIn()){try{await oauthSaveItem(role,task,cycle,progress,target);syncStatus='已由 OAuth 同步至 Google Sheets';if(view==='sync')render()}catch(err){syncStatus='OAuth 寫入失敗：'+err.message;if(view==='sync')render()}return}
       await syncWriteLegacy(role,task,cycle,progress,target);
+    }
+    function syncWrite(role,task,cycle,progress,target){
+      const pending=syncWriteQueue.then(()=>performSyncWrite(role,task,cycle,progress,target),()=>performSyncWrite(role,task,cycle,progress,target));
+      syncWriteQueue=pending.catch(()=>{});
+      return pending;
     }
 
     function dailyBlackHoleStateKey(roleId=active){return roleId+'-black-hole-d-'+gameDateKey()}
@@ -699,6 +783,24 @@
       const emptyTitle=exchangePendingOnly?'這個分類目前沒有待處理項目':'這個分類目前沒有資料';
       const emptyHtml='<div class="exchange-empty"><h3>'+emptyTitle+'</h3><p>請切換其他分類查看。</p></div>';
       return '<div class="section-title"><h2>採購／交換</h2><small>'+currentLabel+'</small></div>'+barterFinderHtml()+'<nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+scopeNote+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+'<details class="exchange-source"><summary>資料來源與使用規則</summary><p>已確認的台服限購才會進入同步追蹤；料理與一般食材目錄只作採購參考，不會影響六角色完成度，也不會寫入 LocalStorage／Google Sheets。</p><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊 Tracker」的順序；公開 Tracker 的舊價格、庫存數、城鎮／NPC 位置與刷新週期，不直接視為目前台服規則。</p><ul><li><a href="'+escapeHtml(OFFICIAL_UPDATE_URL)+'" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="'+escapeHtml(MABITW_DAILY_URL)+'" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="'+escapeHtml(MABITW_LIFE_URL)+'" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="'+escapeHtml(BAHA_BANKOR_URL)+'" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="'+escapeHtml(BARTER_DATABASE_URL)+'" target="_blank" rel="noreferrer">繁中以物易物資料庫</a>：路線數量與條件由社群整理，請回遊戲核對。</li><li><a href="'+escapeHtml(DCINSIDE_SHEET_URL)+'" target="_blank" rel="noreferrer">公開 Tracker Sheet</a>：料理材料候選與配方頻率參考；舊表數值不當作台服規則。</li></ul><p><a href="'+escapeHtml(BOBO_MATERIALS_URL)+'" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">'+MATERIAL_KEEP_LIST.map(item=>'<span class="material-chip">'+escapeHtml(item)+'</span>').join('')+'</div></details>'
+    }
+    function renderInventory(role){
+      const groups=roles.map(owner=>{
+        const items=MATERIAL_CATALOG.filter(item=>item.defaultRole===owner.id);
+        if(!items.length)return '';
+        const rows=items.map(item=>{
+          const holderId=String(get(inventoryRoleKey(item.id),item.defaultRole));
+          const holder=roles.find(candidate=>candidate.id===holderId)||roles.find(candidate=>candidate.id===item.defaultRole)||roles[0];
+          const value=inventoryValue(item.id,holder.id);const total=inventoryTotal(item.id);
+          const options=roles.map(candidate=>'<option value="'+candidate.id+'" '+(candidate.id===holder.id?'selected':'')+'>'+escapeHtml(candidate.name)+'</option>').join('');
+          return '<article class="inventory-row"><div><b>'+escapeHtml(item.name)+'</b><small class="inventory-total">六倉合計 '+total+'</small></div><div class="inventory-edit"><select data-inventory-holder="'+escapeHtml(item.id)+'" aria-label="'+escapeHtml(item.name)+' 的保管角色">'+options+'</select><input type="number" min="0" step="1" inputmode="numeric" value="'+value+'" data-inventory-stock="'+escapeHtml(item.id)+'" data-inventory-role="'+holder.id+'" aria-label="'+escapeHtml(item.name)+' 在 '+escapeHtml(holder.name)+' 倉的庫存數量"></div></article>'
+        }).join('');
+        const total=items.reduce((sum,item)=>sum+inventoryTotal(item.id),0);
+        return '<details class="inventory-group" '+(owner.id===role.id?'open':'')+'><summary><span>'+escapeHtml(owner.name)+'｜'+escapeHtml(owner.store)+'</span><small>'+items.length+' 種材料 · 庫存 '+total+'</small></summary><div class="inventory-list">'+rows+'</div></details>'
+      }).join('');
+      const totalItems=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
+      const totalUnits=MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0);
+      return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small>'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記</small></div><div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>'+escapeHtml(role.store)+' 倉</h2><p>'+escapeHtml(role.detail)+'</p></div><div class="rule">依現有六角色倉庫分工登記材料。每項可選保管角色並輸入數量；上方「六倉合計」用來估算缺料，請只合計可實際轉移／供交換使用的材料。</div></div><div class="inventory-intro">目前追蹤 '+MATERIAL_CATALOG.length+' 種以物易物路線中明確標示數量的投入材料；帳號合計 '+totalUnits+' 件。未標示數量的金幣、條件文字不會推算。Google Sheets 同步設定完成後，資料會和日週進度一起同步。</div><div class="inventory-key"><span>依材料分工查看</span><span>數量 · 六倉合計</span></div>'+groups+'<div class="warehouse-list">'+roles.map(item=>'<div><b>'+escapeHtml(item.name)+'｜'+escapeHtml(item.store)+'</b><span>'+escapeHtml(item.detail)+'</span></div>').join('')+'</div>'
     }
     function roleWeeklyItems(role,includeOptional=true){
       return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
@@ -831,8 +933,8 @@
       document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
-      const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;
-      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'倉庫分工':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?'6 角色已配置':view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?'100%':view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;const stockedMaterials=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
+      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購／交換':view==='storage'?'材料庫存':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
       if(view==='overview')root.innerHTML=overviewHtml();
@@ -859,10 +961,10 @@
         root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>以箭頭記錄本週有效獎勵／探索次數；目前先沿用 14 次上限，這是台服玩家資料、非官方固定值，請以遊戲內顯示為準。<b>不詳的召喚結界</b>以箭頭記錄每角色本週 7 次獎勵，達到 7 次即算完成；既有次數資料會直接延續。<b>格里斯貝恩（小格）</b>與白魅魔都是每角色每週 1 次獎勵；野外首領也是每角色每週 1 次，不論挑哪一隻都只算一次。深淵相關內容分成本尊必做、分身選做。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
       }
       if(view==='exchange'){root.innerHTML=renderExchange(role);updateBarterRouteVisibility()}
-      if(view==='storage')root.innerHTML=`<div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>${role.store} 倉</h2><p>${role.detail}</p></div><div class="rule">${role.rule} 寶石、符文等角色個人資源，留在取得角色身上。</div></div><div class="warehouse-list">${roles.map(item=>`<div><b>${item.name}｜${item.store}</b><span>${item.detail}</span></div>`).join('')}</div>`;
+      if(view==='storage')root.innerHTML=renderInventory(role);
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
-        root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2><p>使用固定 Google 帳號登入後，直接讀寫指定的 Google Sheet。Access Token 只保存在目前頁面的記憶體，不寫入 localStorage。</p>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><ol class="sync-steps"><li>在 Google Cloud 建立 Web OAuth Client ID，將 GitHub Pages 的 origin 加入 Authorized JavaScript origins。</li><li>把需要使用的 1～2 個 Google 帳號加入 OAuth 測試使用者，並將同一份 Sheet 共用給它們。</li><li>在本檔案設定 <b>GOOGLE_OAUTH_CLIENT_ID</b>；若要加強介面限制，再填入 <b>ALLOWED_GOOGLE_EMAILS</b>。</li></ol><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
+        root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2><p>使用固定 Google 帳號登入後，直接讀寫指定的 Google Sheet。Access Token 只保存在目前頁面的記憶體，不寫入 localStorage。</p>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><ol class="sync-steps"><li>在 Google Cloud 建立 Web OAuth Client ID，將 GitHub Pages 的 origin 加入 Authorized JavaScript origins。</li><li>把需要使用的 1～2 個 Google 帳號加入 OAuth 測試使用者，並將同一份 Sheet 共用給它們。</li><li>在本檔案設定 <b>GOOGLE_OAUTH_CLIENT_ID</b>；若要加強介面限制，再填入 <b>ALLOWED_GOOGLE_EMAILS</b>。</li></ol><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。同步庫存與交換計畫前，請先更新並重新部署最新版 Code.gs。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
@@ -877,6 +979,10 @@
       document.querySelector('#barter-query')?.addEventListener('input',event=>{barterQuery=event.target.value;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>button.onclick=()=>{barterDirectionFilter=button.dataset.barterDirectionFilter;updateBarterRouteVisibility()});
+      document.querySelectorAll('[data-plan-route]').forEach(button=>button.onclick=()=>{const route=BARTER_ROUTES.find(item=>item.id===button.dataset.planRoute);if(!route)return;const stateKey=barterPlanStateKey(route.id);const next=Math.max(0,Math.min(BARTER_PLAN_TARGET,barterPlanValue(route.id)+Number(button.dataset.delta)));state[stateKey]=next;save();syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',next,BARTER_PLAN_TARGET);render()});
+      document.querySelector('[data-clear-barter-plan]')?.addEventListener('click',async()=>{const activePlans=BARTER_ROUTES.filter(route=>barterPlanValue(route.id)>0);activePlans.forEach(route=>{state[barterPlanStateKey(route.id)]=0});save();render();for(const route of activePlans)await syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',0,BARTER_PLAN_TARGET)});
+      document.querySelectorAll('[data-inventory-holder]').forEach(select=>select.onchange=()=>{const holder=roles.find(role=>role.id===select.value);if(!holder)return;state[inventoryRoleKey(select.dataset.inventoryHolder)]=holder.id;save();syncWrite(ACCOUNT_ROLE_RECORD,'庫存保管｜'+select.dataset.inventoryHolder,'常駐',roles.indexOf(holder),roles.length-1);render()});
+      document.querySelectorAll('[data-inventory-stock]').forEach(input=>input.onchange=()=>{const material=MATERIAL_CATALOG.find(item=>item.id===input.dataset.inventoryStock);const owner=roles.find(item=>item.id===input.dataset.inventoryRole);if(!material||!owner)return;const value=Math.max(0,Math.floor(number(input.value)));state[inventoryStateKey(material.id,owner.id)]=value;save();syncWrite(owner,'庫存｜'+material.id,'常駐',value,999999999);render()});
       document.querySelectorAll('[data-exchange-select-role]').forEach(button=>button.onclick=()=>{active=button.dataset.exchangeSelectRole;exchangeScope='role';render()});
       document.querySelectorAll('[data-purchase-check]').forEach(checkbox=>checkbox.onchange=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===checkbox.dataset.purchaseCheck);if(!item)return;const currentRole=roles.find(x=>x.id===active);const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;const stateRole=item.scope==='帳號'?'account':active;set(purchaseStateKey(item,stateRole),checkbox.checked?1:0);syncWrite(roleForSync,purchaseTask(item),item.cycle,checkbox.checked?1:0,item.target)});
       document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));set(purchaseStateKey(item,stateRole),next);syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole,purchaseTask(item),item.cycle,next,item.target)});
