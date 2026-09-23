@@ -84,6 +84,11 @@
     .exchange-filters::-webkit-scrollbar { display:none; }
     .exchange-filter { flex:0 0 auto; border:1px solid var(--line); border-radius:999px; padding:.38rem .65rem; background:white; color:#527083; cursor:pointer; font-size:.8rem; font-weight:700; }
     .exchange-filter.active { border-color:var(--blue); background:var(--blue); color:white; }
+    .exchange-view-options { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.5rem; margin:0 0 .65rem; }
+    .exchange-scope-buttons { display:flex; gap:.35rem; }
+    .exchange-scope-button,.exchange-pending-button { border:1px solid var(--line); border-radius:999px; padding:.38rem .62rem; background:white; color:#527083; cursor:pointer; font-size:.76rem; font-weight:700; }
+    .exchange-scope-button.active,.exchange-pending-button.active { border-color:var(--blue); background:var(--blue); color:white; }
+    .exchange-scope-note { margin:0 0 .65rem; color:#607487; font-size:.74rem; }
     .exchange-region { margin-bottom:.75rem; }
     .exchange-region:last-child { margin-bottom:0; }
     .exchange-region-heading { display:flex; justify-content:space-between; align-items:center; margin:0; padding:.62rem .75rem; border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; background:#edf4f8; color:#31566d; font-size:.86rem; }
@@ -96,10 +101,17 @@
     .exchange-list { background:white; border:1px solid var(--line); border-radius:0 0 12px 12px; overflow:hidden; }
     .exchange-card { display:grid; grid-template-columns:1fr auto; gap:.65rem; align-items:center; padding:.78rem .75rem; border-bottom:1px solid #e8eff4; }
     .exchange-card:last-child { border-bottom:0; }
+    .exchange-card-all { display:block; }
     .exchange-card.done { background:var(--mint); }
     .exchange-card.done .exchange-product { color:var(--mint-ink); }
     .exchange-product { font-weight:750; font-size:.9rem; }
     .exchange-route { margin-top:.12rem; color:#486476; font-size:.78rem; }
+    .exchange-role-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.35rem; margin-top:.55rem; }
+    .exchange-role-progress { display:flex; justify-content:space-between; align-items:center; gap:.35rem; min-width:0; padding:.38rem .48rem; border:1px solid #d7e3ed; border-radius:8px; background:#f7fafc; color:#527083; cursor:pointer; text-align:left; font-size:.7rem; font-weight:650; }
+    .exchange-role-progress:hover { border-color:#95b9d1; }
+    .exchange-role-progress span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .exchange-role-progress b { flex:none; font-size:.68rem; white-space:nowrap; }
+    .exchange-role-progress.done { border-color:#c8e4d4; background:var(--mint); color:var(--mint-ink); }
     .exchange-meta { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.38rem; }
     .exchange-meta span, .evidence { display:inline-block; padding:.18rem .38rem; border-radius:999px; background:#eef5fa; color:#47677d; font-size:.7rem; }
     .evidence.official { background:#e7f5ed; color:#176043; }
@@ -156,7 +168,7 @@
     .overview-actions { display:flex; justify-content:flex-end; gap:.4rem; margin-top:.58rem; }
     .overview-actions button { border:1px solid #b7cddd; border-radius:8px; padding:.38rem .58rem; background:#f4f8fb; color:#245675; cursor:pointer; font-size:.75rem; font-weight:700; }
     .overview-actions button.primary { border-color:#2170a8; background:#2170a8; color:white; }
-    @media (min-width:700px) { .overview-grid,.external-tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (min-width:700px) { .overview-grid,.external-tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .exchange-role-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
     @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
     .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
     .warehouse-list { margin-top:.8rem; background:white; border:1px solid var(--line); border-radius:14px; overflow:hidden; } .warehouse-list div { padding:.72rem .85rem; border-bottom:1px solid #e8eff4; font-size:.88rem; } .warehouse-list div:last-child { border:0; } .warehouse-list b { display:block; margin-bottom:.12rem; } .warehouse-list span { color:var(--muted); font-size:.79rem; }
@@ -336,7 +348,7 @@
       const cards=COMMUNITY_TOOLS.map(tool=>'<article class="external-tool-card"><span class="external-tool-category">'+escapeHtml(tool.category)+'</span><h4><a href="'+escapeHtml(tool.href)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(tool.title)+' ↗</a></h4><p>'+escapeHtml(tool.description)+'</p></article>').join('');
       return '<details class="exchange-source"><summary>實用外部工具</summary><p>外站的勾選與進度不會和本清單同步；玩家工具的數量、週期及角色／帳號範圍，請以台服官方公告或遊戲內顯示為準。</p><div class="external-tool-grid">'+cards+'</div></details>'
     }
-    let active='main',view='daily',exchangeFilter='priority';
+    let active='main',view='daily',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false;
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
     const state=loadObject(key);
@@ -592,6 +604,7 @@
     function purchaseValue(item,roleId=active){return Math.min(item.target,number(get(purchaseStateKey(item,roleId),0)))}
     function purchaseDone(item,roleId=active){return item.track&&purchaseValue(item,roleId)>=item.target}
     function purchaseTask(item){return `採購｜${item.id}`}
+    function exchangeItemPending(item,roleId=active){if(!item.track)return false;if(item.scope==='帳號')return !purchaseDone(item,'account');return exchangeScope==='all'?roles.some(role=>!purchaseDone(item,role.id)):!purchaseDone(item,roleId)}
     function exchangeMatchesFilter(item){return (exchangeFilter==='priority'&&PROCUREMENT_PRIORITY_IDS.has(item.id))||(exchangeFilter==='cooking'&&item.catalogTier==='frequent')||(exchangeFilter==='conditional'&&item.catalogTier==='conditional')||(exchangeFilter==='daily'&&item.track&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.track&&item.cycle==='每週')||(exchangeFilter==='info'&&!item.track)}
     function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>${procurementPriorityBadge(item)}`}
     function exchangeCard(item,role){
@@ -599,15 +612,26 @@
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
       return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
     }
+    function exchangeCardAll(item){
+      const accountOnly=item.scope==='帳號';
+      const trackedRoles=accountOnly?[{id:'main',name:'帳號共通',stateRole:'account'}]:roles.map(role=>({...role,stateRole:role.id}));
+      const allDone=item.track&&(accountOnly?purchaseDone(item,'account'):roles.every(role=>purchaseDone(item,role.id)));
+      const statuses=item.track?'<div class="exchange-role-grid">'+trackedRoles.map(role=>{const value=purchaseValue(item,role.stateRole),done=value>=item.target,status=item.target===1?(done?'完成':'待辦'):`${value}/${item.target}`;return '<button class="exchange-role-progress '+(done?'done':'')+'" type="button" data-exchange-select-role="'+role.id+'" aria-label="'+escapeHtml(role.name+' '+item.product+' '+status+'，切換角色以調整')+'"><span>'+escapeHtml(role.name)+'</span><b>'+escapeHtml(status)+'</b></button>'}).join('')+'</div>':'';
+      const routeScope=accountOnly?'帳號共通限購':'角色個別限購';
+      return '<article class="exchange-card exchange-card-all '+(allDone?'done':'')+'"><div><div class="exchange-product">'+escapeHtml(item.product)+'</div><div class="exchange-route">'+escapeHtml(item.group)+' · '+routeScope+'</div><div class="exchange-meta"><span>需要：'+escapeHtml(item.cost)+'</span><span>'+escapeHtml(item.limit)+'</span>'+exchangeEvidence(item)+'</div></div>'+statuses+(item.note?'<div class="exchange-note">'+escapeHtml(item.note)+' <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">來源</a></div>':'')+'</article>'
+    }
     function renderExchange(role){
-      const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter);const regions=new Map();items.forEach(item=>{if(!regions.has(item.region))regions.set(item.region,new Map());const vendors=regions.get(item.region);if(!vendors.has(item.npc))vendors.set(item.npc,[]);vendors.get(item.npc).push(item)});
+      const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter).filter(item=>!exchangePendingOnly||exchangeItemPending(item,role.id));const regions=new Map();items.forEach(item=>{if(!regions.has(item.region))regions.set(item.region,new Map());const vendors=regions.get(item.region);if(!vendors.has(item.npc))vendors.set(item.npc,[]);vendors.get(item.npc).push(item)});
       const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);const catalogCount=PROCUREMENT_ITEMS.filter(item=>item.catalogTier).length;const priorityCount=PROCUREMENT_ITEMS.filter(item=>PROCUREMENT_PRIORITY_IDS.has(item.id)).length;
       const filterLabels={priority:'稀缺優先',cooking:'料理常備',conditional:'需求補買',daily:'每日限購',weekly:'每週限購',info:'材料參考'};
       const filterButtons=Object.entries(filterLabels).map(([id,label])=>'<button class="exchange-filter '+(exchangeFilter===id?'active':'')+'" data-exchange-filter="'+id+'">'+label+'</button>').join('');
-      const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const trackedGroup=npcItems.filter(item=>item.track);const summary=trackedGroup.length?trackedGroup.filter(item=>purchaseDone(item,role.id)).length+' / '+trackedGroup.length+' 項已完成':'查詢資料';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
+      const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const trackedGroup=npcItems.filter(item=>item.track);const total=trackedGroup.reduce((sum,item)=>sum+(exchangeScope==='all'&&item.scope!=='帳號'?roles.length:1),0);const done=trackedGroup.reduce((sum,item)=>sum+(item.scope==='帳號'?(purchaseDone(item,'account')?1:0):exchangeScope==='all'?roles.filter(role=>purchaseDone(item,role.id)).length:(purchaseDone(item,role.id)?1:0)),0);const summary=trackedGroup.length?done+' / '+total+(exchangeScope==='all'?' 個角色限購已完成':' 項已完成'):'查詢資料';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeScope==='all'?exchangeCardAll(item):exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
       const currentLabel=filterLabels[exchangeFilter]||'稀缺優先';
-      const emptyHtml='<div class="exchange-empty"><h3>這個分類目前沒有資料</h3><p>請切換其他分類查看。</p></div>';
-      return '<div class="section-title"><h2>採購／交換</h2><small>'+currentLabel+'</small></div><nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+'<details class="exchange-source"><summary>資料來源與使用規則</summary><p>已確認的台服限購才會進入同步追蹤；料理與一般食材目錄只作採購參考，不會影響六角色完成度，也不會寫入 LocalStorage／Google Sheets。</p><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊 Tracker」的順序；公開 Tracker 的舊價格、庫存數、城鎮／NPC 位置與刷新週期，不直接視為目前台服規則。</p><ul><li><a href="'+escapeHtml(OFFICIAL_UPDATE_URL)+'" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="'+escapeHtml(MABITW_DAILY_URL)+'" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="'+escapeHtml(MABITW_LIFE_URL)+'" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="'+escapeHtml(BAHA_BANKOR_URL)+'" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="'+escapeHtml(DCINSIDE_SHEET_URL)+'" target="_blank" rel="noreferrer">公開 Tracker Sheet</a>：料理材料候選與配方頻率參考；舊表數值不當作台服規則。</li></ul><p><a href="'+escapeHtml(BOBO_MATERIALS_URL)+'" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">'+MATERIAL_KEEP_LIST.map(item=>'<span class="material-chip">'+escapeHtml(item)+'</span>').join('')+'</div></details>'
+      const scopeButtons='<div class="exchange-view-options"><div class="exchange-scope-buttons" role="group" aria-label="採購角色範圍"><button class="exchange-scope-button '+(exchangeScope==='role'?'active':'')+'" type="button" data-exchange-scope="role" aria-pressed="'+(exchangeScope==='role')+'">本角色</button><button class="exchange-scope-button '+(exchangeScope==='all'?'active':'')+'" type="button" data-exchange-scope="all" aria-pressed="'+(exchangeScope==='all')+'">六角色巡店</button></div><button class="exchange-pending-button '+(exchangePendingOnly?'active':'')+'" type="button" data-exchange-pending aria-pressed="'+exchangePendingOnly+'">'+(exchangePendingOnly?'顯示全部':'只看未完成')+'</button></div>';
+      const scopeNote=exchangeScope==='all'?'<p class="exchange-scope-note">進度依角色分開顯示；點角色名稱即可切到該角色調整。帳號共通限購只列一次。</p>':'';
+      const emptyTitle=exchangePendingOnly?'這個分類目前沒有待處理項目':'這個分類目前沒有資料';
+      const emptyHtml='<div class="exchange-empty"><h3>'+emptyTitle+'</h3><p>請切換其他分類查看。</p></div>';
+      return '<div class="section-title"><h2>採購／交換</h2><small>'+currentLabel+'</small></div><nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+scopeNote+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+'<details class="exchange-source"><summary>資料來源與使用規則</summary><p>已確認的台服限購才會進入同步追蹤；料理與一般食材目錄只作採購參考，不會影響六角色完成度，也不會寫入 LocalStorage／Google Sheets。</p><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊 Tracker」的順序；公開 Tracker 的舊價格、庫存數、城鎮／NPC 位置與刷新週期，不直接視為目前台服規則。</p><ul><li><a href="'+escapeHtml(OFFICIAL_UPDATE_URL)+'" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="'+escapeHtml(MABITW_DAILY_URL)+'" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="'+escapeHtml(MABITW_LIFE_URL)+'" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="'+escapeHtml(BAHA_BANKOR_URL)+'" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="'+escapeHtml(DCINSIDE_SHEET_URL)+'" target="_blank" rel="noreferrer">公開 Tracker Sheet</a>：料理材料候選與配方頻率參考；舊表數值不當作台服規則。</li></ul><p><a href="'+escapeHtml(BOBO_MATERIALS_URL)+'" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">'+MATERIAL_KEEP_LIST.map(item=>'<span class="material-chip">'+escapeHtml(item)+'</span>').join('')+'</div></details>'
     }
     function roleWeeklyItems(role,includeOptional=true){
       return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
@@ -730,6 +754,7 @@
       }
       if(view==='exchange'){
         const items=PROCUREMENT_ITEMS.filter(item=>item.track);
+        if(exchangeScope==='all')return [items.reduce((sum,item)=>sum+(item.scope==='帳號'?(purchaseDone(item,'account')?1:0):roles.filter(current=>purchaseDone(item,current.id)).length),0),items.reduce((sum,item)=>sum+(item.scope==='帳號'?1:roles.length),0)];
         return [items.filter(item=>purchaseDone(item,role.id)).length,items.length]
       }
       return [0,0]
@@ -780,6 +805,9 @@
       document.querySelectorAll('[data-week-complete]').forEach(checkbox=>checkbox.onchange=()=>{const index=Number(checkbox.dataset.weekComplete),target=role.weekly[index][1],next=checkbox.checked?target:0;set(active+'-w-'+index,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
       document.querySelectorAll('[data-exchange-filter]').forEach(button=>button.onclick=()=>{exchangeFilter=button.dataset.exchangeFilter;render()});
+      document.querySelectorAll('[data-exchange-scope]').forEach(button=>button.onclick=()=>{exchangeScope=button.dataset.exchangeScope;render()});
+      document.querySelector('[data-exchange-pending]')?.addEventListener('click',()=>{exchangePendingOnly=!exchangePendingOnly;render()});
+      document.querySelectorAll('[data-exchange-select-role]').forEach(button=>button.onclick=()=>{active=button.dataset.exchangeSelectRole;exchangeScope='role';render()});
       document.querySelectorAll('[data-purchase-check]').forEach(checkbox=>checkbox.onchange=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===checkbox.dataset.purchaseCheck);if(!item)return;const currentRole=roles.find(x=>x.id===active);const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;const stateRole=item.scope==='帳號'?'account':active;set(purchaseStateKey(item,stateRole),checkbox.checked?1:0);syncWrite(roleForSync,purchaseTask(item),item.cycle,checkbox.checked?1:0,item.target)});
       document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));set(purchaseStateKey(item,stateRole),next);syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole,purchaseTask(item),item.cycle,next,item.target)});
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
