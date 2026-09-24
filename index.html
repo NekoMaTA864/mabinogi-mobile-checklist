@@ -863,6 +863,12 @@
     }
     function weeklyRequiredItems(role){return roleWeeklyItems(role,false)}
     function weeklyGroupSummary(tasks,roleId=active){
+      const abyssTasks=tasks.filter(item=>isAbyssWeeklyTask(item.task));
+      if(abyssTasks.length===tasks.length&&abyssTasks.length){
+        const cleared=abyssTasks.reduce((sum,item)=>sum+Math.max(0,Math.min(item.target,number(get(roleId+'-w-'+item.index,0)))),0);
+        const target=abyssTasks.reduce((sum,item)=>sum+item.target,0);
+        return (abyssTasks.every(item=>isOptionalWeeklyTask(item.task,roleId))?'選做 ':'')+cleared+' / '+target+' 次'
+      }
       const required=tasks.filter(item=>!isOptionalWeeklyTask(item.task,roleId));
       const optional=tasks.filter(item=>isOptionalWeeklyTask(item.task,roleId));
       const requiredText=required.length?required.filter(item=>number(get(roleId+'-w-'+item.index,0))>=item.target).length+' / '+required.length:'';
@@ -962,10 +968,9 @@
       const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
       const sharedWeekly='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
       const cards=roles.map(role=>{
-        const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),optional=weeklyRoleProgress(role,true),abyss=role.id==='main'?abyssRoleProgress(role):{done:0,total:0},isFocus=focus?.id===role.id;
-        const abyssProgress=abyss.total?'<div class="overview-progress abyss"><span>本尊深淵／高難通關</span><b>'+abyss.done+' / '+abyss.total+' 次</b><progress value="'+abyss.done+'" max="'+abyss.total+'"></progress></div>':'';
-        const optionalProgress=optional.total?'<div class="overview-progress optional"><span>分身深淵／高難</span><b>'+optional.done+' / '+optional.total+'</b><progress value="'+optional.done+'" max="'+optional.total+'"></progress></div>':'';
-        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+abyssProgress+optionalProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
+        const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),abyss=abyssRoleProgress(role),isFocus=focus?.id===role.id;
+        const abyssProgress=abyss.total?'<div class="overview-progress abyss'+(role.id==='main'?'':' optional')+'"><span>'+(role.id==='main'?'本尊深淵／高難通關':'分身深淵／高難（選做）')+'</span><b>'+abyss.done+' / '+abyss.total+' 次</b><progress value="'+abyss.done+'" max="'+abyss.total+'"></progress></div>':'';
+        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+abyssProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
       return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+sharedDaily+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
