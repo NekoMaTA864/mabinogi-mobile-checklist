@@ -550,7 +550,7 @@
     async function syncReadLegacy(){
       if(!syncReady()){syncStatus='請先儲存備援同步網址與密鑰';render();return}
       syncStatus='讀取 Google Sheets 中…';render();
-      try{const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');applyItems(result.items);syncStatus=`Token 備援已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
+      try{await syncWriteQueue;const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');applyItems(result.items);syncStatus=`Token 備援已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
       catch(err){syncStatus='Token 備援讀取失敗：'+err.message;render()}
     }
 
@@ -719,14 +719,14 @@
 
     async function oauthLogin(){
       syncStatus='等待 Google 授權…';render();
-      try{await requestOAuthAccess('select_account');const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已登入 ${oauth.user.email}，讀取 ${result.items.length} 筆`;render()}
+      try{await syncWriteQueue;await requestOAuthAccess('select_account');const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已登入 ${oauth.user.email}，讀取 ${result.items.length} 筆`;render()}
       catch(err){syncStatus='OAuth 登入失敗：'+err.message;render()}
     }
 
     async function oauthRead(){
       if(!oauthSignedIn()){syncStatus='請先使用 Google 登入';render();return}
       syncStatus='OAuth 讀取 Google Sheets 中…';render();
-      try{const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
+      try{await syncWriteQueue;const result=await readOAuthSheet();applyItems(result.items);syncStatus=`OAuth 已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
       catch(err){syncStatus='OAuth 讀取失敗：'+err.message;render()}
     }
 
