@@ -499,12 +499,29 @@
     const save=()=>localStorage.setItem(key,JSON.stringify(state));
     const get=(k,d)=>state[k]??d;
     const set=(k,v)=>{state[k]=v;save();render()};
+    const DAILY_PERIOD_KEY='mabi-mobile-day-period-v1';
     const WEEKLY_PERIOD_KEY='mabi-mobile-week-period-v1';
+    function clearPeriodTaskState(cycle){
+      if(cycle==='每日'){
+        roles.forEach(role=>role.daily.forEach((_,index)=>delete state[`${role.id}-d-${index}`]));
+        delete state[ACCOUNT_STATE_KEY]
+      }
+      if(cycle==='每週'){
+        roles.forEach(role=>role.weekly.forEach((_,index)=>delete state[`${role.id}-w-${index}`]));
+        Object.values(ACCOUNT_WEEKLY_STATE_KEYS).forEach(stateKey=>delete state[stateKey])
+      }
+    }
+    function resetStaleDailyState(){
+      const period=gameDateKey();const previous=localStorage.getItem(DAILY_PERIOD_KEY);
+      if(previous&&previous!==period){clearPeriodTaskState('每日');save()}
+      if(previous!==period)localStorage.setItem(DAILY_PERIOD_KEY,period)
+    }
     function resetStaleWeeklyState(){
       const period=weekStart(gameDateKey());const previous=localStorage.getItem(WEEKLY_PERIOD_KEY);
-      if(previous&&previous!==period){roles.forEach(role=>role.weekly.forEach((_,index)=>delete state[`${role.id}-w-${index}`]));ACCOUNT_WEEKLY_TASKS.forEach(item=>delete state[ACCOUNT_WEEKLY_STATE_KEYS[item.label]]);save()}
+      if(previous&&previous!==period){clearPeriodTaskState('每週');save()}
       if(previous!==period)localStorage.setItem(WEEKLY_PERIOD_KEY,period)
     }
+    resetStaleDailyState();
     resetStaleWeeklyState();
     if(state[ACCOUNT_STATE_KEY]===undefined){
       const legacyAccountChecked=roles.some(role=>role.daily.some((task,index)=>ACCOUNT_TASK_ALIASES.has(task)&&Boolean(state[`${role.id}-d-${index}`])));
@@ -604,6 +621,17 @@
     }
     function gameDateLabel(){return new Date(`${gameDateKey()}T12:00:00`).toLocaleDateString('zh-TW',{month:'numeric',day:'numeric',weekday:'short'})}
     function weekStart(dateKey){const date=new Date(`${dateKey}T12:00:00`);const mondayOffset=(date.getDay()+6)%7;date.setDate(date.getDate()-mondayOffset);return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
+    function millisecondsUntilGameReset(){
+      const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Taipei',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric',hourCycle:'h23'}).formatToParts(new Date());
+      const values=Object.fromEntries(parts.filter(part=>part.type!=='literal').map(part=>[part.type,Number(part.value)]));
+      const current=Date.UTC(values.year,values.month-1,values.day,values.hour,values.minute,values.second);
+      const todayReset=Date.UTC(values.year,values.month-1,values.day,6);
+      const nextReset=current<todayReset?todayReset:Date.UTC(values.year,values.month-1,values.day+1,6);
+      return Math.max(1000,nextReset-current+500)
+    }
+    function scheduleGameDayRefresh(){
+      setTimeout(()=>{resetStaleDailyState();resetStaleWeeklyState();render();scheduleGameDayRefresh()},millisecondsUntilGameReset())
+    }
     function findHeader(values){
       for(let rowIndex=0;rowIndex<Math.min(values.length,12);rowIndex++){
         const row=(values[rowIndex]||[]).map(text);
@@ -629,6 +657,8 @@
     }
 
     function applyItems(items){
+      resetStaleDailyState();resetStaleWeeklyState();
+      clearPeriodTaskState('每日');clearPeriodTaskState('每週');
       let accountItem=null;let legacyAccountSeen=false;let legacyAccountComplete=false;
       const sharedWeeklySeen=new Set();const sharedWeeklyProgress={};
       (items||[]).forEach(item=>{
@@ -941,6 +971,7 @@
       return [0,0]
     }
     function render(){
+      resetStaleDailyState();resetStaleWeeklyState();
       const app=document.querySelector('.app');app.dataset.view=view;app.dataset.exchangeSubview=exchangeSubView;
       const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
       document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
@@ -1005,6 +1036,7 @@
     }
     document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
     render();
+    scheduleGameDayRefresh();
   </script>
 </body>
 </html>
