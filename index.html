@@ -49,7 +49,10 @@
     .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .task { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.7rem; min-height:3.85rem; padding:.65rem .8rem; border-bottom:1px solid #e8eff4; cursor:pointer; touch-action:manipulation; }
     .task:last-child { border-bottom:0; } .task.done .task-name { color:#8294a2; text-decoration:line-through; }
-    .task input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.2rem; height:1.2rem; cursor:pointer; pointer-events:auto; margin:0; }
+    .task input[type=checkbox] { appearance:none; -webkit-appearance:none; width:1.2rem; height:1.2rem; border:2px solid #8fa8ba; border-radius:5px; display:grid; place-content:center; cursor:pointer; pointer-events:auto; margin:0; background:#fff; transition:background-color .12s,border-color .12s; }
+    .task input[type=checkbox]::before { content:""; width:.55rem; height:.3rem; border-left:2px solid white; border-bottom:2px solid white; transform:rotate(-45deg) scale(0); margin-top:-.13rem; }
+    .task input[type=checkbox]:checked { background:#2170a8; border-color:#2170a8; }
+    .task input[type=checkbox]:checked::before { transform:rotate(-45deg) scale(1); }
     .task input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .task-name { font-weight:650; font-size:.94rem; } .task-note { color:var(--muted); font-size:.76rem; margin-top:.08rem; }
     .pill { background:#eef5fa; color:#47677d; font-size:.73rem; padding:.22rem .45rem; border-radius:99px; white-space:nowrap; }
@@ -117,7 +120,10 @@
     .evidence.official { background:#e7f5ed; color:#176043; }
     .evidence.player { background:#fff0c7; color:#815400; }
     .exchange-control { justify-self:end; }
-    .exchange-control input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.25rem; height:1.25rem; cursor:pointer; pointer-events:auto; margin:0; }
+    .exchange-control input[type=checkbox] { appearance:none; -webkit-appearance:none; width:1.25rem; height:1.25rem; border:2px solid #8fa8ba; border-radius:5px; display:grid; place-content:center; cursor:pointer; pointer-events:auto; margin:0; background:#fff; transition:background-color .12s,border-color .12s; }
+    .exchange-control input[type=checkbox]::before { content:""; width:.58rem; height:.32rem; border-left:2px solid white; border-bottom:2px solid white; transform:rotate(-45deg) scale(0); margin-top:-.13rem; }
+    .exchange-control input[type=checkbox]:checked { background:#2170a8; border-color:#2170a8; }
+    .exchange-control input[type=checkbox]:checked::before { transform:rotate(-45deg) scale(1); }
     .exchange-control input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .exchange-control .stepper { margin-left:auto; }
     .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
@@ -498,6 +504,13 @@
     const save=()=>localStorage.setItem(key,JSON.stringify(state));
     const get=(k,d)=>state[k]??d;
     const set=(k,v)=>{state[k]=v;save();render()};
+    let checkboxRenderQueued=false;
+    const setCheckboxState=(k,v)=>{
+      state[k]=v;save();
+      if(checkboxRenderQueued)return;
+      checkboxRenderQueued=true;
+      requestAnimationFrame(()=>{checkboxRenderQueued=false;render()})
+    };
     const DAILY_PERIOD_KEY='mabi-mobile-day-period-v1';
     const WEEKLY_PERIOD_KEY='mabi-mobile-week-period-v1';
     const WEEKLY_LAYOUT_MIGRATION_KEY='mabi-mobile-week-layout-v2';
@@ -1064,19 +1077,19 @@
       if(checkbox.matches('[data-d]')){
         const index=Number(checkbox.dataset.d),task=currentRole.daily[index];
         if(!task)return;
-        set(`${active}-d-${index}`,checked);
+        setCheckboxState(`${active}-d-${index}`,checked);
         syncWrite(currentRole,task,'每日',checked?1:0,1);
         return
       }
       if(checkbox.matches('[data-account-black-hole]')){
-        set(accountDailyBlackHoleStateKey(),checked);
+        setCheckboxState(accountDailyBlackHoleStateKey(),checked);
         syncWrite(ACCOUNT_ROLE_RECORD,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',checked?1:0,1);
         return
       }
       if(checkbox.matches('[data-account-weekly]')){
         const task=ACCOUNT_WEEKLY_TASKS.find(item=>item.label===checkbox.dataset.accountWeekly);
         if(!task)return;
-        set(ACCOUNT_WEEKLY_STATE_KEYS[task.label],checked?1:0);
+        setCheckboxState(ACCOUNT_WEEKLY_STATE_KEYS[task.label],checked?1:0);
         syncWrite(ACCOUNT_ROLE_RECORD,task.label,'每週',checked?1:0,1);
         return
       }
@@ -1084,7 +1097,7 @@
         const index=Number(checkbox.dataset.weekComplete),task=currentRole.weekly[index];
         if(!task)return;
         const next=checked?task[1]:0;
-        set(active+'-w-'+index,next);
+        setCheckboxState(active+'-w-'+index,next);
         syncWrite(currentRole,task[0],'每週',next,task[1]);
         return
       }
@@ -1093,10 +1106,10 @@
         if(!item)return;
         const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;
         const stateRole=item.scope==='帳號'?'account':active;
-        set(purchaseStateKey(item,stateRole),checked?1:0);
+        setCheckboxState(purchaseStateKey(item,stateRole),checked?1:0);
         syncWrite(roleForSync,purchaseTask(item),item.cycle,checked?1:0,item.target)
       }
-    },true);
+    });
     document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
     render();
     scheduleGameDayRefresh();
