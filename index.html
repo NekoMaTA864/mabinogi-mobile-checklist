@@ -49,8 +49,8 @@
     .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .task { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.7rem; min-height:3.85rem; padding:.65rem .8rem; border-bottom:1px solid #e8eff4; }
     .task:last-child { border-bottom:0; } .task.done .task-name { color:#8294a2; text-decoration:line-through; }
-    .task input[type=checkbox] { appearance:none; width:1.2rem; height:1.2rem; border:2px solid #8fa8ba; border-radius:5px; display:grid; place-content:center; cursor:pointer; margin:0; }
-    .task input[type=checkbox]::before { content:""; width:.55rem; height:.3rem; border-left:2px solid white; border-bottom:2px solid white; transform:rotate(-45deg) scale(0); margin-top:-.13rem; } .task input:checked { background:#2170a8; border-color:#2170a8; } .task input:checked::before { transform:rotate(-45deg) scale(1); }
+    .task input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.2rem; height:1.2rem; cursor:pointer; margin:0; }
+    .task input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .task-name { font-weight:650; font-size:.94rem; } .task-note { color:var(--muted); font-size:.76rem; margin-top:.08rem; }
     .pill { background:#eef5fa; color:#47677d; font-size:.73rem; padding:.22rem .45rem; border-radius:99px; white-space:nowrap; }
     .week { display:grid; grid-template-columns:1fr auto; gap:.5rem .8rem; padding:.78rem .8rem; border-bottom:1px solid #e8eff4; align-items:center; } .week:last-child { border:0; }
@@ -117,10 +117,8 @@
     .evidence.official { background:#e7f5ed; color:#176043; }
     .evidence.player { background:#fff0c7; color:#815400; }
     .exchange-control { justify-self:end; }
-    .exchange-control input[type=checkbox] { appearance:none; width:1.25rem; height:1.25rem; border:2px solid #8fa8ba; border-radius:5px; display:grid; place-content:center; cursor:pointer; margin:0; }
-    .exchange-control input[type=checkbox]::before { content:""; width:.58rem; height:.32rem; border-left:2px solid white; border-bottom:2px solid white; transform:rotate(-45deg) scale(0); margin-top:-.13rem; }
-    .exchange-control input[type=checkbox]:checked { background:#2170a8; border-color:#2170a8; }
-    .exchange-control input[type=checkbox]:checked::before { transform:rotate(-45deg) scale(1); }
+    .exchange-control input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.25rem; height:1.25rem; cursor:pointer; margin:0; }
+    .exchange-control input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .exchange-control .stepper { margin-left:auto; }
     .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
     .exchange-source { margin-top:.8rem; padding:.78rem .8rem; border:1px solid var(--line); border-radius:12px; background:#fff; color:#486476; font-size:.78rem; }
@@ -200,6 +198,7 @@
     .overview-progress b { color:var(--ink); font-size:.76rem; }
     .overview-progress progress { grid-column:1/-1; width:100%; height:.42rem; accent-color:#2170a8; }
     .overview-progress.optional progress { accent-color:#a8873d; }
+    .overview-progress.abyss progress { accent-color:#7a65c4; }
     .overview-actions { display:flex; justify-content:flex-end; gap:.4rem; margin-top:.58rem; }
     .overview-actions button { border:1px solid #b7cddd; border-radius:8px; padding:.38rem .58rem; background:#f4f8fb; color:#245675; cursor:pointer; font-size:.75rem; font-weight:700; }
     .overview-actions button.primary { border-color:#2170a8; background:#2170a8; color:white; }
@@ -275,8 +274,8 @@
     const USERINFO_API = 'https://openidconnect.googleapis.com/v1/userinfo';
 
     const roles=[
-      {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'金屬／礦石',detail:'金屬、礦石、錠、鍛造原料',rule:'可轉移生活材料請轉入此角色。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1],['白魅魔通關戰利品',1]]},
-      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'草藥／藥劑',detail:'藥草、蘑菇、花粉、濃縮液',rule:'所有藥劑素材集中此處。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1],['白魅魔通關戰利品',1]]},
+      {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'金屬／礦石',detail:'金屬、礦石、錠、鍛造原料',rule:'可轉移生活材料請轉入此角色。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
+      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'草藥／藥劑',detail:'藥草、蘑菇、花粉、濃縮液',rule:'所有藥劑素材集中此處。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
       {id:'zz',name:'貓又老師zz',sheetRole:'貓又老師zz(長弓兵)',job:'長弓兵',store:'木材／皮革',detail:'木材、樹液、皮革、纖維',rule:'採集與製作原料集中此處。'},
       {id:'o',name:'貓又老師o',sheetRole:'貓又老師o(樂師)',job:'樂師',store:'料理食材',detail:'肉、鹽、糖、油、蔬果、料理成品',rule:'雜貨店料理材料轉入此處。'},
       {id:'p',name:'貓又老師p',sheetRole:'貓又老師p(祭司)',job:'祭司',store:'布料／染料',detail:'羊毛、線、布料、染料、裁縫副料',rule:'紡織與外觀材料集中此處。'},
@@ -284,7 +283,7 @@
     ];
     const WEEKLY_ROLE_BARTER_TASK='以物易物交換（每週確認）';
     const baseDaily=['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'];
-    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['週末深淵活動',3],['格里斯貝恩',1],['白魅魔通關戰利品',1],[WEEKLY_ROLE_BARTER_TASK,1]];
+    const baseWeekly=[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1],[WEEKLY_ROLE_BARTER_TASK,1]];
     roles.forEach(role=>{
       role.daily??=baseDaily;
       role.weekly??=baseWeekly;
@@ -501,6 +500,21 @@
     const set=(k,v)=>{state[k]=v;save();render()};
     const DAILY_PERIOD_KEY='mabi-mobile-day-period-v1';
     const WEEKLY_PERIOD_KEY='mabi-mobile-week-period-v1';
+    const WEEKLY_LAYOUT_MIGRATION_KEY='mabi-mobile-week-layout-v2';
+    if(!localStorage.getItem(WEEKLY_LAYOUT_MIGRATION_KEY)){
+      roles.forEach(role=>{
+        const priorGris=state[role.id+'-w-8'];
+        const priorWhiteSuccubus=state[role.id+'-w-9'];
+        const priorBarter=state[role.id+'-w-10'];
+        [[7,priorWhiteSuccubus],[8,priorGris],[9,priorBarter]].forEach(([index,value])=>{
+          const stateKey=role.id+'-w-'+index;
+          if(value===undefined)delete state[stateKey];else state[stateKey]=value
+        });
+        delete state[role.id+'-w-10']
+      });
+      localStorage.setItem(WEEKLY_LAYOUT_MIGRATION_KEY,'1');
+      save()
+    }
     function clearPeriodTaskState(cycle){
       if(cycle==='每日'){
         roles.forEach(role=>role.daily.forEach((_,index)=>delete state[`${role.id}-d-${index}`]));
@@ -765,12 +779,12 @@
     }
     const visibleDailyTasks=role=>role.daily.map((task,index)=>({task,index})).filter(item=>!HIDDEN_DAILY_TASKS.has(item.task));
     const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
-    function isAbyssWeeklyTask(task){return task==='深淵通關戰利品'||task==='週末深淵活動'||task==='白魅魔通關戰利品'}
+    function isAbyssWeeklyTask(task){return task==='深淵通關戰利品'||task==='白魅魔通關戰利品'}
     function isOptionalWeeklyTask(task,roleId=active){return roleId!=='main'&&isAbyssWeeklyTask(task)}
     // 目前 Weekly 任務皆以數值進度追蹤；保留此擴充點以相容未來的純完成型任務。
     const WEEKLY_CHECKBOX_TASKS=new Set([WEEKLY_ROLE_BARTER_TASK]);
     function isWeeklyCompletionTask(task){return WEEKLY_CHECKBOX_TASKS.has(task)}
-    const weeklyCategory=task=>isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'||task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'採購／一般週課';
+    const weeklyCategory=task=>isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'?'團隊副本':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'採購／一般週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
     function weeklyDisplayName(task){
       if(task==='黑色坑洞')return '黑色坑洞（每角色本週有效次數）';
@@ -929,6 +943,11 @@
       const done=tasks.filter(item=>number(get(role.id+'-w-'+item.index,0))>=item.target).length;
       return {done,total:tasks.length}
     }
+    function abyssRoleProgress(role){
+      const tasks=roleWeeklyItems(role,true).filter(item=>isAbyssWeeklyTask(item.task));
+      return {done:tasks.reduce((sum,item)=>sum+Math.min(item.target,number(get(role.id+'-w-'+item.index,0))),0),
+        total:tasks.reduce((sum,item)=>sum+item.target,0)}
+    }
     function overviewProgress(){
       const progress=roles.reduce((sum,role)=>{const current=dailyRoleProgress(role);sum[0]+=current.done;sum[1]+=current.total;return sum},[0,0]);
       progress[0]+=get(accountDailyBlackHoleStateKey(),false)?1:0;
@@ -943,9 +962,10 @@
       const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
       const sharedWeekly='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
       const cards=roles.map(role=>{
-        const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),optional=weeklyRoleProgress(role,true),isFocus=focus?.id===role.id;
-        const optionalProgress=optional.total?'<div class="overview-progress optional"><span>深淵／高難選做</span><b>'+optional.done+' / '+optional.total+'</b><progress value="'+optional.done+'" max="'+optional.total+'"></progress></div>':'';
-        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+optionalProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
+        const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),optional=weeklyRoleProgress(role,true),abyss=role.id==='main'?abyssRoleProgress(role):{done:0,total:0},isFocus=focus?.id===role.id;
+        const abyssProgress=abyss.total?'<div class="overview-progress abyss"><span>本尊深淵／高難通關</span><b>'+abyss.done+' / '+abyss.total+' 次</b><progress value="'+abyss.done+'" max="'+abyss.total+'"></progress></div>':'';
+        const optionalProgress=optional.total?'<div class="overview-progress optional"><span>分身深淵／高難</span><b>'+optional.done+' / '+optional.total+'</b><progress value="'+optional.done+'" max="'+optional.total+'"></progress></div>':'';
+        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+abyssProgress+optionalProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
       return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+sharedDaily+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
@@ -1012,10 +1032,7 @@
       }
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
-      document.querySelectorAll('[data-d]').forEach(checkbox=>checkbox.onchange=()=>{const currentRole=roles.find(x=>x.id===active);const task=currentRole.daily[Number(checkbox.dataset.d)];set(`${active}-d-${checkbox.dataset.d}`,checkbox.checked);syncWrite(currentRole,task,'每日',checkbox.checked?1:0,1)});
-      document.querySelectorAll('[data-account-black-hole]').forEach(checkbox=>checkbox.onchange=()=>{const value=checkbox.checked?1:0;set(accountDailyBlackHoleStateKey(),checkbox.checked);syncWrite(ACCOUNT_ROLE_RECORD,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',value,1)});
-      document.querySelectorAll('[data-account-weekly]').forEach(checkbox=>checkbox.onchange=()=>{const task=ACCOUNT_WEEKLY_TASKS.find(item=>item.label===checkbox.dataset.accountWeekly);if(!task)return;const value=checkbox.checked?1:0;set(ACCOUNT_WEEKLY_STATE_KEYS[task.label],value);syncWrite(ACCOUNT_ROLE_RECORD,task.label,'每週',value,1)});
-      document.querySelectorAll('[data-week-complete]').forEach(checkbox=>checkbox.onchange=()=>{const index=Number(checkbox.dataset.weekComplete),target=role.weekly[index][1],next=checkbox.checked?target:0;set(active+'-w-'+index,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
+
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
       document.querySelectorAll('[data-exchange-filter]').forEach(button=>button.onclick=()=>{exchangeFilter=button.dataset.exchangeFilter;render()});
       document.querySelectorAll('[data-exchange-subview]').forEach(button=>button.onclick=()=>{exchangeSubView=button.dataset.exchangeSubview;render()});
@@ -1029,11 +1046,52 @@
       document.querySelectorAll('[data-inventory-holder]').forEach(select=>select.onchange=()=>{const holder=roles.find(role=>role.id===select.value);if(!holder)return;state[inventoryRoleKey(select.dataset.inventoryHolder)]=holder.id;save();syncWrite(ACCOUNT_ROLE_RECORD,'庫存保管｜'+select.dataset.inventoryHolder,'常駐',roles.indexOf(holder),roles.length-1);render()});
       document.querySelectorAll('[data-inventory-stock]').forEach(input=>input.onchange=()=>{const material=MATERIAL_CATALOG.find(item=>item.id===input.dataset.inventoryStock);const owner=roles.find(item=>item.id===input.dataset.inventoryRole);if(!material||!owner)return;const value=Math.max(0,Math.floor(number(input.value)));state[inventoryStateKey(material.id,owner.id)]=value;save();syncWrite(owner,'庫存｜'+material.id,'常駐',value,999999999);render()});
       document.querySelectorAll('[data-exchange-select-role]').forEach(button=>button.onclick=()=>{active=button.dataset.exchangeSelectRole;exchangeScope='role';render()});
-      document.querySelectorAll('[data-purchase-check]').forEach(checkbox=>checkbox.onchange=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===checkbox.dataset.purchaseCheck);if(!item)return;const currentRole=roles.find(x=>x.id===active);const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;const stateRole=item.scope==='帳號'?'account':active;set(purchaseStateKey(item,stateRole),checkbox.checked?1:0);syncWrite(roleForSync,purchaseTask(item),item.cycle,checkbox.checked?1:0,item.target)});
+
       document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));set(purchaseStateKey(item,stateRole),next);syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole,purchaseTask(item),item.cycle,next,item.target)});
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
       document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
     }
+    document.querySelector('#view').addEventListener('change',event=>{
+      const checkbox=event.target;
+      if(!(checkbox instanceof HTMLInputElement)||checkbox.type!=='checkbox')return;
+      const checked=checkbox.checked;
+      const currentRole=roles.find(role=>role.id===active);
+      if(checkbox.matches('[data-d]')){
+        const index=Number(checkbox.dataset.d),task=currentRole.daily[index];
+        if(!task)return;
+        set(`${active}-d-${index}`,checked);
+        syncWrite(currentRole,task,'每日',checked?1:0,1);
+        return
+      }
+      if(checkbox.matches('[data-account-black-hole]')){
+        set(accountDailyBlackHoleStateKey(),checked);
+        syncWrite(ACCOUNT_ROLE_RECORD,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',checked?1:0,1);
+        return
+      }
+      if(checkbox.matches('[data-account-weekly]')){
+        const task=ACCOUNT_WEEKLY_TASKS.find(item=>item.label===checkbox.dataset.accountWeekly);
+        if(!task)return;
+        set(ACCOUNT_WEEKLY_STATE_KEYS[task.label],checked?1:0);
+        syncWrite(ACCOUNT_ROLE_RECORD,task.label,'每週',checked?1:0,1);
+        return
+      }
+      if(checkbox.matches('[data-week-complete]')){
+        const index=Number(checkbox.dataset.weekComplete),task=currentRole.weekly[index];
+        if(!task)return;
+        const next=checked?task[1]:0;
+        set(active+'-w-'+index,next);
+        syncWrite(currentRole,task[0],'每週',next,task[1]);
+        return
+      }
+      if(checkbox.matches('[data-purchase-check]')){
+        const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===checkbox.dataset.purchaseCheck);
+        if(!item)return;
+        const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;
+        const stateRole=item.scope==='帳號'?'account':active;
+        set(purchaseStateKey(item,stateRole),checked?1:0);
+        syncWrite(roleForSync,purchaseTask(item),item.cycle,checked?1:0,item.target)
+      }
+    });
     document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
     render();
     scheduleGameDayRefresh();
