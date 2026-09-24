@@ -47,9 +47,9 @@
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
     .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
-    .task { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.7rem; min-height:3.85rem; padding:.65rem .8rem; border-bottom:1px solid #e8eff4; }
+    .task { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.7rem; min-height:3.85rem; padding:.65rem .8rem; border-bottom:1px solid #e8eff4; cursor:pointer; touch-action:manipulation; }
     .task:last-child { border-bottom:0; } .task.done .task-name { color:#8294a2; text-decoration:line-through; }
-    .task input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.2rem; height:1.2rem; cursor:pointer; margin:0; }
+    .task input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.2rem; height:1.2rem; cursor:pointer; pointer-events:auto; margin:0; }
     .task input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .task-name { font-weight:650; font-size:.94rem; } .task-note { color:var(--muted); font-size:.76rem; margin-top:.08rem; }
     .pill { background:#eef5fa; color:#47677d; font-size:.73rem; padding:.22rem .45rem; border-radius:99px; white-space:nowrap; }
@@ -117,7 +117,7 @@
     .evidence.official { background:#e7f5ed; color:#176043; }
     .evidence.player { background:#fff0c7; color:#815400; }
     .exchange-control { justify-self:end; }
-    .exchange-control input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.25rem; height:1.25rem; cursor:pointer; margin:0; }
+    .exchange-control input[type=checkbox] { appearance:auto; accent-color:#2170a8; width:1.25rem; height:1.25rem; cursor:pointer; pointer-events:auto; margin:0; }
     .exchange-control input[type=checkbox]:focus-visible { outline:3px solid #83b9de; outline-offset:2px; }
     .exchange-control .stepper { margin-left:auto; }
     .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
@@ -1056,9 +1056,9 @@
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
       document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
     }
-    document.querySelector('#view').addEventListener('change',event=>{
+    document.addEventListener('change',event=>{
       const checkbox=event.target;
-      if(!(checkbox instanceof HTMLInputElement)||checkbox.type!=='checkbox')return;
+      if(!checkbox||checkbox.type!=='checkbox'||!document.querySelector('#view')?.contains(checkbox))return;
       const checked=checkbox.checked;
       const currentRole=roles.find(role=>role.id===active);
       if(checkbox.matches('[data-d]')){
@@ -1096,7 +1096,7 @@
         set(purchaseStateKey(item,stateRole),checked?1:0);
         syncWrite(roleForSync,purchaseTask(item),item.cycle,checked?1:0,item.target)
       }
-    });
+    },true);
     document.querySelectorAll('.tab').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
     render();
     scheduleGameDayRefresh();
