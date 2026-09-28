@@ -275,6 +275,10 @@
     .rune-operations-body ol { margin:.4rem 0; padding-left:1.25rem; }
     .rune-operations-body li+li { margin-top:.32rem; }
     .rune-operations-body b { color:#31566d; }
+    .rune-operations-body h5 { margin:.65rem 0 .25rem; color:#31566d; font-size:.8rem; }
+    .rune-rotation-list { display:grid; gap:.35rem; margin:.35rem 0 .6rem; }
+    .rune-rotation-row { padding:.45rem .55rem; border-left:3px solid #9fc3dc; background:#fff; border-radius:0 7px 7px 0; }
+    .rune-rotation-row strong { display:block; margin-bottom:.08rem; }
     .rune-operation-caution { color:#6d8494; font-size:.75rem; }
     .rune-operation-source { margin-top:.55rem !important; font-size:.74rem; }
     .rune-operation-source a { color:var(--blue); font-weight:700; }
@@ -1034,17 +1038,35 @@
         url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'
       },
       lightning_mage:{
-        lead:'電擊術士先練魔力收支，不用背固定秒數。',
-        steps:[
-          '2、3 號技能負責回魔；開打先用它們把魔力拉回安全區。',
-          '5 號會先回魔、再提高後續消耗；魔力還沒穩住時先不要開。',
-          '5 號窗口內留意魔力條，魔力偏低就停下高消耗技能，回到 2、3 號補魔。',
-          '6 號期間暫時不消耗魔力，留在首領站定、你也能安全輸出的窗口；紅招來先閃。'
+        lead:'此卡套用你目前的 T0 單王方向：技能 1 霹靂、2 力場、3 導管。先看魔力條再決定下一招；數字對應遊戲技能格。',
+        skillPriority:[
+          '技能等級投資（霹靂單體向）：1 落雷 → 5 過載 → 2 電磁風暴 → 6 超越 → 3 分岔閃電／4 電漿披風。',
+          '若改成以超越為核心的流派，再把 6 往前。這是玩家 S0 配置建議，不是官方固定排名。'
         ],
-        practice:'跑完一輪不讓魔力見底，並在需要走位前能及時停手。',
-        caution:'攻略指出 1、4 的耗魔判讀仍應以台服客戶端技能文字確認；韓服舊秒數不直接套用。',
-        source:'電擊術士魔力循環（台服技能格核對）',
-        url:'https://mabinogimobile.nipponhashi.com/guides/lightningmage-rotation/'
+        rotations:[
+          {label:'起手',text:'魔力充足、首領準備站定時按住 5，等過載引導完成；再用 3 對王掛閃電導管，接 1 蓄力落雷。'},
+          {label:'常態循環',text:'魔力高：蓄滿 1。魔力下滑：完整引導 2 或 3 回魔，再回 1；導管快消失時補 3。簡記：5 → 3 → 1 →（2／3 回魔）→ 1。'},
+          {label:'過載疊層',text:'過載期間 5 格會變成「破壞的閃光」；魔力夠、首領站定時蓄放。低魔力時以 2／3 回魔，若兩招都在冷卻，可用 4 或變身後 5 的不蓄力短放疊層，避免把魔力蓄光。'},
+          {label:'爆發窗口',text:'首領破防或確定站定時按 6 → 連續用 1。超越期間技能免魔、施放加快；免費蓄力觸發後也優先給 1。'}
+        ],
+        steps:[
+          '1 落雷是霹靂單王方向的主力。魔力高時蓄滿；「魔力集中」觸發免費蓄力時，優先把效果給 1。',
+          '2 電磁風暴、3 分岔閃電／導管是回魔引導技；機制安全時完整引導，才有機會觸發「魔力集中」的免費蓄力。看到閃電特效，下一個蓄力優先給 1；要躲招時直接移動取消。',
+          '3 導管先掛王，後續攻擊命中可觸發追加傷害與少量回魔；看圖示將消失時再補，不用每輪盲目重放。',
+          '2 力場用於回魔與聚怪；超越期間若技能格變成「魔力爆發」，瞄準王會停留的位置施放，讓力場落在有效位置。',
+          '4 電漿披風偏功能／保命，通常不是這套 T0 的主要輸出。近身危險時再用；技能格變成派生技時，以畫面上的名稱與效果為準。',
+          '分清 5 的兩個狀態：起手的 5 是引導過載、先回一段魔；過載啟動後 5 格改成蓄力攻擊「破壞的閃光」。',
+          '紅招、地板技與需要走位的機制優先處理；王快死或安全窗口很短時，可提早放出技能，不必硬等滿蓄。'
+        ],
+        practice:'分三輪練：先練「5 → 3 → 1」起手；再練高魔力打 1、低魔力用 2／3 回魔；最後在木樁練「6 → 連按 1」。觀察導管圖示、魔力條與過載狀態是否能接上。',
+        caution:'依 2026/09 台服 S0 新職上線後的玩家指南整理。技能等級順位採霹靂單體方向；不同攻略對超越／導管的投資順序有分歧，超越流需另調。韓服 S1／S2 的數值與循環未直接套用。',
+        sources:[
+          {label:'巴哈｜技能圖解、資源機制與強化順序（台服 S0 玩家整理）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2784'},
+          {label:'巴哈｜電擊術士配裝與技能按法討論',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2688'},
+          {label:'巴哈｜27k 實戰研究：依魔力選技能、免費蓄力',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'},
+          {label:'LDPlayer｜六招定位與魔力機制（2026/09/10）',url:'https://www.ldplayer.tw/blog/mabinogi-mobile-lightning-mage-guide.html'},
+          {label:'OSLink｜另一套強化順位，作交叉比對',url:'https://www.oslink.io/tw/blog/guide/mabinogi-mobile-lightning-mage-build-guide.html'}
+        ]
       },
       longbow:{
         lead:'先確認 356 或 136 改造分支；以下基本手法兩條都適用。',
@@ -1115,8 +1137,11 @@
     function runeOperationsHtml(classGuide){
       const guide=RUNE_OPERATION_GUIDES[classGuide.id];
       if(!guide)return '';
+      const priority=guide.skillPriority?'<h5>技能等級投資優先序</h5><ol>'+guide.skillPriority.map(item=>'<li>'+escapeHtml(item)+'</li>').join('')+'</ol>':'';
+      const rotations=guide.rotations?'<h5>照著按：基本循環</h5><div class="rune-rotation-list">'+guide.rotations.map(item=>'<div class="rune-rotation-row"><strong>'+escapeHtml(item.label)+'</strong>'+escapeHtml(item.text)+'</div>').join('')+'</div>':'';
       const steps=guide.steps.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
-      return '<section class="rune-operations"><h4 class="rune-operations-heading">手操練習</h4><div class="rune-operations-body"><p>'+escapeHtml(guide.lead)+'</p><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a></p></div></section>'
+      const sources=guide.sources?guide.sources.map(item=>'<a href="'+escapeHtml(item.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(item.label)+'</a>').join(' · '):'<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a>';
+      return '<section class="rune-operations"><h4 class="rune-operations-heading">手操練習</h4><div class="rune-operations-body"><p>'+escapeHtml(guide.lead)+'</p>'+priority+rotations+'<h5>手操重點</h5><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：'+sources+'</p></div></section>'
     }
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
