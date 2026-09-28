@@ -1127,7 +1127,7 @@
       if(!guide)return '';
       const panelId='rune-operations-'+classGuide.id;
       const steps=guide.steps.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
-      return '<section class="rune-operations"><button type="button" class="rune-operations-toggle" data-rune-toggle="'+panelId+'" aria-controls="'+panelId+'" aria-expanded="false"><span>手操練習</span></button><div class="rune-operations-body rune-toggle-panel" id="'+panelId+'" hidden><p>'+escapeHtml(guide.lead)+'</p><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a></p></div></section>'
+      return '<section class="rune-operations"><button type="button" class="rune-operations-toggle rune-expand" data-rune-toggle="'+panelId+'" aria-controls="'+panelId+'" aria-expanded="false" data-open-label="展開手操練習" data-close-label="收合手操練習"><span class="rune-toggle-label">展開手操練習</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></button><div class="rune-operations-body rune-toggle-panel" id="'+panelId+'" hidden><p>'+escapeHtml(guide.lead)+'</p><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a></p></div></section>'
     }
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
@@ -1143,7 +1143,7 @@
       const warnings=RUNE_GUIDE_DATA.meta.warnings.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
       const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
       const intro=classGuides.length>1?'本尊與預計轉職方向都先以 T0 為目標；T1 作為次要的小畢業選項。':'本尊與分身都先追 T0；T1 是小畢業選項，需要時再展開查看。';
-      const warningHtml='<section class="rune-warning"><button type="button" class="rune-warning-toggle" data-rune-toggle="rune-guide-warnings" aria-controls="rune-guide-warnings" aria-expanded="false"><span class="rune-toggle-label">使用前注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></button><div class="rune-toggle-panel rune-warning-panel" id="rune-guide-warnings" hidden><ul>'+warnings+'</ul></div></section>';
+      const warningHtml='<section class="rune-warning"><button type="button" class="rune-warning-toggle" data-rune-toggle="rune-guide-warnings" aria-controls="rune-guide-warnings" aria-expanded="false" data-open-label="展開注意事項" data-close-label="收合注意事項"><span class="rune-toggle-label">展開注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></button><div class="rune-toggle-panel rune-warning-panel" id="rune-guide-warnings" hidden><ul>'+warnings+'</ul></div></section>';
       return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div>'+warningHtml+cards+'</div>'
     }
 
@@ -1343,8 +1343,7 @@
       if(!button)return;
       const panel=document.getElementById(button.dataset.runeToggle);
       if(!panel)return;
-      const expanded=button.getAttribute('aria-expanded')==='true';
-      const open=!expanded;
+      const open=panel.hidden;
       button.setAttribute('aria-expanded',String(open));
       panel.hidden=!open;
       const label=button.querySelector('.rune-toggle-label');
