@@ -42,8 +42,9 @@
     .meter { display:grid; grid-template-columns:1fr auto; gap:.5rem 1rem; align-items:center; background:#fff; border:1px solid var(--line); border-radius:14px; padding:.8rem .9rem; margin-bottom:1rem; }
     .meter b { font-size:.9rem; } .meter span { color:var(--muted); font-size:.83rem; }
     .track { grid-column:1/-1; height:7px; background:#e3edf4; overflow:hidden; border-radius:99px; } .fill { height:100%; background:linear-gradient(90deg,#2170a8,#4a9ccd); border-radius:99px; transition:width .2s; }
-    .tabs { display:grid; grid-template-columns:repeat(6,1fr); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; }
-    .tab { border:0; background:transparent; color:#5a7081; padding:.53rem .2rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; }
+
+    .tabs { display:flex; gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:1rem; overflow-x:auto; scrollbar-width:thin; }
+    .tab { flex:1 0 4.7rem; border:0; background:transparent; color:#5a7081; padding:.53rem .2rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; white-space:nowrap; }
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
     .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
@@ -254,6 +255,51 @@
     .sync-actions button:disabled { opacity:.5; cursor:not-allowed; }
     .hint { color:var(--muted); font-size:.76rem; text-align:center; margin:1rem 0 0; }
     @media (min-width:700px) { main { padding:1.25rem 1.5rem 2.5rem; } header { padding:1.35rem 1.5rem; } .rolebar { padding-left:1.5rem; padding-right:1.5rem; } }
+
+    .rune-guide { display:grid; gap:.8rem; }
+    .rune-intro { background:#eef6fc; border:1px solid #cbdfea; border-radius:14px; padding:.85rem 1rem; color:#31556e; }
+    .rune-intro strong { display:block; color:var(--navy); margin-bottom:.2rem; }
+    .rune-source { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem .75rem; color:var(--muted); font-size:.8rem; }
+    .rune-source a { color:var(--blue); font-weight:700; }
+    .rune-slot-summary { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
+    .rune-slot-summary span { background:#fff; border:1px solid #cbdfea; border-radius:999px; padding:.2rem .55rem; font-size:.78rem; color:#426177; }
+    .rune-warning { background:#fffaf0; border:1px solid #ead8a8; border-radius:14px; padding:.75rem 1rem; color:#6b5530; }
+    .rune-warning summary { cursor:pointer; font-weight:700; color:#815400; }
+    .rune-warning ul { margin:.55rem 0 0 1.15rem; padding:0; }
+    .rune-class-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .rune-class-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; background:linear-gradient(135deg,#f8fbfd,#edf5fa); }
+    .rune-class-head h3 { margin:0; font-size:1.05rem; }
+    .rune-class-head small { color:var(--muted); }
+    .rune-role-tag { flex:0 0 auto; background:#dcecf7; color:#22577b; border-radius:999px; padding:.22rem .55rem; font-size:.75rem; font-weight:700; }
+    .rune-tier { padding:.85rem 1rem 1rem; border-top:1px solid var(--line); }
+    .rune-tier.t0 { background:linear-gradient(180deg,#fffdf6,#fff); }
+    .rune-tier.t1 { background:#fbfdff; }
+    .rune-tier-title { display:flex; justify-content:space-between; align-items:baseline; gap:.5rem; margin-bottom:.65rem; }
+    .rune-tier-title strong { color:var(--navy); }
+    .rune-tier-title small { color:var(--muted); text-align:right; }
+    .rune-slot-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
+    .rune-slot { border:1px solid #dbe7ef; border-radius:11px; padding:.6rem .65rem; background:#fff; }
+    .rune-slot-head { display:flex; justify-content:space-between; gap:.5rem; margin-bottom:.35rem; color:#31556e; }
+    .rune-slot-head small { color:var(--muted); }
+    .rune-rune-list { display:grid; gap:.25rem; }
+    .rune-rune-item { display:block; color:var(--ink); font-size:.9rem; }
+    .rune-branch { margin-top:.5rem; padding-top:.45rem; border-top:1px dashed #cbdfea; }
+    .rune-branch:first-child { margin-top:0; padding-top:0; border-top:0; }
+    .rune-branch-label { display:block; color:#6a7f8e; font-size:.75rem; font-weight:700; margin-bottom:.15rem; }
+    .rune-tier-details { border-top:1px solid var(--line); }
+    .rune-tier-details summary { cursor:pointer; padding:.75rem 1rem; color:var(--blue); font-weight:700; }
+    .rune-stopline { margin:0 1rem 1rem; padding:.65rem .75rem; border-radius:10px; background:#e9f6ef; color:#176043; font-size:.86rem; }
+    .rune-stopline b { margin-right:.35rem; }
+    .app[data-view="rune"] .identity,
+    .app[data-view="rune"] .focus-banner,
+    .app[data-view="rune"] .meter { display:none; }
+    @media (max-width:560px) {
+      .rune-class-head { display:block; }
+      .rune-role-tag { display:inline-block; margin-top:.45rem; }
+      .rune-slot-grid { grid-template-columns:1fr; }
+      .rune-tier-title { display:block; }
+      .rune-tier-title small { display:block; text-align:left; margin-top:.2rem; }
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -265,7 +311,7 @@
       <section class="identity" id="identity"></section>
       <section class="focus-banner" id="focus-banner" aria-live="polite"></section>
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
-      <nav class="tabs" aria-label="檢視"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
+      <nav class="tabs" aria-label="檢視"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="rune">符文</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
       <p class="hint">未登入或未設定同步時，勾選與進度會留在目前裝置；使用 Google OAuth 登入後可與 Google Sheets 同步。</p>
     </main>
@@ -302,6 +348,11 @@
       if(!role.weekly.some(([task])=>task===WEEKLY_ROLE_BARTER_TASK))role.weekly=[...role.weekly,[WEEKLY_ROLE_BARTER_TASK,1]]
     });
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
+
+    const RUNE_GUIDE_SOURCE_URL='https://app.notion.com/p/3e9716f2a49a81f7a48fe3b8b3dc9e8b?pvs=204';
+    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-28","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解，優先給分身"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1},"warnings":["千把劍層數看裝備角色自身符合條件的 Lv40 劍職數量，不是帳號共用。","長弓飾品第二格依 356/136 改造流派分流。","祭司防具第五格與樂師第三飾品存在內容/流派差異。"]},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"]},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","翼矛"],"T0_136":["超音波","內傷","翼矛"],"T1":["超音波","集中/內傷","翼矛"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0":["終章","速奏","共鳴"],"T1":["終章","速奏","博愛"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"終章＋速奏＋博愛"},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","weapon":{"T0":["驚異＋"],"T1":["千把劍"]},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"報應優先；有餘裕再追驚異＋、因果、業火"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"]},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
+    // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
+    const RUNE_ROLE_CLASS_IDS=RUNE_GUIDE_DATA.roleClassIds;
 
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
     const ACCOUNT_ROLE='帳號共用';
@@ -928,6 +979,51 @@
       return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
     }
     function weeklyRequiredItems(role){return roleWeeklyItems(role,false)}
+
+    function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
+    function runeTierLabel(tier){return tier==='T0'?'T0｜本尊高難／單王優先解':'T1｜核心機制完整的小畢業解'}
+    function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
+    function runeSlotCount(slot){return RUNE_GUIDE_DATA.meta.rune_slots[slot]||1}
+    function runeTierGroups(classGuide,tier,slot){
+      const section=classGuide[slot]||{};
+      if(slot==='accessory'&&tier==='T0'){
+        const branches=Object.keys(section).filter(key=>key.indexOf('T0_')===0);
+        if(branches.length)return branches.map(key=>({label:key.slice(3)==='356'?'356 改造流':key.slice(3)==='136'?'136 改造流':key.slice(3),values:section[key]}));
+      }
+      return Array.isArray(section[tier])?[{label:'建議配置',values:section[tier]}]:[];
+    }
+    function runeSlotHtml(classGuide,tier,slot){
+      const groups=runeTierGroups(classGuide,tier,slot);
+      const groupHtml=groups.map(group=>{
+        const items=group.values.map((value,index)=>{
+          const prefix=(slot==='armor'||slot==='accessory')?'第'+(index+1)+'格：':'';
+          return '<span class="rune-rune-item">'+escapeHtml(prefix+value)+'</span>'
+        }).join('');
+        return '<div class="rune-branch"><span class="rune-branch-label">'+escapeHtml(group.label)+'</span><div class="rune-rune-list">'+items+'</div></div>'
+      }).join('');
+      return '<article class="rune-slot"><div class="rune-slot-head"><b>'+escapeHtml(runeSlotLabel(slot))+'</b><small>'+runeSlotCount(slot)+' 格</small></div>'+groupHtml+'</article>'
+    }
+    function runeTierHtml(classGuide,tier){
+      const slots=['weapon','armor','accessory','badge'].map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
+      return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong><small>'+escapeHtml(RUNE_GUIDE_DATA.meta.tier_definition[tier])+'</small></div><div class="rune-slot-grid">'+slots+'</div></section>'
+    }
+    function runeClassHtml(classGuide){
+      const defaultTier=classGuide.role.indexOf('main_')===0?'T0':'T1';
+      const otherTier=defaultTier==='T0'?'T1':'T0';
+      const roleText=runeRoleLabel(classGuide.role);
+      const expanded='';
+      return '<article class="rune-class-card"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+runeTierHtml(classGuide,defaultTier)+'<details class="rune-tier-details"'+expanded+'><summary>展開 '+otherTier+' '+(otherTier==='T0'?'完整畢業方向':'小畢業方向')+'</summary>'+runeTierHtml(classGuide,otherTier)+'</details><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div></article>'
+    }
+    function renderRuneGuide(role){
+      const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
+      const classGuides=classIds.map(id=>RUNE_GUIDE_DATA.classes.find(item=>item.id===id)).filter(Boolean);
+      const cards=classGuides.map(runeClassHtml).join('');
+      const warnings=RUNE_GUIDE_DATA.meta.warnings.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
+      const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
+      const intro=classGuides.length>1?'本尊目前職業與預計轉職目標並列；兩者都以 T0 為主要參考。':'分身預設先看 T1，小畢業完成後再決定是否展開 T0。';
+      return '<div class="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><details class="rune-warning"><summary>使用前注意事項</summary><ul>'+warnings+'</ul></details>'+cards+'</div>'
+    }
+
     function rotationRole(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
       if(day===0)return null;
@@ -1022,10 +1118,11 @@
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;const stockedMaterials=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
-      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購限購進度':view==='storage'?'材料庫存':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購限購進度':view==='storage'?'材料庫存':view==='rune'?'符文指南':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:view==='rune'?'唯讀參考':`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
       if(view==='overview')root.innerHTML=overviewHtml();
+      if(view==='rune')root.innerHTML=renderRuneGuide(role);
       if(view==='daily'){
         const dailyBlackHoleDone=Boolean(get(accountDailyBlackHoleStateKey(),false));
         const dailyBlackHoleHtml='<div class="shared-card"><div class="section-title"><h2>帳號共通每日保底</h2><small>每日 06:00 重置</small></div><div class="card"><label class="task '+(dailyBlackHoleDone?'done':'')+'"><input type="checkbox" '+(dailyBlackHoleDone?'checked':'')+' data-account-black-hole><span><span class="task-name">'+DAILY_BLACK_HOLE_TASK.label+'</span><span class="task-note">'+DAILY_BLACK_HOLE_TASK.note+'</span></span><span class="pill">帳號</span></label></div></div>';
