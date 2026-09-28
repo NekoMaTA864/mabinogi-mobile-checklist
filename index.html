@@ -264,17 +264,28 @@
     .rune-slot-summary { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
     .rune-slot-summary span { background:#fff; border:1px solid #cbdfea; border-radius:999px; padding:.2rem .55rem; font-size:.78rem; color:#426177; }
     .rune-warning { background:#fffaf0; border:1px solid #ead8a8; border-radius:14px; padding:.6rem .9rem; color:#6b5530; }
-    .rune-warning-toggle { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.5rem; padding:.35rem 0; background:transparent; color:#815400; text-align:left; font-weight:700; text-decoration:none; }
+    .rune-warning-toggle { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.5rem; padding:.35rem 0; background:transparent; color:#815400; text-align:left; font-weight:700; list-style:none; cursor:pointer; touch-action:manipulation; }
+    .rune-warning-toggle::-webkit-details-marker,.rune-expand::-webkit-details-marker,.rune-operations summary::-webkit-details-marker { display:none; }
     .rune-warning-panel { padding:.1rem 0 .35rem; }
     .rune-warning ul { margin:.35rem 0 0 1.15rem; padding:0; }
-    .rune-expand { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.7rem; padding:.7rem 1rem; border-top:1px solid var(--line); border-radius:0; background:#f5f9fc; color:var(--blue); text-align:left; font-weight:700; text-decoration:none; }
-    .rune-expand:focus-visible,.rune-warning-toggle:focus-visible { outline:3px solid #75b9e5; outline-offset:2px; position:relative; z-index:1; }
-    .rune-expand:hover,.rune-warning-toggle:hover { filter:brightness(.97); }
+    .rune-expand-group { border-top:1px solid var(--line); }
+    .rune-expand { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.7rem; padding:.7rem 1rem; border:0; border-radius:0; background:#f5f9fc; color:var(--blue); text-align:left; font-weight:700; list-style:none; cursor:pointer; touch-action:manipulation; }
+    .rune-expand:focus-visible,.rune-warning-toggle:focus-visible,.rune-operations summary:focus-visible { outline:3px solid #75b9e5; outline-offset:2px; position:relative; z-index:1; }
+    .rune-expand:hover,.rune-warning-toggle:hover,.rune-operations summary:hover { filter:brightness(.97); }
     .rune-expand-icon { display:inline-block; transition:transform .16s ease; }
-    .rune-toggle-panel { display:none; }
-    .rune-toggle-panel:target { display:block; }
-    .rune-class-card:has(.rune-tier-panel:target) .rune-expand-icon,.rune-warning:has(.rune-warning-panel:target) .rune-expand-icon { transform:rotate(180deg); }
-    .rune-collapse { display:inline-block; margin:.25rem 1rem .85rem; color:var(--muted); font-size:.82rem; font-weight:650; }
+    .rune-expand-group[open] .rune-expand-icon,.rune-warning[open] .rune-expand-icon { transform:rotate(180deg); }
+    .rune-operations { margin:0 1rem 1rem; border:1px solid #cbdfea; border-radius:11px; background:#f8fbfd; overflow:hidden; }
+    .rune-operations summary { display:flex; align-items:center; gap:.5rem; min-height:2.7rem; padding:.65rem .75rem; color:#245675; font-size:.86rem; font-weight:750; list-style:none; cursor:pointer; touch-action:manipulation; }
+    .rune-operations summary::after { content:'＋'; margin-left:auto; color:#6d8494; }
+    .rune-operations[open] summary::after { content:'−'; }
+    .rune-operations-body { padding:0 .8rem .8rem; color:#486476; font-size:.81rem; }
+    .rune-operations-body p { margin:.35rem 0; }
+    .rune-operations-body ol { margin:.4rem 0; padding-left:1.25rem; }
+    .rune-operations-body li+li { margin-top:.32rem; }
+    .rune-operations-body b { color:#31566d; }
+    .rune-operation-caution { color:#6d8494; font-size:.75rem; }
+    .rune-operation-source { margin-top:.55rem !important; font-size:.74rem; }
+    .rune-operation-source a { color:var(--blue); font-weight:700; }
     .rune-class-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .rune-class-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; background:linear-gradient(135deg,#f8fbfd,#edf5fa); }
     .rune-class-head h3 { margin:0; font-size:1.05rem; }
@@ -358,7 +369,7 @@
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
     const RUNE_GUIDE_SOURCE_URL='https://app.notion.com/p/3e9716f2a49a81f7a48fe3b8b3dc9e8b?pvs=204';
-    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-28","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解，優先給分身"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1},"warnings":["千把劍層數看裝備角色自身符合條件的 Lv40 劍職數量，不是帳號共用。","長弓飾品第二格依 356/136 改造流派分流。","祭司防具第五格與樂師第三飾品存在內容/流派差異。"]},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"]},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","翼矛"],"T0_136":["超音波","內傷","翼矛"],"T1":["超音波","集中/內傷","翼矛"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0":["終章","速奏","共鳴"],"T1":["終章","速奏","博愛"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"終章＋速奏＋博愛"},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","weapon":{"T0":["驚異＋"],"T1":["千把劍"]},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"報應優先；有餘裕再追驚異＋、因果、業火"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"]},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
+    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-28","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1},"warnings":["千把劍層數看裝備角色自身符合條件的 Lv40 劍職數量，不是帳號共用。","長弓飾品第二格依 356/136 改造流派分流。","祭司防具第五格與樂師第三飾品存在內容/流派差異。"]},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"]},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"]},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","翼矛"],"T0_136":["超音波","內傷","翼矛"],"T1":["超音波","集中/內傷","翼矛"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0":["終章","速奏","共鳴"],"T1":["終章","速奏","博愛"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"終章＋速奏＋博愛"},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"]},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","weapon":{"T0":["驚異＋"],"T1":["千把劍"]},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"報應優先；有餘裕再追驚異＋、因果、業火"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"]},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
     // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
     const RUNE_ROLE_CLASS_IDS=RUNE_GUIDE_DATA.roleClassIds;
 
@@ -1016,12 +1027,109 @@
       const description=tier==='T1'?'核心機制完整的小畢業解；依你的養成順序，T0 之後再補。':RUNE_GUIDE_DATA.meta.tier_definition[tier];
       return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong><small>'+escapeHtml(description)+'</small></div><div class="rune-slot-grid">'+slots+'</div></section>'
     }
+    const RUNE_OPERATION_GUIDES={
+      mage:{
+        lead:'先確認目前技能改造走 124 或 126，只練其中一條；以下數字是技能槽位。',
+        steps:[
+          '124 平穩循環：4 → 1 → 2 → 1 → 5；其他技能在冷卻時用 1 填空。',
+          '124 絕招練習：4 → 1 → 2 → 1 → 5 → 1×3 → 1 → 2 → 4 → 6。',
+          '126 爆發循環：1 → 2 → 1 → 4 → 6 → 2 → 1 → 4 → 1 → 5 → 1×3。',
+          '木樁練習時保持「其他技能一轉好就按、空檔補 1」；熟了再練絕招窗口。'
+        ],
+        practice:'1 技有沒有填進空檔；其他技能是否一亮就施放。',
+        caution:'循環來自玩家整理，先對照你的台服技能改造；技能名與動畫以客戶端為準。',
+        source:'魔法師 S0 循環與操作',
+        url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'
+      },
+      lightning_mage:{
+        lead:'電擊術士先練魔力收支，不用背固定秒數。',
+        steps:[
+          '2、3 號技能負責回魔；開打先用它們把魔力拉回安全區。',
+          '5 號會先回魔、再提高後續消耗；魔力還沒穩住時先不要開。',
+          '5 號窗口內留意魔力條，魔力偏低就停下高消耗技能，回到 2、3 號補魔。',
+          '6 號期間暫時不消耗魔力，留在首領站定、你也能安全輸出的窗口；紅招來先閃。'
+        ],
+        practice:'跑完一輪不讓魔力見底，並在需要走位前能及時停手。',
+        caution:'攻略指出 1、4 的耗魔判讀仍應以台服客戶端技能文字確認；韓服舊秒數不直接套用。',
+        source:'電擊術士魔力循環（台服技能格核對）',
+        url:'https://mabinogimobile.nipponhashi.com/guides/lightningmage-rotation/'
+      },
+      longbow:{
+        lead:'先確認 356 或 136 改造分支；以下基本手法兩條都適用。',
+        steps:[
+          '開打前拉到能穩定瞄準的距離；蓄力時盡量站穩，首領位移後先重新瞄準再放箭。',
+          '把主要蓄力輸出留給首領停頓或破防窗口；危險招式出現時先取消輸出、移出範圍。',
+          '若目前配置以翼矛協助破防，觀察首領韌性與準備動作後再交，不要在目標即將跑位時硬蓄力。',
+          '每次只記三件事：蓄力被中斷幾次、空放幾箭、破防窗口打進幾次主力。'
+        ],
+        practice:'減少移動造成的蓄力中斷，並讓主力命中破防窗口。',
+        caution:'356／136 的技能改造與符文分支不同；不要把另一分支的固定序列直接照抄。',
+        source:'長弓兵台服 S0 蓄力、站位與輸出窗口',
+        url:'https://bobogameguides.com/mabinogi-mobile/guides/archer-guide.html'
+      },
+      bard:{
+        lead:'先練半自動：自動維持演奏，手動控制情緒值消耗。',
+        steps:[
+          '可先讓 1 琶音、3 星之奏鳴曲自動；把 4 漸強、5 高潮關閉自動施放。',
+          '情緒值過半、目標弱化已建立後，依冷卻手動按 4／5；5 高潮盡量留在爆發或破防窗口。',
+          '2 小夜曲施放較長；核心技能快轉好時，不要為了唱滿而卡住，可以短唱後取消。',
+          '看情緒值、弱化層數和 4／5 冷卻，不用把五招全改手動。'
+        ],
+        practice:'不在情緒不足時空放 4／5，且讓 1、3 持續維持核心演奏與弱化。',
+        caution:'這是台服 S0 玩家配置示範；符文、冷卻和隊伍不同，實際節奏會變。',
+        source:'樂師台服 S0 半自動設定與循環',
+        url:'https://bobogameguides.com/mabinogi-mobile/guides/musician-guide.html'
+      },
+      priest:{
+        lead:'你目前規格以聖戰為核心時，先練「聖域圈內打聖矛」。',
+        steps:[
+          '4 聖域先放在首領會停留的位置；若使用聖戰符文，在圈內接主要攻擊以吃到增傷。',
+          '留意神聖力；台服玩家實測回報 4 技可回復神聖力，實際數值以遊戲內資源條為準。',
+          '首領停定或破防時再詠唱 5 聖矛；看到紅招、準備跳走時先閃，不要硬站著讀條。',
+          '如果改用穿刺之光，練習對準後分開放兩發；它較快但傷害與聖矛型不同。'
+        ],
+        practice:'5 聖矛能在聖域與安全輸出窗口內命中，而不是被首領位移打斷。',
+        caution:'圈內增傷、回復量和技能型態依符文配置；隊友連結與目標互動先在安全場景確認。',
+        source:'祭司 S0 玩家實測與技能討論',
+        url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14310&page=1&snA=2920'
+      },
+      monk:{
+        lead:'5 化身是主要輸出窗口；你目前 T0 方向的 4 業火會把治療技改成攻擊技。',
+        steps:[
+          '先站到能穩定打到首領的位置；首領即將移動或出紅招時，先不要開 5。',
+          '首領停定時開 5 化身；窗口內優先施放 1、2，這兩招在化身期間會強化。',
+          '若穿業火，4 是輸出技；若切回支援配置，先重新確認 4 的技能效果再按。',
+          '把大招窗口練熟後，再加入走位；不要為了打滿循環吃首領紅招。'
+        ],
+        practice:'化身期間 1、2 都能命中；5 快轉好時能在安全窗口接上下一輪。',
+        caution:'化身覆蓋率與技能順序會受驚異＋、因果、冷卻詞條和符文改造影響。',
+        source:'修道士台服 S0 化身與符文操作',
+        url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'
+      },
+      dancer:{
+        lead:'先練大招兩段與二拍子時間窗。下列數字串是一位台服玩家的個人示範，不是唯一標準循環。',
+        steps:[
+          '第一次按 6 開啟二拍子後，先把增益窗口留給核心技能，不要立刻按第二段。',
+          '木樁示範序列：6 → 1 → 5 → 4（普攻 4 下）→ 1 → 1 → 6 → 5；最後一次 6 是大招第二段。',
+          '核心是把五招和大招第二段都放進二拍子的加成時間；若動畫、冷卻或技能改造不同，先減少普攻次數再重排。',
+          '先慢速練到第二段穩定命中，再逐步加快，不要為了抄序列漏掉躲招。'
+        ],
+        practice:'大招第二段在二拍子結束前命中；重播錄影檢查是否被動畫或走位拖出窗口。',
+        caution:'此流程是 2026-09-19 單一玩家偏好示範，並非多來源共識；先以實際技能描述驗證。',
+        source:'舞者 S0 玩家心得（單一玩家操作示範）',
+        url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14431&page=1&snA=2937'
+      }
+    };
+    function runeOperationsHtml(classGuide){
+      const guide=RUNE_OPERATION_GUIDES[classGuide.id];
+      if(!guide)return '';
+      const steps=guide.steps.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
+      return '<details class="rune-operations"><summary>手操練習</summary><div class="rune-operations-body"><p>'+escapeHtml(guide.lead)+'</p><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a></p></div></details>'
+    }
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
-      const closedLabel='展開 T1 小畢業方向';
-      const panelId='rune-tier-'+classGuide.id+'-t1';
       const cardId='rune-class-'+classGuide.id;
-      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+runeTierHtml(classGuide,'T0')+'<a class="rune-expand rune-tier-toggle" href="#'+escapeHtml(panelId)+'" aria-controls="'+escapeHtml(panelId)+'"><span class="rune-toggle-label">'+closedLabel+'</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></a><div class="rune-toggle-panel rune-tier-panel" id="'+escapeHtml(panelId)+'">'+runeTierHtml(classGuide,'T1')+'<a class="rune-collapse" href="#'+escapeHtml(cardId)+'">收合 T1 小畢業方向</a></div><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div></article>'
+      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+runeTierHtml(classGuide,'T0')+'<details class="rune-expand-group"><summary class="rune-expand rune-tier-toggle"><span>展開 T1 小畢業方向</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></summary>'+runeTierHtml(classGuide,'T1')+'</details><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
     }
     function renderRuneGuide(role){
       const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
@@ -1030,7 +1138,7 @@
       const warnings=RUNE_GUIDE_DATA.meta.warnings.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
       const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
       const intro=classGuides.length>1?'本尊與預計轉職方向都先以 T0 為目標；T1 作為次要的小畢業選項。':'本尊與分身都先追 T0；T1 是小畢業選項，需要時再展開查看。';
-      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><section class="rune-warning"><a class="rune-warning-toggle" href="#rune-guide-warnings" aria-controls="rune-guide-warnings"><span class="rune-toggle-label">使用前注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></a><div class="rune-toggle-panel rune-warning-panel" id="rune-guide-warnings"><ul>'+warnings+'</ul><a class="rune-collapse" href="#rune-guide">收起注意事項</a></div></section>'+cards+'</div>'
+      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><details class="rune-warning"><summary class="rune-warning-toggle"><span>使用前注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></summary><div class="rune-warning-panel"><ul>'+warnings+'</ul></div></details>'+cards+'</div>'
     }
 
     function rotationRole(){
