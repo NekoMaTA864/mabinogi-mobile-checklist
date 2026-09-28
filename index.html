@@ -264,14 +264,17 @@
     .rune-slot-summary { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
     .rune-slot-summary span { background:#fff; border:1px solid #cbdfea; border-radius:999px; padding:.2rem .55rem; font-size:.78rem; color:#426177; }
     .rune-warning { background:#fffaf0; border:1px solid #ead8a8; border-radius:14px; padding:.6rem .9rem; color:#6b5530; }
-    .rune-warning-toggle { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.5rem; padding:.35rem 0; background:transparent; color:#815400; text-align:left; }
+    .rune-warning-toggle { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.5rem; padding:.35rem 0; background:transparent; color:#815400; text-align:left; font-weight:700; text-decoration:none; }
     .rune-warning-panel { padding:.1rem 0 .35rem; }
     .rune-warning ul { margin:.35rem 0 0 1.15rem; padding:0; }
-    .rune-expand { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.7rem; padding:.7rem 1rem; border-top:1px solid var(--line); border-radius:0; background:#f5f9fc; color:var(--blue); text-align:left; font-weight:700; }
+    .rune-expand { display:flex; width:100%; align-items:center; justify-content:space-between; gap:.75rem; min-height:2.7rem; padding:.7rem 1rem; border-top:1px solid var(--line); border-radius:0; background:#f5f9fc; color:var(--blue); text-align:left; font-weight:700; text-decoration:none; }
     .rune-expand:focus-visible,.rune-warning-toggle:focus-visible { outline:3px solid #75b9e5; outline-offset:2px; position:relative; z-index:1; }
+    .rune-expand:hover,.rune-warning-toggle:hover { filter:brightness(.97); }
     .rune-expand-icon { display:inline-block; transition:transform .16s ease; }
-    .rune-expand[aria-expanded="true"] .rune-expand-icon,.rune-warning-toggle[aria-expanded="true"] .rune-expand-icon { transform:rotate(180deg); }
-    .rune-toggle-panel[hidden] { display:none !important; }
+    .rune-toggle-panel { display:none; }
+    .rune-toggle-panel:target { display:block; }
+    .rune-class-card:has(.rune-tier-panel:target) .rune-expand-icon,.rune-warning:has(.rune-warning-panel:target) .rune-expand-icon { transform:rotate(180deg); }
+    .rune-collapse { display:inline-block; margin:.25rem 1rem .85rem; color:var(--muted); font-size:.82rem; font-weight:650; }
     .rune-class-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .rune-class-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; background:linear-gradient(135deg,#f8fbfd,#edf5fa); }
     .rune-class-head h3 { margin:0; font-size:1.05rem; }
@@ -1016,9 +1019,9 @@
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
       const closedLabel='展開 T1 小畢業方向';
-      const openLabel='收起 T1 小畢業方向';
       const panelId='rune-tier-'+classGuide.id+'-t1';
-      return '<article class="rune-class-card"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+runeTierHtml(classGuide,'T0')+'<button type="button" class="rune-expand rune-tier-toggle" data-rune-toggle aria-expanded="false" aria-controls="'+escapeHtml(panelId)+'" data-collapsed-label="'+closedLabel+'" data-expanded-label="'+openLabel+'"><span class="rune-toggle-label">'+closedLabel+'</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></button><div class="rune-toggle-panel rune-tier-panel" id="'+escapeHtml(panelId)+'" hidden>'+runeTierHtml(classGuide,'T1')+'</div><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div></article>'
+      const cardId='rune-class-'+classGuide.id;
+      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+runeTierHtml(classGuide,'T0')+'<a class="rune-expand rune-tier-toggle" href="#'+escapeHtml(panelId)+'" aria-controls="'+escapeHtml(panelId)+'"><span class="rune-toggle-label">'+closedLabel+'</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></a><div class="rune-toggle-panel rune-tier-panel" id="'+escapeHtml(panelId)+'">'+runeTierHtml(classGuide,'T1')+'<a class="rune-collapse" href="#'+escapeHtml(cardId)+'">收合 T1 小畢業方向</a></div><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div></article>'
     }
     function renderRuneGuide(role){
       const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
@@ -1027,7 +1030,7 @@
       const warnings=RUNE_GUIDE_DATA.meta.warnings.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
       const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
       const intro=classGuides.length>1?'本尊與預計轉職方向都先以 T0 為目標；T1 作為次要的小畢業選項。':'本尊與分身都先追 T0；T1 是小畢業選項，需要時再展開查看。';
-      return '<div class="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><section class="rune-warning"><button type="button" class="rune-warning-toggle" data-rune-toggle aria-expanded="false" aria-controls="rune-guide-warnings" data-collapsed-label="使用前注意事項" data-expanded-label="收起注意事項"><span class="rune-toggle-label">使用前注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></button><div class="rune-toggle-panel rune-warning-panel" id="rune-guide-warnings" hidden><ul>'+warnings+'</ul></div></section>'+cards+'</div>'
+      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>T0／T1 與部位分開保留，不把不同流派硬合併成單一排名；這一頁不會改動日週進度或同步資料。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><section class="rune-warning"><a class="rune-warning-toggle" href="#rune-guide-warnings" aria-controls="rune-guide-warnings"><span class="rune-toggle-label">使用前注意事項</span><span class="rune-expand-icon" aria-hidden="true">⌄</span></a><div class="rune-toggle-panel rune-warning-panel" id="rune-guide-warnings"><ul>'+warnings+'</ul><a class="rune-collapse" href="#rune-guide">收起注意事項</a></div></section>'+cards+'</div>'
     }
 
     function rotationRole(){
@@ -1158,15 +1161,6 @@
         root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2><p>使用固定 Google 帳號登入後，直接讀寫指定的 Google Sheet。Access Token 只保存在目前頁面的記憶體，不寫入 localStorage。</p>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><ol class="sync-steps"><li>在 Google Cloud 建立 Web OAuth Client ID，將 GitHub Pages 的 origin 加入 Authorized JavaScript origins。</li><li>把需要使用的 1～2 個 Google 帳號加入 OAuth 測試使用者，並將同一份 Sheet 共用給它們。</li><li>在本檔案設定 <b>GOOGLE_OAUTH_CLIENT_ID</b>；若要加強介面限制，再填入 <b>ALLOWED_GOOGLE_EMAILS</b>。</li></ol><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。同步庫存與交換計畫前，請先更新並重新部署最新版 Code.gs。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
-      document.querySelectorAll('[data-rune-toggle]').forEach(button=>button.onclick=()=>{
-        const panel=document.getElementById(button.getAttribute('aria-controls'));
-        if(!panel)return;
-        const expanded=button.getAttribute('aria-expanded')==='true';
-        button.setAttribute('aria-expanded',String(!expanded));
-        panel.hidden=expanded;
-        const label=button.querySelector('.rune-toggle-label');
-        if(label)label.textContent=expanded?button.dataset.collapsedLabel:button.dataset.expandedLabel;
-      });
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
 
       document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
