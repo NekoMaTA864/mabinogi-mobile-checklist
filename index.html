@@ -134,6 +134,7 @@
 
     .exchange-control .stepper { margin-left:auto; }
     .exchange-note { grid-column:1/-1; margin-top:-.2rem; color:#6d8494; font-size:.75rem; }
+    .exchange-note input[type="number"] { width:4.2rem; padding:.35rem; border:1px solid #b8cbd9; border-radius:7px; color:var(--ink); background:#fff; }
     .exchange-source { margin-top:.8rem; padding:.78rem .8rem; border:1px solid var(--line); border-radius:12px; background:#fff; color:#486476; font-size:.78rem; }
     .procurement-guide { display:grid; gap:.55rem; margin:.8rem 0; }
     .procurement-guide-card { padding:.72rem .78rem; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:.8rem; }
@@ -319,7 +320,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.29-2</p></div><div class="date" id="date"></div></div></header>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
@@ -371,7 +372,7 @@
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
     const ACCOUNT_ROLE='帳號共用';
     const ACCOUNT_DAILY_TASK={id:'daily_account_exchange',label:'帳號共用：今日必要採購／交換確認',note:'舊版帳號共用每日標記，保留供歷史資料相容，不再作為目前 Daily 顯示。',category:'帳號共用'};
-    const DAILY_ROLE_PURCHASE_TASK={id:'daily_role_procurement',label:'今日角色採購／交換已確認',sheetTask:'今日角色採購／交換已確認',note:'只作本角色今日流程完成標記；實際限購數量請到「採購」頁。'};
+    const DAILY_ROLE_PURCHASE_TASK={id:'role_procurement_confirmation',label:'今日角色採購／交換已確認',sheetTask:'今日角色採購／交換已確認',note:'只作本角色今日流程完成標記；實際限購數量請到「採購」頁。'};
     const ACCOUNT_WEEKLY_TASKS=[
       {id:'weekly_server_task',label:'每週任務',note:'伺服器共通，六個角色完成一次即可。'}
     ];
@@ -380,17 +381,61 @@
     const isAccountWeeklyTask=task=>ACCOUNT_WEEKLY_TASK_MAP.has(task);
     const ACCOUNT_STATE_KEY=`account-d-${ACCOUNT_DAILY_TASK.id}`;
     const ACCOUNT_TASK_ALIASES=new Set(['每日限購／免費商品檢查',ACCOUNT_DAILY_TASK.label]);
-    const DAILY_BLACK_HOLE_TASK={id:'daily_black_hole_check',label:'每日黑色坑洞（帳號共通保底）',sheetTask:'黑色坑洞：每日保底',note:'每日 06:00 重置；任一角色完成一場即可。本週每角色有效次數仍在「本週」分開記錄。'};
-    const HIDDEN_DAILY_TASKS=new Set(['每日任務','銀幣清理（狩獵場／地下城）',DAILY_BLACK_HOLE_TASK.sheetTask,...ACCOUNT_TASK_ALIASES]);
+    const DAILY_BLACK_HOLE_TASK={id:'normal_black_hole_daily',label:'普通黑色坑洞：今日基本獎勵',sheetTask:'黑色坑洞：每日保底',note:'每角色今日 1 次；勾選會計入本週 14 次。戰利品箱消耗既有額度，過期的今日次數不能補回。'};
+    const HIDDEN_DAILY_TASKS=new Set(['每日任務','銀幣清理（狩獵場／地下城）',...ACCOUNT_TASK_ALIASES]);
     const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
+    // Stable task IDs decouple saved progress from display names and array positions.
+    // Existing spreadsheet labels and array positions remain readable during migration.
+    const DAILY_TASK_IDS={
+      '每日任務':'legacy_daily_mission',
+      '週幾地下城':'weekday_dungeon',
+      '兼職：聖水／重要兼職':'part_time_done',
+      '銀幣清理（狩獵場／地下城）':'legacy_silver_check',
+      '每日限購／免費商品檢查':'legacy_daily_purchase_check',
+      [DAILY_BLACK_HOLE_TASK.sheetTask]:DAILY_BLACK_HOLE_TASK.id,
+      '魔族供品清理→深層地下城':'offering_done',
+      [DAILY_ROLE_PURCHASE_TASK.sheetTask]:DAILY_ROLE_PURCHASE_TASK.id
+    };
+    const DAILY_TASK_ID_ALIASES={'兼職已處理':'part_time_done','魔族供品已處理':'offering_done'};
+    const WEEKLY_TASK_IDS={
+      '不詳的召喚結界':'summon_barrier',
+      '黑色坑洞':'normal_black_hole',
+      '野外首領週戰利品':'field_boss_reward',
+      '每週任務':'weekly_server_mission',
+      '生活材料商店：本週採購':'legacy_weekly_life_shop_purchase',
+      '魔物討伐證明週商店／交換':'legacy_weekly_proof_shop_purchase',
+      '深淵通關戰利品':'abyss_reward',
+      '白魅魔通關戰利品':'white_succubus_reward',
+      '格里斯貝恩':'gris_bain',
+      [WEEKLY_ROLE_BARTER_TASK]:'weekly_barter_confirmation'
+    };
+    const WEEKLY_TASK_ID_ALIASES={'格里斯貝恩（小格）':'gris_bain','以物易物（本週每角色確認）':'weekly_barter_confirmation'};
+    const HIDDEN_WEEKLY_TASKS=new Set(['生活材料商店：本週採購','魔物討伐證明週商店／交換',WEEKLY_ROLE_BARTER_TASK]);
+    function taskIdFor(cycle,task){
+      const ids=cycle==='每日'?DAILY_TASK_IDS:WEEKLY_TASK_IDS;
+      const aliases=cycle==='每日'?DAILY_TASK_ID_ALIASES:WEEKLY_TASK_ID_ALIASES;
+      return ids[task]||aliases[task]||null
+    }
+    function roleTaskStateKey(cycle,roleId,taskOrId){
+      const id=taskIdFor(cycle,taskOrId)||taskOrId;
+      return `task-${cycle==='每日'?'d':'w'}-${roleId}-${id}`
+    }
+    const dailyTaskStateKey=(roleId,taskOrId)=>roleTaskStateKey('每日',roleId,taskOrId);
+    const weeklyTaskStateKey=(roleId,taskOrId)=>roleTaskStateKey('每週',roleId,taskOrId);
+    const pitDailyLinkedKey=roleId=>`task-d-${roleId}-normal_black_hole_linked`;
+    function legacyAccountDailyBlackHoleStateKey(date=gameDateKey()){return `account-black-hole-d-${date}`}
+    function legacyRoleDailyPurchaseStateKey(roleId,date=gameDateKey()){return `${roleId}-daily-procurement-${date}`}
+    function roleDailyPurchaseStateKey(roleId=active){return roleTaskStateKey('每日',roleId,DAILY_ROLE_PURCHASE_TASK.id)}
+    const LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY='task-d-account-account_daily_pit';
     // 來源常數需先於特殊事件資料宣告，避免頁面初始化時提前讀取未初始化的 const。
     const MABITW_ABYSS_URL='https://mabitw.com/abyss';
     const SPECIAL_WEEKLY_EVENTS=[
-      {label:'深淵入口事件：黑色坑洞',status:'看到就打',note:'遊戲內活動名稱為「通往深淵的黑色坑洞」；這是限時特殊事件，不列入每日帳號保底或每角色週次。玩家資料回報入口有短時間窗，實際以遊戲內廣播與入口為準。',evidence:'玩家實測／非官方',source:MABITW_ABYSS_URL}
+      {label:'深淵入口事件：黑色坑洞',status:'看到就打',note:'遊戲內活動名稱為「通往深淵的黑色坑洞」；這是限時特殊事件，不計入普通坑洞每日基本次數或每角色週次。玩家資料回報入口有短時間窗，實際以遊戲內廣播與入口為準。',evidence:'玩家實測／非官方',source:MABITW_ABYSS_URL}
     ];
 
     // 以台服 2026-09-09 官方更新為主；玩家整理資料只放在參考區，不直接計入完成度。
     const OFFICIAL_UPDATE_URL='https://tw.nexon.com/mabinogimobile/home/news/update/3541097';
+    const OFFICIAL_BLACK_HOLE_GUIDE_URL='https://mabinogimobile.nexon.com/News/Devnote/3406766';
     const DCINSIDE_SHEET_URL='https://docs.google.com/spreadsheets/d/10CnCmKW50VteKT8SLLaPuPdKx-LlDI5_64jRVGF16ok/edit?usp=sharing';
     const MABITW_DAILY_URL='https://mabitw.com/daily';
     const MABITW_LIFE_URL='https://mabitw.com/life';
@@ -463,10 +508,17 @@
       {category:'台服資料',title:'MabiTW 台服工具箱',href:'https://mabitw-tracker.pages.dev/',description:'最多六角色的自訂日週清單，並整理台服更新與韓服版本差異；適合交叉查資料，進度不會與本站同步。'}
     ];
     const BARTER_DATABASE_URL='https://mabi.yenyen.dev/';
+    const KOREAN_BARTER_URL='https://www.inven.co.kr/board/mabimo/6366/185';
+    const BAHA_EMAIN_URL='https://forum.gamer.com.tw/C.php?bsn=32564&snA=2864';
     const CURATED_BARTER_ROUTES=[
       {id:'tracy-rawhide',npc:'特蕾西',region:'杜加德走廊',input:'原木 ×1',output:'生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'原木轉生皮的直接材料路線。',source:BARTER_DATABASE_URL},
       {id:'naris-high-hide',npc:'奈麗絲',region:'杜巴頓',input:'銅礦石 ×1',output:'高級生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'可把金屬採集材料轉成皮革製作原料。',source:BARTER_DATABASE_URL},
       {id:'tracy-high-hide',npc:'特蕾西',region:'杜加德走廊',input:'原木 ×10',output:'高級生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'與銅礦石路線產物相同，依手上材料選擇。',source:BARTER_DATABASE_URL},
+      {id:'elwyn-high-wood',npc:'艾爾文',region:'杜加德走廊',input:'炒蔬菜 ×2',output:'高級木材 ×4',cycle:'每日',limit:'韓服玩家列每日 2 次；台服覆核',note:'韓服與台服玩家資料庫均有此配方；與特蕾西生皮交換是獨立路線。',source:BARTER_DATABASE_URL,evidence:'玩家交叉／台服待核對'},
+      {id:'fergus-alloy',npc:'佛格斯',region:'提爾克那',input:'鋼錠 ×2',output:'合金鋼錠 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'有鍛造需求再規劃；不能把韓服額度當台服定案。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
+      {id:'lasa-catalyst-juice',npc:'拉薩',region:'提爾克那',input:'蘋果汁 ×1',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'與碎屑交換是兩個投入選項；在遊戲內確認當期額度。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
+      {id:'lasa-catalyst-fragments',npc:'拉薩',region:'提爾克那',input:'鍊金術碎屑 ×3',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'有催化需求才排入計畫。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
+      {id:'emain-highest-leather-plus',npc:'NPC 待遊戲內確認',region:'艾明馬夏',input:'南瓜湯 ×2',output:'最高級皮革+ ×1',cycle:'每週',limit:'玩家回報每週 2 次；Scope 未確認',note:'台服玩家近期分享；尚不能當作六角色各 2 次。',source:BAHA_EMAIN_URL,evidence:'台服玩家／Scope 待核對'},
       {id:'kaelin-bread',npc:'凱琳',region:'提爾克那',input:'牛奶 ×10',output:'凱琳特製全麥麵包 ×3',cycle:'每日',limit:'資料列每日 1 次',note:'後續可再用麵包交換聖水。',source:BARTER_DATABASE_URL},
       {id:'andari-holy-water',npc:'安黛莉',region:'提爾克那',input:'凱琳特製全麥麵包 ×10',output:'聖水 ×10',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'需先取得凱琳特製全麥麵包；共用次數以遊戲內顯示為準。',source:BARTER_DATABASE_URL},
       {id:'tracy-sap',npc:'特蕾西',region:'杜加德走廊',input:'高級原木 ×1',output:'樹液 ×4',cycle:'每日',limit:'資料列每日 5 次',note:'將採集的木材轉成製作副料。',source:BARTER_DATABASE_URL},
@@ -475,12 +527,10 @@
       {id:'foggus-iron-ore',npc:'佛格斯',region:'提爾克那',input:'分解的裝備零件 ×1',output:'鐵礦石 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'偏向把分解零件換成鍛造材料。',source:BARTER_DATABASE_URL},
       {id:'almis-metal-blueprint',npc:'阿爾米斯',region:'庫漢',input:'煤炭 ×20',output:'金屬加工設備設計圖（3級）',cycle:'一次性',limit:'資料列帳號一次性',note:'一次性解鎖類路線；若已換過就不必重複準備。',source:BARTER_DATABASE_URL},
       {id:'elwyn-leather-blueprint',npc:'艾爾文',region:'杜加德走廊',input:'布料+ ×5',output:'皮革加工設備設計圖（3級）',cycle:'一次性',limit:'資料列帳號一次性',note:'一次性解鎖類路線；若已換過就不必重複準備。',source:BARTER_DATABASE_URL},
-      {id:'lisa-catalyst',npc:'麗莎',region:'提爾克那',input:'蘋果汁 ×1',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'蘋果汁交換路線。',source:BARTER_DATABASE_URL},
-      {id:'lisa-catalyst-fragments',npc:'麗莎',region:'提爾克那',input:'鍊金術碎屑 ×3',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'資料列每日 1 次／伺服器共用',note:'可與蘋果汁路線擇一，次數以遊戲內顯示為準。',source:BARTER_DATABASE_URL}
     ];
     const BARTER_ROUTES=[
       ...PROCUREMENT_ITEMS.filter(item=>item.group.includes('交換')).map(item=>({id:'tracked-'+item.id,npc:item.npc,region:item.region,input:item.cost,output:item.product,cycle:item.cycle,limit:item.limit,note:item.note,source:item.source,evidence:item.evidence,tracked:true})),
-      ...CURATED_BARTER_ROUTES.map(item=>({...item,evidence:'社群資料庫',tracked:false}))
+      ...CURATED_BARTER_ROUTES.map(item=>({...item,evidence:item.evidence||'社群資料庫／台服覆核',tracked:false}))
     ];
     const BARTER_PLAN_TARGET=9999;
     const MATERIAL_ROLE_BY_NAME={
@@ -488,10 +538,10 @@
       '銅礦石':'main','礦石':'main','分解的裝備零件':'main','煤炭':'main','特殊鋼錠':'main','合金鋼錠':'main','生命的魔力石':'main',
       '鍊金術碎屑':'z','用心準備的花束':'z',
       '牛奶':'o','凱琳特製全麥麵包':'o','蘋果汁':'o','鱸魚辣魚湯':'o','黃豆':'o',
-      '魔物討伐證明':'oo'
+      '魔物討伐證明':'oo','炒蔬菜':'o','鋼錠':'main','南瓜湯':'o'
     };
     const MATERIAL_ID_BY_NAME={
-      '原木':'raw-log','銅礦石':'copper-ore','牛奶':'milk','凱琳特製全麥麵包':'kaelin-whole-wheat-bread','高級原木':'high-grade-log','礦石':'ore','分解的裝備零件':'disassembled-equipment-parts','煤炭':'coal','布料+':'cloth-plus','蘋果汁':'apple-juice','鍊金術碎屑':'alchemy-fragments','黃豆':'soybeans','特殊鋼錠':'special-steel-ingot','合金鋼錠':'alloy-steel-ingot','鱸魚辣魚湯':'spicy-perch-soup','最高級木材':'highest-grade-lumber','生命的魔力石':'life-magic-stone','用心準備的花束':'carefully-prepared-bouquet','魔物討伐證明':'monster-subjugation-proof'
+      '原木':'raw-log','銅礦石':'copper-ore','牛奶':'milk','凱琳特製全麥麵包':'kaelin-whole-wheat-bread','高級原木':'high-grade-log','礦石':'ore','分解的裝備零件':'disassembled-equipment-parts','煤炭':'coal','布料+':'cloth-plus','蘋果汁':'apple-juice','鍊金術碎屑':'alchemy-fragments','黃豆':'soybeans','特殊鋼錠':'special-steel-ingot','合金鋼錠':'alloy-steel-ingot','鱸魚辣魚湯':'spicy-perch-soup','最高級木材':'highest-grade-lumber','生命的魔力石':'life-magic-stone','用心準備的花束':'carefully-prepared-bouquet','魔物討伐證明':'monster-subjugation-proof','炒蔬菜':'fried-vegetables','鋼錠':'steel-ingot','南瓜湯':'pumpkin-soup'
     };
     function parseMaterialAmounts(value,multiplier=1){
       const result=[];const pattern=/([^×，、,]+?)\s*×\s*([\d,]+)/g;let match;
@@ -547,7 +597,7 @@
     function barterFinderHtml(){
       const cadenceButtons=[['all','全部週期'],['每日','資料列每日限額'],['每週','資料列每週限額'],['一次性','一次性解鎖']].map(([value,label])=>'<button class="barter-filter-button '+(barterCadenceFilter===value?'active':'')+'" type="button" data-barter-cycle-filter="'+value+'" aria-pressed="'+(barterCadenceFilter===value)+'">'+label+'</button>').join('');
       const directionButtons=[['all','所有欄位'],['input','找投入材料'],['output','找目標產物']].map(([value,label])=>'<button class="barter-filter-button '+(barterDirectionFilter===value?'active':'')+'" type="button" data-barter-direction-filter="'+value+'" aria-pressed="'+(barterDirectionFilter===value)+'">'+label+'</button>').join('');
-      return '<section class="barter-finder" aria-label="站內以物易物路線搜尋"><h3>站內以物易物路線搜尋</h3><p class="barter-finder-intro">查手上材料能換什麼、某項產物要去哪裡換。每角色每週的交換確認仍在「本週」記錄；商品實際限購在「採購清單」追蹤。這裡的計畫只估材料，不代表完成交換。加入計畫後會彙總材料需求與六倉缺料。</p><label class="barter-search-label" for="barter-query">材料、產物、NPC 或地區</label><input class="barter-search-input" id="barter-query" type="search" value="'+escapeHtml(barterQuery)+'" placeholder="例如：原木、高級生皮、煤炭、聖水、班克爾"><div class="barter-filter-row" role="group" aria-label="搜尋欄位">'+directionButtons+'</div><div class="barter-filter-row" role="group" aria-label="交換週期">'+cadenceButtons+'</div><p class="barter-result-count" id="barter-result-count" role="status"></p>'+barterPlanSummaryHtml()+'<div class="barter-route-list">'+BARTER_ROUTES.map(barterRouteHtml).join('')+'</div><div class="barter-no-results" id="barter-no-results" hidden>找不到符合的路線。試試材料別名、NPC 名稱，或切換搜尋欄位／週期。</div></section>'
+      return '<section class="barter-finder" aria-label="站內以物易物路線搜尋"><h3>依目標產物找交換</h3><p class="barter-finder-intro">先查本尊缺的產物，再看六倉庫存與投入材料。週一先讓六角色各領一次野外首領；週一至週六依本尊、z、zz、o、p、oo 輪值，到班克爾買已規劃的週限購，再走當日需要的交換。跨城需求較多時參考庫漢 → 提爾克那 → 杜加德走廊 → 杜巴頓 → 班克爾。韓服舊路線與台服玩家候選都需核對當期 NPC、次數及角色範圍；加入計畫只估缺料，不代表已兌換。</p><label class="barter-search-label" for="barter-query">材料、產物、NPC 或地區</label><input class="barter-search-input" id="barter-query" type="search" value="'+escapeHtml(barterQuery)+'" placeholder="例如：原木、高級生皮、煤炭、聖水、班克爾"><div class="barter-filter-row" role="group" aria-label="搜尋欄位">'+directionButtons+'</div><div class="barter-filter-row" role="group" aria-label="交換週期">'+cadenceButtons+'</div><p class="barter-result-count" id="barter-result-count" role="status"></p>'+barterPlanSummaryHtml()+'<div class="barter-route-list">'+BARTER_ROUTES.map(barterRouteHtml).join('')+'</div><div class="barter-no-results" id="barter-no-results" hidden>找不到符合的路線。試試材料別名、NPC 名稱，或切換搜尋欄位／週期。</div></section>'
     }
     function updateBarterRouteVisibility(){
       const needle=barterQuery.trim().toLocaleLowerCase('zh-TW');let visible=0;
@@ -585,6 +635,8 @@
     const DAILY_PERIOD_KEY='mabi-mobile-day-period-v1';
     const WEEKLY_PERIOD_KEY='mabi-mobile-week-period-v1';
     const WEEKLY_LAYOUT_MIGRATION_KEY='mabi-mobile-week-layout-v2';
+    const STABLE_TASK_MIGRATION_KEY='mabi-mobile-stable-task-ids-v1';
+    const BLACK_HOLE_SCOPE_MIGRATION_KEY='mabi-mobile-black-hole-role-scope-v1';
     if(!localStorage.getItem(WEEKLY_LAYOUT_MIGRATION_KEY)){
       roles.forEach(role=>{
         const priorGris=state[role.id+'-w-8'];
@@ -601,11 +653,19 @@
     }
     function clearPeriodTaskState(cycle){
       if(cycle==='每日'){
-        roles.forEach(role=>role.daily.forEach((_,index)=>delete state[`${role.id}-d-${index}`]));
-        delete state[ACCOUNT_STATE_KEY]
+        roles.forEach(role=>{
+          role.daily.forEach((task,index)=>{delete state[`${role.id}-d-${index}`];delete state[dailyTaskStateKey(role.id,task)]});
+          delete state[roleDailyPurchaseStateKey(role.id)];
+          delete state[legacyRoleDailyPurchaseStateKey(role.id)];
+          delete state[dailyBlackHoleStateKey(role.id)]
+          delete state[pitDailyLinkedKey(role.id)]
+        });
+        delete state[ACCOUNT_STATE_KEY];
+        delete state[LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY];
+        delete state[legacyAccountDailyBlackHoleStateKey()]
       }
       if(cycle==='每週'){
-        roles.forEach(role=>role.weekly.forEach((_,index)=>delete state[`${role.id}-w-${index}`]));
+        roles.forEach(role=>role.weekly.forEach(([task],index)=>{delete state[`${role.id}-w-${index}`];delete state[weeklyTaskStateKey(role.id,task)]}));
         Object.values(ACCOUNT_WEEKLY_STATE_KEYS).forEach(stateKey=>delete state[stateKey])
       }
     }
@@ -637,6 +697,47 @@
       weeklyMigration=true
     });
     if(weeklyMigration)save();
+    if(!localStorage.getItem(STABLE_TASK_MIGRATION_KEY)){
+      roles.forEach(role=>{
+        role.daily.forEach((task,index)=>{
+          const legacyKey=`${role.id}-d-${index}`;
+          const stableKey=dailyTaskStateKey(role.id,task);
+          if(state[stableKey]===undefined&&state[legacyKey]!==undefined)state[stableKey]=state[legacyKey]
+        });
+        role.weekly.forEach(([task],index)=>{
+          const legacyKey=`${role.id}-w-${index}`;
+          const stableKey=weeklyTaskStateKey(role.id,task);
+          if(state[stableKey]===undefined&&state[legacyKey]!==undefined)state[stableKey]=state[legacyKey]
+        });
+        const legacyPurchase=state[legacyRoleDailyPurchaseStateKey(role.id)];
+        const purchaseKey=roleDailyPurchaseStateKey(role.id);
+        if(state[purchaseKey]===undefined&&legacyPurchase!==undefined)state[purchaseKey]=Boolean(legacyPurchase)
+      });
+      localStorage.setItem(STABLE_TASK_MIGRATION_KEY,'1');
+      save()
+    }
+    if(!localStorage.getItem(BLACK_HOLE_SCOPE_MIGRATION_KEY)){
+      roles.forEach(role=>{
+        const roleKey=dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id);
+        if(state[roleKey]!==undefined)return;
+        const legacyIndex=role.daily.indexOf(DAILY_BLACK_HOLE_TASK.sheetTask);
+        const legacyValue=state[`task-d-${role.id}-legacy_role_daily_pit`]??(legacyIndex>=0?state[`${role.id}-d-${legacyIndex}`]:undefined)??state[dailyBlackHoleStateKey(role.id)];
+        if(legacyValue!==undefined)state[roleKey]=Boolean(legacyValue)
+      });
+      const legacySharedValue=state[legacyAccountDailyBlackHoleStateKey()];
+      if(state[LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY]===undefined&&legacySharedValue!==undefined)state[LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY]=Boolean(legacySharedValue);
+      localStorage.setItem(BLACK_HOLE_SCOPE_MIGRATION_KEY,'1');
+      save()
+    }
+    // Older versions kept the daily checkbox and weekly counter separately.
+    // Treat an existing daily tick as already included when a weekly value exists.
+    const PIT_LINK_MIGRATION_KEY='mabi-mobile-pit-daily-weekly-link-v1';
+    if(!localStorage.getItem(PIT_LINK_MIGRATION_KEY)){
+      roles.forEach(role=>{
+        if(state[dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id)]&&number(state[weeklyTaskStateKey(role.id,'黑色坑洞')])>0)state[pitDailyLinkedKey(role.id)]=true
+      });
+      localStorage.setItem(PIT_LINK_MIGRATION_KEY,'1');save()
+    }
     const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const oauthConfigured=()=>Boolean(GOOGLE_OAUTH_CLIENT_ID&&!GOOGLE_OAUTH_CLIENT_ID.startsWith('REPLACE_WITH_'));
     const oauthSignedIn=()=>Boolean(oauth.accessToken&&oauth.user);
@@ -758,6 +859,7 @@
       resetStaleDailyState();resetStaleWeeklyState();
       clearPeriodTaskState('每日');clearPeriodTaskState('每週');
       let accountItem=null;let legacyAccountSeen=false;let legacyAccountComplete=false;
+      let legacyAccountPitItem=null;
       const sharedWeeklySeen=new Set();const sharedWeeklyProgress={};
       (items||[]).forEach(item=>{
         if(item.cycle==='常駐'&&text(item.task).startsWith('庫存保管｜')){
@@ -785,10 +887,11 @@
           return;
         }
         if(item.cycle==='每日'&&item.task===DAILY_BLACK_HOLE_TASK.sheetTask){
-          if(item.role===ACCOUNT_ROLE)state[accountDailyBlackHoleStateKey()]=Boolean(item.complete||number(item.progress)>=1);
+          const completed=Boolean(item.complete||number(item.progress)>=1);
+          if(item.role===ACCOUNT_ROLE)legacyAccountPitItem=item;
           else{
             const role=roles.find(candidate=>candidate.sheetRole===item.role);
-            if(role)state[dailyBlackHoleStateKey(role.id)]=Boolean(item.complete||number(item.progress)>=1)
+            if(role)state[dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id)]=completed
           }
           return;
         }
@@ -797,6 +900,14 @@
           sharedWeeklySeen.add(item.task);
           sharedWeeklyProgress[item.task]=Math.max(sharedWeeklyProgress[item.task]||0,sharedProgress);
           return;
+        }
+        if(item.cycle==='每週'&&text(item.task).startsWith('採購計畫｜')){
+          const product=PROCUREMENT_ITEMS.find(candidate=>`採購計畫｜${candidate.id}`===item.task);
+          const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          if(product&&product.track&&product.cycle==='每週'&&(product.scope==='帳號'?item.role===ACCOUNT_ROLE:Boolean(role))){
+            state[purchasePlanKey(product,product.scope==='帳號'?'account':role.id)]=Math.max(0,Math.min(product.target,number(item.progress)))
+          }
+          return
         }
         if(text(item.task).startsWith('採購｜')){
           const procurement=PROCUREMENT_ITEMS.find(candidate=>`採購｜${candidate.id}`===item.task);
@@ -807,11 +918,23 @@
           return;
         }
         const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;
-        if(item.cycle==='每日'){const index=role.daily.indexOf(item.task);if(index>=0&&!HIDDEN_DAILY_TASKS.has(item.task))state[`${role.id}-d-${index}`]=Boolean(item.complete)}
-        else if(item.cycle==='每週'){const index=role.weekly.findIndex(([name])=>name===item.task);if(index>=0)state[`${role.id}-w-${index}`]=number(item.progress)}
+        if(item.cycle==='每日'){
+          if(HIDDEN_DAILY_TASKS.has(item.task))return;
+          const taskId=taskIdFor('每日',item.task);
+          if(taskId)state[dailyTaskStateKey(role.id,taskId)]=Boolean(item.complete||number(item.progress)>=Math.max(1,number(item.target)))
+        }
+        else if(item.cycle==='每週'){
+          if(HIDDEN_WEEKLY_TASKS.has(item.task))return;
+          const taskId=taskIdFor('每週',item.task);
+          if(taskId)state[weeklyTaskStateKey(role.id,taskId)]=number(item.progress)
+        }
       });
       if(accountItem)state[ACCOUNT_STATE_KEY]=Boolean(accountItem.complete);else if(legacyAccountSeen)state[ACCOUNT_STATE_KEY]=legacyAccountComplete;
+      if(legacyAccountPitItem)state[LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY]=Boolean(legacyAccountPitItem.complete||number(legacyAccountPitItem.progress)>=1);
       sharedWeeklySeen.forEach(task=>{state[ACCOUNT_WEEKLY_STATE_KEYS[task]]=sharedWeeklyProgress[task]||0});
+      roles.forEach(role=>{
+        if(state[dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id)]&&number(state[weeklyTaskStateKey(role.id,'黑色坑洞')])>0)state[pitDailyLinkedKey(role.id)]=true
+      });
       save()
     }
 
@@ -848,10 +971,9 @@
     }
 
     function dailyBlackHoleStateKey(roleId=active){return roleId+'-black-hole-d-'+gameDateKey()}
-    function accountDailyBlackHoleStateKey(){return 'account-black-hole-d-'+gameDateKey()}
-    function roleDailyPurchaseStateKey(roleId=active){return roleId+'-daily-procurement-'+gameDateKey()}
     const DAILY_DISPLAY_NAMES={
       '兼職：聖水／重要兼職':'兼職已處理',
+      [DAILY_BLACK_HOLE_TASK.sheetTask]:DAILY_BLACK_HOLE_TASK.label,
       '魔族供品清理→深層地下城':'魔族供品已處理'
     };
     function dailyDisplayName(task){return DAILY_DISPLAY_NAMES[task]||task}
@@ -859,16 +981,20 @@
       if(task==='兼職：聖水／重要兼職')return '維持兼職庫存，不區分價值高低。';
       if(task==='魔族供品清理→深層地下城')return '角色個別計算，避免供品消耗溢出。';
       if(task==='週幾地下城')return '角色個別計算。';
+      if(task===DAILY_ROLE_PURCHASE_TASK.sheetTask)return DAILY_ROLE_PURCHASE_TASK.note;
+      if(task===DAILY_BLACK_HOLE_TASK.sheetTask)return DAILY_BLACK_HOLE_TASK.note;
       return '角色個別計算。'
     }
-    const visibleDailyTasks=role=>role.daily.map((task,index)=>({task,index})).filter(item=>!HIDDEN_DAILY_TASKS.has(item.task));
-    const dailyCategory=task=>task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
+    const visibleDailyTasks=role=>[
+      ...role.daily.map((task,index)=>({task,index,id:taskIdFor('每日',task)})).filter(item=>!HIDDEN_DAILY_TASKS.has(item.task))
+    ];
+    const dailyCategory=task=>task===DAILY_ROLE_PURCHASE_TASK.sheetTask?'採購／交換':task.includes('兼職')||task==='每日任務'||task==='週幾地下城'?'每日核心':task.includes('供品')?'供品／深層':task.includes('坑洞')||task.includes('結界')?'機會型內容':'其他';
     function isAbyssWeeklyTask(task){return task==='深淵通關戰利品'||task==='白魅魔通關戰利品'}
-    function isOptionalWeeklyTask(task,roleId=active){return roleId!=='main'&&isAbyssWeeklyTask(task)}
+    function isOptionalWeeklyTask(){return false}
     // 目前 Weekly 任務皆以數值進度追蹤；保留此擴充點以相容未來的純完成型任務。
     const WEEKLY_CHECKBOX_TASKS=new Set([WEEKLY_ROLE_BARTER_TASK]);
     function isWeeklyCompletionTask(task){return WEEKLY_CHECKBOX_TASKS.has(task)}
-    const weeklyCategory=task=>isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'?'團隊副本':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'採購／一般週課';
+    const weeklyCategory=task=>task===WEEKLY_ROLE_BARTER_TASK?'交換確認':isAbyssWeeklyTask(task)?'深淵／高難':task==='格里斯貝恩'?'團隊副本':task.includes('結界')||task.includes('坑洞')||task.includes('首領')?'本週固定內容':'其他週課';
     function groupedTasks(items,categoryOf){const groups=new Map();items.forEach(item=>{const category=categoryOf(item.task);if(!groups.has(category))groups.set(category,[]);groups.get(category).push(item)});return [...groups.entries()]}
     function weeklyDisplayName(task){
       if(task==='黑色坑洞')return '黑色坑洞（每角色本週有效次數）';
@@ -877,34 +1003,71 @@
       return task
     }
     function weeklyStatus(task,value,target,roleId=active){
-      if(task==='黑色坑洞')return value>=target?'已達本週記錄上限 · 手動記錄':'手動記錄 · 每角色本週有效獎勵／探索次數；先沿用 14 次（待遊戲內核對）';
+      if(task==='黑色坑洞')return value>=target?'已達本週 14 次獎勵':'每角色本週已領獎；今日第一次記錄會連動每日勾選。戰利品箱消耗既有額度。';
       if(task==='不詳的召喚結界')return value>=target?'已達本週 7 次獎勵':'手動記錄 · 每角色每週 7 次獎勵';
-      if(task===WEEKLY_ROLE_BARTER_TASK)return value>=target?'本週交換已確認':'每角色每週確認一次；商品限購另在「採購清單」追蹤';
+      if(task===WEEKLY_ROLE_BARTER_TASK)return value>=target?'舊版交換確認':'舊版項目；改由採購和路線逐項追蹤';
       if(isWeeklyCompletionTask(task))return value>=target?'本週已完成':'本週未完成 · 以遊戲內狀態確認';
-      if(task==='格里斯貝恩'||task==='白魅魔通關戰利品')return value>=target?'已完成 · 本週獎勵已領':'每週獎勵 1 次 · 參加不限次數';
-      if(isOptionalWeeklyTask(task,roleId))return value>=target?'選做 · 已完成':'選做 · 有空再做';
+      if(task==='格里斯貝恩')return value>=target?'已完成 · 本週獎勵已領':`本週獎勵 1 次 · ${roleId==='main'?'本尊困難':'分身入門'}`;
+      if(task==='白魅魔通關戰利品')return value>=target?'已完成 · 本週獎勵已領':'本尊單人 · 本週獎勵 1 次';
+      if(task==='深淵通關戰利品')return value>=target?'已完成 · 本週獎勵已領':`每週獎勵 ${target} 次 · ${roleId==='main'?'本尊當前可打最高難度':'分身單人地獄1'}`;
       return value>=target?'已完成':'尚未達標'
+    }
+    function updatePitProgress(role,change,fromDaily=false){
+      const dailyKey=dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id);
+      const weeklyKey=weeklyTaskStateKey(role.id,'黑色坑洞');
+      const linkKey=pitDailyLinkedKey(role.id);
+      const previous=Math.max(0,Math.min(14,number(get(weeklyKey,0))));
+      const wasDaily=Boolean(get(dailyKey,false));
+      const wasLinked=Boolean(get(linkKey,false));
+      let next=Math.max(0,Math.min(14,previous+change));
+      if(change>0&&next===previous){render();return}
+      if(change<0&&next===previous&&!fromDaily){render();return}
+      if(fromDaily){
+        state[dailyKey]=change>0;
+        state[linkKey]=change>0;
+        if(change<0&&!wasLinked)next=previous;
+      }else if(change>0&&!get(dailyKey,false)){
+        state[dailyKey]=true;state[linkKey]=true;
+      }else if(change>0&&wasDaily&&!wasLinked&&previous===0){
+        state[linkKey]=true;
+      }else if(change<0&&next===0&&get(linkKey,false)){
+        state[dailyKey]=false;state[linkKey]=false;
+      }
+      state[weeklyKey]=next;save();render();
+      syncWrite(role,'黑色坑洞','每週',next,14);
+      if(Boolean(state[dailyKey])!==wasDaily){
+        syncWrite(role,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',state[dailyKey]?1:0,1)
+      }
     }
     function purchaseStateKey(item,roleId=active){
       const period=item.cycle==='每日'?gameDateKey():item.cycle==='每週'?weekStart(gameDateKey()):'info';
       return item.scope==='帳號'?`account-purchase-${item.id}-${period}`:`${roleId}-purchase-${item.id}-${period}`
     }
+    function purchasePlanKey(item,roleId=active){return `purchase-plan-${item.id}-${item.scope==='帳號'?'account':roleId}-${weekStart(gameDateKey())}`}
+    function purchasePlan(item,roleId=active){
+      if(item.cycle!=='每週')return item.target;
+      const defaultPlan=new Set(['gilmor-highest-leather','gilmor-highest-spider-web']).has(item.id)?item.target:0;
+      const saved=state[purchasePlanKey(item,roleId)];
+      return Math.max(0,Math.min(item.target,saved===undefined?defaultPlan:Math.floor(number(saved))))
+    }
     function purchaseValue(item,roleId=active){return Math.min(item.target,number(get(purchaseStateKey(item,roleId),0)))}
-    function purchaseDone(item,roleId=active){return item.track&&purchaseValue(item,roleId)>=item.target}
+    function purchaseDone(item,roleId=active){const plan=purchasePlan(item,roleId);return item.track&&plan>0&&purchaseValue(item,roleId)>=plan}
     function purchaseTask(item){return `採購｜${item.id}`}
-    function exchangeItemPending(item,roleId=active){if(!item.track)return false;if(item.scope==='帳號')return !purchaseDone(item,'account');return exchangeScope==='all'?roles.some(role=>!purchaseDone(item,role.id)):!purchaseDone(item,roleId)}
+    function exchangeItemPending(item,roleId=active){if(!item.track)return false;const pending=id=>purchasePlan(item,id)>0&&!purchaseDone(item,id);if(item.scope==='帳號')return pending('account');return exchangeScope==='all'?roles.some(role=>pending(role.id)):pending(roleId)}
     function exchangeMatchesFilter(item){return (exchangeFilter==='priority'&&PROCUREMENT_PRIORITY_IDS.has(item.id))||(exchangeFilter==='cooking'&&item.catalogTier==='frequent')||(exchangeFilter==='conditional'&&item.catalogTier==='conditional')||(exchangeFilter==='daily'&&item.track&&item.cycle==='每日')||(exchangeFilter==='weekly'&&item.track&&item.cycle==='每週')||(exchangeFilter==='info'&&!item.track)}
     function exchangeEvidence(item){return `<span class="evidence ${item.evidence.includes('官方')?'official':'player'}">${escapeHtml(item.evidence)}</span>${procurementPriorityBadge(item)}`}
     function exchangeCard(item,role){
-      const value=item.track?purchaseValue(item,role.id):0;const done=item.track&&value>=item.target;
+      const stateRole=item.scope==='帳號'?'account':role.id;
+      const value=item.track?purchaseValue(item,stateRole):0;const plan=item.track?purchasePlan(item,stateRole):0;const done=item.track&&plan>0&&value>=plan;
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
-      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
+      const planEditor=item.track&&item.cycle==='每週'?`<label class="exchange-note">本週計畫 <input type="number" min="0" max="${item.target}" step="1" inputmode="numeric" value="${plan}" data-purchase-plan="${item.id}" aria-label="${escapeHtml(item.product)} 本週計畫量"> ／上限 ${item.target}；已買 ${value}</label>`:'';
+      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)} · ${item.scope==='帳號'?'帳號限額':'角色限額'}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${planEditor}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
     }
     function exchangeCardAll(item){
       const accountOnly=item.scope==='帳號';
       const trackedRoles=accountOnly?[{id:'main',name:'帳號共通',stateRole:'account'}]:roles.map(role=>({...role,stateRole:role.id}));
       const allDone=item.track&&(accountOnly?purchaseDone(item,'account'):roles.every(role=>purchaseDone(item,role.id)));
-      const statuses=item.track?'<div class="exchange-role-grid">'+trackedRoles.map(role=>{const value=purchaseValue(item,role.stateRole),done=value>=item.target,status=item.target===1?(done?'完成':'待辦'):`${value}/${item.target}`;return '<button class="exchange-role-progress '+(done?'done':'')+'" type="button" data-exchange-select-role="'+role.id+'" aria-label="'+escapeHtml(role.name+' '+item.product+' '+status+'，切換角色以調整')+'"><span>'+escapeHtml(role.name)+'</span><b>'+escapeHtml(status)+'</b></button>'}).join('')+'</div>':'';
+      const statuses=item.track?'<div class="exchange-role-grid">'+trackedRoles.map(role=>{const value=purchaseValue(item,role.stateRole),plan=purchasePlan(item,role.stateRole),done=plan>0&&value>=plan,status=plan>0?`${value}/${plan}（上限 ${item.target}）`:'未規劃';return '<button class="exchange-role-progress '+(done?'done':'')+'" type="button" data-exchange-select-role="'+role.id+'" aria-label="'+escapeHtml(role.name+' '+item.product+' '+status+'，切換角色以調整')+'"><span>'+escapeHtml(role.name)+'</span><b>'+escapeHtml(status)+'</b></button>'}).join('')+'</div>':'';
       const routeScope=accountOnly?'帳號共通限購':'角色個別限購';
       return '<article class="exchange-card exchange-card-all '+(allDone?'done':'')+'"><div><div class="exchange-product">'+escapeHtml(item.product)+'</div><div class="exchange-route">'+escapeHtml(item.group)+' · '+routeScope+'</div><div class="exchange-meta"><span>需要：'+escapeHtml(item.cost)+'</span><span>'+escapeHtml(item.limit)+'</span>'+exchangeEvidence(item)+'</div></div>'+statuses+(item.note?'<div class="exchange-note">'+escapeHtml(item.note)+' <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">來源</a></div>':'')+'</article>'
     }
@@ -916,11 +1079,15 @@
       const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const trackedGroup=npcItems.filter(item=>item.track);const total=trackedGroup.reduce((sum,item)=>sum+(exchangeScope==='all'&&item.scope!=='帳號'?roles.length:1),0);const done=trackedGroup.reduce((sum,item)=>sum+(item.scope==='帳號'?(purchaseDone(item,'account')?1:0):exchangeScope==='all'?roles.filter(role=>purchaseDone(item,role.id)).length:(purchaseDone(item,role.id)?1:0)),0);const summary=trackedGroup.length?done+' / '+total+(exchangeScope==='all'?' 個角色限購已完成':' 項已完成'):'查詢資料';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeScope==='all'?exchangeCardAll(item):exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
       const currentLabel=exchangeSubView==='routes'?'路線與材料估算':filterLabels[exchangeFilter]||'稀缺優先';
       const scopeButtons='<div class="exchange-view-options"><div class="exchange-scope-buttons" role="group" aria-label="採購角色範圍"><button class="exchange-scope-button '+(exchangeScope==='role'?'active':'')+'" type="button" data-exchange-scope="role" aria-pressed="'+(exchangeScope==='role')+'">本角色</button><button class="exchange-scope-button '+(exchangeScope==='all'?'active':'')+'" type="button" data-exchange-scope="all" aria-pressed="'+(exchangeScope==='all')+'">六角色巡店</button></div><button class="exchange-pending-button '+(exchangePendingOnly?'active':'')+'" type="button" data-exchange-pending aria-pressed="'+exchangePendingOnly+'">'+(exchangePendingOnly?'顯示全部':'只看未完成')+'</button></div>';
-      const scopeNote=exchangeScope==='all'?'<p class="exchange-scope-note">進度依角色分開顯示；點角色名稱即可切到該角色調整。帳號共通限購只列一次。</p>':'';
+      const rareItems=PROCUREMENT_ITEMS.filter(item=>['gilmor-highest-leather','gilmor-highest-spider-web'].includes(item.id));
+      const rareBought=rareItems.reduce((sum,item)=>sum+roles.reduce((total,r)=>total+purchaseValue(item,r.id),0),0);
+      const rarePlanned=rareItems.reduce((sum,item)=>sum+roles.reduce((total,r)=>total+purchasePlan(item,r.id),0),0);
+      const rareSummary=exchangeFilter==='priority'?'<p class="exchange-scope-note">吉爾摩兩種材料：六角色已買 '+rareBought+'／計畫 '+rarePlanned+'（限額合計 360）；剩餘預估 '+Math.max(0,rarePlanned-rareBought)*900+' 金幣。可共倉的餘量優先給本尊；請先核對實際轉移條件。</p>':'';
+      const scopeNote=exchangeScope==='all'?'<p class="exchange-scope-note">進度依角色分開顯示；點角色名稱即可切到該角色調整。帳號共通限購只列一次；未規劃的品項不算缺漏。</p>':'';
       const emptyTitle=exchangePendingOnly?'這個分類目前沒有待處理項目':'這個分類目前沒有資料';
       const emptyHtml='<div class="exchange-empty"><h3>'+emptyTitle+'</h3><p>請切換其他分類查看。</p></div>';
       const subnav='<nav class="exchange-subnav" aria-label="採購工具分頁"><button type="button" data-exchange-subview="purchase" class="'+(exchangeSubView==='purchase'?'active':'')+'" aria-pressed="'+(exchangeSubView==='purchase')+'">採購清單</button><button type="button" data-exchange-subview="routes" class="'+(exchangeSubView==='routes'?'active':'')+'" aria-pressed="'+(exchangeSubView==='routes')+'">交換路線</button></nav>';
-      const purchaseView='<nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+scopeNote+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+procurementSourcesHtml();
+      const purchaseView='<nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+rareSummary+scopeNote+(groupsHtml||emptyHtml)+procurementGuideHtml()+communityToolsHtml()+procurementSourcesHtml();
       const content=exchangeSubView==='routes'?barterFinderHtml():purchaseView;
       return '<div class="section-title"><h2>採購與交換</h2><small>'+currentLabel+'</small></div>'+subnav+content
     }
@@ -943,20 +1110,20 @@
       return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small>'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記</small></div><div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>'+escapeHtml(role.store)+' 倉</h2><p>'+escapeHtml(role.detail)+'</p></div><div class="rule">依現有六角色倉庫分工登記材料。每項可選保管角色並輸入數量；上方「六倉合計」用來估算缺料，請只合計可實際轉移／供交換使用的材料。</div></div><div class="inventory-intro">目前追蹤 '+MATERIAL_CATALOG.length+' 種以物易物路線中明確標示數量的投入材料；帳號合計 '+totalUnits+' 件。未標示數量的金幣、條件文字不會推算。Google Sheets 同步設定完成後，資料會和日週進度一起同步。</div><div class="inventory-key"><span>依材料分工查看</span><span>數量 · 六倉合計</span></div>'+groups+'<div class="warehouse-list">'+roles.map(item=>'<div><b>'+escapeHtml(item.name)+'｜'+escapeHtml(item.store)+'</b><span>'+escapeHtml(item.detail)+'</span></div>').join('')+'</div>'
     }
     function roleWeeklyItems(role,includeOptional=true){
-      return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
+      return role.weekly.map(([task,target],index)=>({task,target,index,id:taskIdFor('每週',task)})).filter(item=>!isAccountWeeklyTask(item.task)&&!HIDDEN_WEEKLY_TASKS.has(item.task)&&!(role.id!=='main'&&item.task==='白魅魔通關戰利品')&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
     }
     function weeklyRequiredItems(role){return roleWeeklyItems(role,false)}
     function weeklyGroupSummary(tasks,roleId=active){
       const abyssTasks=tasks.filter(item=>isAbyssWeeklyTask(item.task));
       if(abyssTasks.length===tasks.length&&abyssTasks.length){
-        const cleared=abyssTasks.reduce((sum,item)=>sum+Math.max(0,Math.min(item.target,number(get(roleId+'-w-'+item.index,0)))),0);
+        const cleared=abyssTasks.reduce((sum,item)=>sum+Math.max(0,Math.min(item.target,number(get(weeklyTaskStateKey(roleId,item.task),0)))),0);
         const target=abyssTasks.reduce((sum,item)=>sum+item.target,0);
         return (abyssTasks.every(item=>isOptionalWeeklyTask(item.task,roleId))?'選做 ':'')+cleared+' / '+target+' 次'
       }
       const required=tasks.filter(item=>!isOptionalWeeklyTask(item.task,roleId));
       const optional=tasks.filter(item=>isOptionalWeeklyTask(item.task,roleId));
-      const requiredText=required.length?required.filter(item=>number(get(roleId+'-w-'+item.index,0))>=item.target).length+' / '+required.length:'';
-      const optionalText=optional.length?'選做 '+optional.filter(item=>number(get(roleId+'-w-'+item.index,0))>=item.target).length+' / '+optional.length:'';
+      const requiredText=required.length?required.filter(item=>number(get(weeklyTaskStateKey(roleId,item.task),0))>=item.target).length+' / '+required.length:'';
+      const optionalText=optional.length?'選做 '+optional.filter(item=>number(get(weeklyTaskStateKey(roleId,item.task),0))>=item.target).length+' / '+optional.length:'';
       return requiredText&&optionalText?requiredText+' · '+optionalText:requiredText||optionalText
     }
     function rotationRole(){
@@ -968,15 +1135,15 @@
       const focus=rotationRole();
       if(!focus)return '<strong>今日：六角色週課總盤點</strong><small>建議切到「本週」查看各角色補漏摘要。</small>';
       const monday=new Date(gameDateKey()+'T12:00:00').getDay()===1;
-      const mondayTip=monday?' 週初：建議六角色優先清理兼職庫存。':'';
+      const mondayTip=monday?' 週一先讓六角色各領一次野外首領戰利品，並優先清理兼職庫存。':'';
       return '<strong>今日主角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
     }
     function weeklyAuditHtml(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
       if(day!==0)return '';
       const roleCards=roles.map(role=>{
-        const pending=weeklyRequiredItems(role).filter(item=>number(get(role.id+'-w-'+item.index,0))<item.target).map(item=>weeklyDisplayName(item.task));
-        const purchasePending=PROCUREMENT_ITEMS.filter(item=>item.track&&item.cycle==='每週'&&item.scope==='角色'&&!purchaseDone(item,role.id)).map(item=>item.product+' '+purchaseValue(item,role.id)+'/'+item.target);
+        const pending=weeklyRequiredItems(role).filter(item=>number(get(weeklyTaskStateKey(role.id,item.task),0))<item.target).map(item=>weeklyDisplayName(item.task));
+        const purchasePending=PROCUREMENT_ITEMS.filter(item=>item.track&&item.cycle==='每週'&&item.scope==='角色'&&purchasePlan(item,role.id)>0&&!purchaseDone(item,role.id)).map(item=>item.product+' '+purchaseValue(item,role.id)+'/'+purchasePlan(item,role.id));
         const all=pending.concat(purchasePending);
         const detail=all.length?'尚缺：'+all.join('、'):'本週必做已完成';
         return '<div class="audit-item"><b>'+escapeHtml(role.name)+'</b><span>'+escapeHtml(detail)+'</span></div>'
@@ -989,11 +1156,6 @@
       const cards=SPECIAL_WEEKLY_EVENTS.map(item=>'<div class="task"><span class="pill">事件</span><span><span class="task-name">'+escapeHtml(item.label)+'｜'+escapeHtml(item.status)+'</span><span class="task-note">'+escapeHtml(item.note)+' '+escapeHtml(item.evidence)+' · <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">來源</a></span></span><span class="pill">不計分</span></div>').join('');
       return '<div class="shared-card special-event"><div class="section-title"><h2>特殊事件</h2><small>不影響完成率</small></div><div class="card">'+cards+'</div></div>'
     }
-    function roleWeeklyItems(role,includeOptional=true){
-      return role.weekly.map(([task,target],index)=>({task,target,index})).filter(item=>!isAccountWeeklyTask(item.task)&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
-    }
-    function weeklyRequiredItems(role){return roleWeeklyItems(role,false)}
-
     function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
     function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜T0 之後的小畢業選項'}
     function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
@@ -1174,8 +1336,8 @@
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
       if(day!==0)return '';
       const roleCards=roles.map(role=>{
-        const pending=weeklyRequiredItems(role).filter(item=>number(get(role.id+'-w-'+item.index,0))<item.target).map(item=>weeklyDisplayName(item.task));
-        const purchasePending=PROCUREMENT_ITEMS.filter(item=>item.track&&item.cycle==='每週'&&item.scope==='角色'&&!purchaseDone(item,role.id)).map(item=>item.product+' '+purchaseValue(item,role.id)+'/'+item.target);
+        const pending=weeklyRequiredItems(role).filter(item=>number(get(weeklyTaskStateKey(role.id,item.task),0))<item.target).map(item=>weeklyDisplayName(item.task));
+        const purchasePending=PROCUREMENT_ITEMS.filter(item=>item.track&&item.cycle==='每週'&&item.scope==='角色'&&purchasePlan(item,role.id)>0&&!purchaseDone(item,role.id)).map(item=>item.product+' '+purchaseValue(item,role.id)+'/'+purchasePlan(item,role.id));
         const all=pending.concat(purchasePending);
         const detail=all.length?'尚缺：'+all.join('、'):'本週必做已完成';
         return '<div class="audit-item"><b>'+escapeHtml(role.name)+'</b><span>'+escapeHtml(detail)+'</span></div>'
@@ -1190,30 +1352,26 @@
     }
     function dailyRoleProgress(role){
       const tasks=visibleDailyTasks(role);
-      const done=tasks.filter(item=>get(role.id+'-d-'+item.index,false)).length;
+      const done=tasks.filter(item=>get(dailyTaskStateKey(role.id,item.task),false)).length;
       return {done,total:tasks.length}
     }
     function weeklyRoleProgress(role,optional=false){
       const tasks=roleWeeklyItems(role,true).filter(item=>isOptionalWeeklyTask(item.task,role.id)===optional);
-      const done=tasks.filter(item=>number(get(role.id+'-w-'+item.index,0))>=item.target).length;
+      const done=tasks.filter(item=>number(get(weeklyTaskStateKey(role.id,item.task),0))>=item.target).length;
       return {done,total:tasks.length}
     }
     function challengeRoleProgress(role){
       const tasks=roleWeeklyItems(role,true).filter(item=>isAbyssWeeklyTask(item.task)||item.task==='格里斯貝恩');
-      return {done:tasks.reduce((sum,item)=>sum+Math.max(0,Math.min(item.target,number(get(role.id+'-w-'+item.index,0)))),0),
+      return {done:tasks.reduce((sum,item)=>sum+Math.max(0,Math.min(item.target,number(get(weeklyTaskStateKey(role.id,item.task),0)))),0),
         total:tasks.reduce((sum,item)=>sum+item.target,0)}
     }
     function overviewProgress(){
       const progress=roles.reduce((sum,role)=>{const current=dailyRoleProgress(role);sum[0]+=current.done;sum[1]+=current.total;return sum},[0,0]);
-      progress[0]+=get(accountDailyBlackHoleStateKey(),false)?1:0;
-      progress[1]+=1;
       return progress
     }
     function overviewHtml(){
       const focus=rotationRole();
       const focusText=focus?'今日值日角色：'+escapeHtml(focus.name)+'。先處理該角色，再依時間補其他角色。':'今天是週日：查看六角色週課進度並補漏。';
-      const dailyBlackHoleDone=Boolean(get(accountDailyBlackHoleStateKey(),false));
-      const sharedDaily='<div class="overview-shared"><span>帳號共通每日保底：黑色坑洞至少 1 場</span><b>'+(dailyBlackHoleDone?'1 / 1 已完成':'0 / 1 待處理')+'</b></div>';
       const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
       const sharedWeekly='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
       const cards=roles.map(role=>{
@@ -1221,19 +1379,19 @@
         const challengeProgress=challenge.total?'<div class="overview-progress challenge"><span>深淵／高難＋小格通關</span><b>'+challenge.done+' / '+challenge.total+' 次</b><progress value="'+challenge.done+'" max="'+challenge.total+'"></progress></div>':'';
         return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+challengeProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
-      return '<div class="section-title"><h2>六角色總覽</h2><small>分身高難進度獨立列為選做</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>每日與每週分開計算；分身深淵／高難不影響必做完成度。</span></div>'+sharedDaily+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
+      return '<div class="section-title"><h2>六角色總覽</h2><small>依本尊／分身目標列出週課</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>六角色週課都按各自目標難度計算；白魅魔僅列本尊。</span></div>'+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
     function progress(){
       const role=roles.find(x=>x.id===active);
       if(view==='overview')return overviewProgress();
       if(view==='daily'){
         const tasks=visibleDailyTasks(role);
-        const done=tasks.filter(item=>get(active+'-d-'+item.index,false)).length+(get(accountDailyBlackHoleStateKey(),false)?1:0);
-        return [done,tasks.length+1]
+        const done=tasks.filter(item=>get(dailyTaskStateKey(active,item.task),false)).length;
+        return [done,tasks.length]
       }
       if(view==='weekly'){
         const tasks=weeklyRequiredItems(role);
-        const done=tasks.filter(item=>number(get(active+'-w-'+item.index,0))>=item.target).length;
+        const done=tasks.filter(item=>number(get(weeklyTaskStateKey(active,item.task),0))>=item.target).length;
         const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
         return [done+sharedDone,tasks.length+ACCOUNT_WEEKLY_TASKS.length]
       }
@@ -1258,26 +1416,27 @@
       if(view==='overview')root.innerHTML=overviewHtml();
       if(view==='rune')root.innerHTML=renderRuneGuide(role);
       if(view==='daily'){
-        const dailyBlackHoleDone=Boolean(get(accountDailyBlackHoleStateKey(),false));
-        const dailyBlackHoleHtml='<div class="shared-card"><div class="section-title"><h2>帳號共通每日保底</h2><small>每日 06:00 重置</small></div><div class="card"><label class="task '+(dailyBlackHoleDone?'done':'')+'"><input type="checkbox" '+(dailyBlackHoleDone?'checked':'')+' data-account-black-hole><span><span class="task-name">'+DAILY_BLACK_HOLE_TASK.label+'</span><span class="task-note">'+DAILY_BLACK_HOLE_TASK.note+'</span></span><span class="pill">帳號</span></label></div></div>';
-        const groups=groupedTasks(visibleDailyTasks(role),dailyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+tasks.filter(item=>get(active+'-d-'+item.index,false)).length+' / '+tasks.length+'</small></summary><div class="card">'+tasks.map(item=>{const checked=get(active+'-d-'+item.index,false);return '<label class="task '+(checked?'done':'')+'"><input type="checkbox" '+(checked?'checked':'')+' data-d="'+item.index+'"><span><span class="task-name">'+escapeHtml(dailyDisplayName(item.task))+'</span><span class="task-note">'+escapeHtml(dailyTaskNote(item.task))+'</span></span><span class="pill">每日</span></label>'}).join('')+'</div></details>').join('');
-        root.innerHTML='<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div>'+dailyBlackHoleHtml+groups
+        const legacySharedPitDone=Boolean(state[LEGACY_ACCOUNT_DAILY_PIT_STATE_KEY]||state[legacyAccountDailyBlackHoleStateKey()]);
+        const allRolePitDone=roles.every(item=>Boolean(get(dailyTaskStateKey(item.id,DAILY_BLACK_HOLE_TASK.id),false)));
+        const legacyPitNotice=legacySharedPitDone&&!allRolePitDone?'<div class="weekly-tip">舊版帳號共通坑洞標記沒有記錄角色，未自動計入角色進度；請依實際完成情況逐角確認。</div>':'';
+        const groups=groupedTasks(visibleDailyTasks(role),dailyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+tasks.filter(item=>get(dailyTaskStateKey(active,item.id),false)).length+' / '+tasks.length+'</small></summary><div class="card">'+tasks.map(item=>{const checked=get(dailyTaskStateKey(active,item.id),false);return '<label class="task '+(checked?'done':'')+'"><input type="checkbox" '+(checked?'checked':'')+' data-daily-task="'+escapeHtml(item.id)+'"><span><span class="task-name">'+escapeHtml(dailyDisplayName(item.task))+'</span><span class="task-note">'+escapeHtml(dailyTaskNote(item.task))+'</span></span><span class="pill">每日</span></label>'}).join('')+'</div></details>').join('');
+        root.innerHTML='<div class="section-title"><h2>今日待辦</h2><small>06:00 重置</small></div>'+legacyPitNotice+groups
       }
       if(view==='weekly'){
         const sharedWeeklyHtml='<div class="shared-card"><div class="section-title"><h2>伺服器共通</h2><small>所有角色共用</small></div><div class="card">'+ACCOUNT_WEEKLY_TASKS.map(item=>{const done=number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1;return '<label class="task '+(done?'done':'')+'"><input type="checkbox" '+(done?'checked':'')+' data-account-weekly="'+escapeHtml(item.label)+'"><span><span class="task-name">'+escapeHtml(item.label)+'</span><span class="task-note">'+escapeHtml(item.note)+'</span></span><span class="pill">共通</span></label>'}).join('')+'</div></div>';
         const weeklyItems=roleWeeklyItems(role,true);
         const groups=groupedTasks(weeklyItems,weeklyCategory).map(([category,tasks])=>'<details class="task-group" open><summary>'+escapeHtml(category)+'<small>'+weeklyGroupSummary(tasks,active)+'</small></summary><div class="card">'+tasks.map(item=>{
-          const rawValue=number(get(active+'-w-'+item.index,0));
+          const rawValue=number(get(weeklyTaskStateKey(active,item.task),0));
           const completion=isWeeklyCompletionTask(item.task);
           const value=completion?(rawValue>=item.target?item.target:0):Math.min(rawValue,item.target);
           const optional=isOptionalWeeklyTask(item.task,active);
           const status=weeklyStatus(item.task,value,item.target,active);
           const amount=completion?'':' · '+value+' / '+item.target;
-          const control=completion?'<label class="week-check"><input type="checkbox" '+(value>=item.target?'checked':'')+' data-week-complete="'+item.index+'"><span>完成</span></label>':'<div class="stepper"><button aria-label="減少 '+escapeHtml(weeklyDisplayName(item.task))+'" data-step="'+item.index+'" data-delta="-1">−</button><output>'+value+'</output><button aria-label="增加 '+escapeHtml(weeklyDisplayName(item.task))+'" data-step="'+item.index+'" data-delta="1">＋</button></div>';
+          const control=completion?'<label class="week-check"><input type="checkbox" '+(value>=item.target?'checked':'')+' data-week-complete="'+escapeHtml(item.id)+'"><span>完成</span></label>':'<div class="stepper"><button aria-label="減少 '+escapeHtml(weeklyDisplayName(item.task))+'" data-step="'+escapeHtml(item.id)+'" data-delta="-1">−</button><output>'+value+'</output><button aria-label="增加 '+escapeHtml(weeklyDisplayName(item.task))+'" data-step="'+escapeHtml(item.id)+'" data-delta="1">＋</button></div>';
           const progressBar=completion?'':'<progress value="'+value+'" max="'+item.target+'"></progress>';
           return '<div class="week '+(value>=item.target?'complete ':'')+(optional?'optional':'')+'"><div><div class="week-name">'+escapeHtml(weeklyDisplayName(item.task))+'</div><small>'+escapeHtml(status)+amount+'</small></div>'+control+progressBar+'</div>'
         }).join('')+'</div></details>').join('');
-        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>黑色坑洞</b>以箭頭記錄本週有效獎勵／探索次數；目前先沿用 14 次上限，這是台服玩家資料、非官方固定值，請以遊戲內顯示為準。<b>不詳的召喚結界</b>以箭頭記錄每角色本週 7 次獎勵，達到 7 次即算完成；既有次數資料會直接延續。<b>格里斯貝恩（小格）</b>與白魅魔都是每角色每週 1 次獎勵；野外首領也是每角色每週 1 次，不論挑哪一隻都只算一次。深淵相關內容分成本尊必做、分身選做。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
+        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>普通黑色坑洞</b>逐角色記錄已領獎次數，目標 14。首次增加本週次數會連動該角色今日基本獎勵；今日勾選也會加到本週，同一筆不必記兩次。戰利品箱消耗既有獎勵次數，無法補回昨日過期額度。韓服官方指南列每日基本 1 次＋週超額 7 次；台服角色範圍以遊戲內確認。<a href="'+escapeHtml(OFFICIAL_BLACK_HOLE_GUIDE_URL)+'" target="_blank" rel="noreferrer">官方指南</a>。<b>結界</b>每角色 7 次；<b>小格</b>本尊困難、分身入門各 1 次；<b>深淵</b>本尊最高可挑戰難度、分身單人地獄1 各 3 次；<b>白魅魔</b>本尊單人 1 次。週一建議六角色各領一次野外首領獎勵；採購依各品本週計畫到「採購」頁記錄。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
       }
       if(view==='exchange'){root.innerHTML=renderExchange(role);updateBarterRouteVisibility()}
       if(view==='storage')root.innerHTML=renderInventory(role);
@@ -1288,7 +1447,7 @@
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
 
-      document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const index=Number(button.dataset.step),target=role.weekly[index][1],old=get(`${active}-w-${index}`,0),next=Math.max(0,Math.min(target,old+Number(button.dataset.delta)));set(`${active}-w-${index}`,next);syncWrite(role,role.weekly[index][0],'每週',next,target)});
+      document.querySelectorAll('[data-step]').forEach(button=>button.onclick=()=>{const entry=role.weekly.find(([task])=>taskIdFor('每週',task)===button.dataset.step);if(!entry)return;const [task,target]=entry;const delta=Number(button.dataset.delta);if(task==='黑色坑洞'){updatePitProgress(role,delta);return}const stateKey=weeklyTaskStateKey(active,task);const old=get(stateKey,0);const next=Math.max(0,Math.min(target,old+delta));set(stateKey,next);syncWrite(role,task,'每週',next,target)});
       document.querySelectorAll('[data-exchange-filter]').forEach(button=>button.onclick=()=>{exchangeFilter=button.dataset.exchangeFilter;render()});
       document.querySelectorAll('[data-exchange-subview]').forEach(button=>button.onclick=()=>{exchangeSubView=button.dataset.exchangeSubview;render()});
       document.querySelectorAll('[data-exchange-scope]').forEach(button=>button.onclick=()=>{exchangeScope=button.dataset.exchangeScope;render()});
@@ -1302,7 +1461,8 @@
       document.querySelectorAll('[data-inventory-stock]').forEach(input=>input.onchange=()=>{const material=MATERIAL_CATALOG.find(item=>item.id===input.dataset.inventoryStock);const owner=roles.find(item=>item.id===input.dataset.inventoryRole);if(!material||!owner)return;const value=Math.max(0,Math.floor(number(input.value)));state[inventoryStateKey(material.id,owner.id)]=value;save();syncWrite(owner,'庫存｜'+material.id,'常駐',value,999999999);render()});
       document.querySelectorAll('[data-exchange-select-role]').forEach(button=>button.onclick=()=>{active=button.dataset.exchangeSelectRole;exchangeScope='role';render()});
 
-      document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));set(purchaseStateKey(item,stateRole),next);syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole,purchaseTask(item),item.cycle,next,item.target)});
+      document.querySelectorAll('[data-purchase-step]').forEach(button=>button.onclick=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===button.dataset.purchaseStep);if(!item)return;const currentRole=roles.find(x=>x.id===active);const stateRole=item.scope==='帳號'?'account':active;const syncRole=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;const old=purchaseValue(item,stateRole);const next=Math.max(0,Math.min(item.target,old+Number(button.dataset.delta)));state[purchaseStateKey(item,stateRole)]=next;if(item.cycle==='每週'&&next>purchasePlan(item,stateRole)){state[purchasePlanKey(item,stateRole)]=next;syncWrite(syncRole,'採購計畫｜'+item.id,'每週',next,item.target)}save();render();syncWrite(syncRole,purchaseTask(item),item.cycle,next,item.target)});
+      document.querySelectorAll('[data-purchase-plan]').forEach(input=>input.onchange=()=>{const item=PROCUREMENT_ITEMS.find(candidate=>candidate.id===input.dataset.purchasePlan);if(!item||item.cycle!=='每週')return;const stateRole=item.scope==='帳號'?'account':active;const next=Math.max(0,Math.min(item.target,Math.floor(number(input.value))));state[purchasePlanKey(item,stateRole)]=next;save();render();syncWrite(item.scope==='帳號'?ACCOUNT_ROLE_RECORD:role,'採購計畫｜'+item.id,'每週',next,item.target)});
       document.querySelector('[data-oauth-login]')?.addEventListener('click',oauthLogin);document.querySelector('[data-oauth-read]')?.addEventListener('click',oauthRead);document.querySelector('[data-oauth-logout]')?.addEventListener('click',logoutOAuth);
       document.querySelector('[data-sync-save]')?.addEventListener('click',()=>{syncConfig.url=document.querySelector('#sync-url').value.trim();syncConfig.token=document.querySelector('#sync-token').value.trim();localStorage.setItem(syncKey,JSON.stringify(syncConfig));syncStatus=syncReady()?'備援同步設定已儲存':'請完整填入備援網址與密鑰';render()});document.querySelector('[data-sync-read]')?.addEventListener('click',syncReadLegacy);
       document.querySelectorAll('#view input[type="checkbox"]').forEach(checkbox=>checkbox.onclick=handleCheckboxClick);
@@ -1312,16 +1472,12 @@
       if(!checkbox||checkbox.type!=='checkbox'||!document.querySelector('#view')?.contains(checkbox))return;
       const checked=checkbox.checked;
       const currentRole=roles.find(role=>role.id===active);
-      if(checkbox.matches('[data-d]')){
-        const index=Number(checkbox.dataset.d),task=currentRole.daily[index];
-        if(!task)return;
-        setCheckboxState(`${active}-d-${index}`,checked);
-        syncWrite(currentRole,task,'每日',checked?1:0,1);
-        return
-      }
-      if(checkbox.matches('[data-account-black-hole]')){
-        setCheckboxState(accountDailyBlackHoleStateKey(),checked);
-        syncWrite(ACCOUNT_ROLE_RECORD,DAILY_BLACK_HOLE_TASK.sheetTask,'每日',checked?1:0,1);
+      if(checkbox.matches('[data-daily-task]')){
+        const item=visibleDailyTasks(currentRole).find(candidate=>candidate.id===checkbox.dataset.dailyTask);
+        if(!item)return;
+        if(item.id===DAILY_BLACK_HOLE_TASK.id){updatePitProgress(currentRole,checked?1:-1,true);return}
+        setCheckboxState(dailyTaskStateKey(active,item.id),checked);
+        syncWrite(currentRole,item.task,'每日',checked?1:0,1);
         return
       }
       if(checkbox.matches('[data-account-weekly]')){
@@ -1332,11 +1488,11 @@
         return
       }
       if(checkbox.matches('[data-week-complete]')){
-        const index=Number(checkbox.dataset.weekComplete),task=currentRole.weekly[index];
-        if(!task)return;
-        const next=checked?task[1]:0;
-        setCheckboxState(active+'-w-'+index,next);
-        syncWrite(currentRole,task[0],'每週',next,task[1]);
+        const entry=currentRole.weekly.find(([task])=>taskIdFor('每週',task)===checkbox.dataset.weekComplete);
+        if(!entry)return;
+        const [task,target]=entry;const next=checked?target:0;
+        setCheckboxState(weeklyTaskStateKey(active,task),next);
+        syncWrite(currentRole,task,'每週',next,target);
         return
       }
       if(checkbox.matches('[data-purchase-check]')){
@@ -1344,6 +1500,7 @@
         if(!item)return;
         const roleForSync=item.scope==='帳號'?ACCOUNT_ROLE_RECORD:currentRole;
         const stateRole=item.scope==='帳號'?'account':active;
+        if(checked&&item.cycle==='每週'&&purchasePlan(item,stateRole)<1){state[purchasePlanKey(item,stateRole)]=1;syncWrite(roleForSync,'採購計畫｜'+item.id,'每週',1,item.target)}
         setCheckboxState(purchaseStateKey(item,stateRole),checked?1:0);
         syncWrite(roleForSync,purchaseTask(item),item.cycle,checked?1:0,item.target)
       }
