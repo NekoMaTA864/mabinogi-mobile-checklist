@@ -335,18 +335,30 @@
     .craft-choices { display:flex; gap:.5rem; margin:.7rem 0; flex-wrap:wrap; }
     .craft-choices button { padding:.5rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#fff; color:#31566d; cursor:pointer; font-weight:700; }
     .craft-choices button.active { background:var(--blue); border-color:var(--blue); color:#fff; }
-    .craft-frame-hint { margin:.35rem 0 .5rem; color:var(--muted); font-size:.82rem; }
-    .craft-frame-shell { position:relative; left:50%; transform:translateX(-50%); width:calc(100vw - 2rem); max-width:1400px; overflow:auto; border:1px solid var(--line); border-radius:14px; background:#fff; -webkit-overflow-scrolling:touch; }
-    .craft-frame { display:block; width:100%; min-width:960px; min-height:780px; border:0; border-radius:13px; background:#fff; }
-    @media (min-width:900px) {
-      .craft-frame { min-height:1100px; }
-    }
+    .craft-preview { display:grid; gap:.7rem; padding:1rem; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .craft-preview p { margin:0; color:#486476; font-size:.87rem; line-height:1.6; }
+    .craft-open-button { width:100%; min-height:3rem; padding:.7rem 1rem; border:1px solid var(--blue); border-radius:10px; background:var(--blue); color:#fff; cursor:pointer; font-weight:750; }
+    .craft-open-button:hover { background:#174c76; }
+    .craft-dialog { width:100vw; height:100dvh; max-width:none; max-height:none; margin:0; padding:0; border:0; overflow:hidden; background:#f6f9fc; color:var(--ink); }
+    .craft-dialog[open] { display:grid; grid-template-rows:auto minmax(0,1fr); }
+    .craft-dialog::backdrop { background:#071827bb; }
+    .craft-dialog-head { display:flex; justify-content:space-between; align-items:center; gap:.75rem; min-height:3.5rem; padding:.55rem .8rem; border-bottom:1px solid var(--line); background:#fff; }
+    .craft-dialog-title { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:750; }
+    .craft-dialog-actions { display:flex; flex:none; align-items:center; gap:.45rem; }
+    .craft-dialog-actions a,.craft-dialog-actions button { min-height:2.35rem; padding:.42rem .68rem; border:1px solid #c9dae6; border-radius:8px; background:#fff; color:#31566d; font:inherit; font-size:.82rem; font-weight:700; text-decoration:none; cursor:pointer; }
+    .craft-dialog-actions button { background:#edf4f8; }
+    .craft-dialog-content { min-width:0; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; }
+    .craft-frame-shell { width:100%; height:1100px; border:0; background:#fff; }
+    .craft-frame { display:block; width:100%; min-width:960px; height:1100px; border:0; background:#fff; }
     @media (max-width:560px) {
       .tabs { grid-template-columns:repeat(7,minmax(0,1fr)); gap:.14rem; padding:.28rem; }
       .tab { padding:.54rem .04rem; font-size:.84rem; }
       .section-nav { padding:.6rem .75rem; gap:.45rem; }
       .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
-      .craft-frame-hint { max-width:100%; }
+      .craft-dialog-head { padding:.45rem .55rem; }
+      .craft-dialog-actions { gap:.3rem; }
+      .craft-dialog-actions a,.craft-dialog-actions button { padding:.4rem .48rem; font-size:.75rem; }
+      .craft-frame-shell,.craft-frame { height:780px; }
       .rune-class-head { display:block; }
       .rune-role-tag { display:inline-block; margin-top:.45rem; }
       .rune-slot-grid { grid-template-columns:1fr; }
@@ -358,7 +370,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-15</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-16</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1440,7 +1452,7 @@
       if(view==='craft'){
         const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',note:'台服資料版 2026-09-16：查取得方式、每份配方的材料數量、設備等級、產量與製作時間；有些來源仍標示待確認。'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',note:'2026-09-25 資料快照：沿著材料與成品追查製作關聯；未提供素材數量、取得地點或完整版本資訊。'};
         const extras=craftTool==='recipes'?'<p>同站延伸：<a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a>。計算器只算直接材料，且不會讀取本站六倉庫存。</p>':'';
-        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><p><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">外開 '+tool.title+' ↗</a></p>'+extras+'</div><p class="craft-frame-hint">桌面版加高資料框，增加「物品種類」可視高度；較窄畫面可在資料區內左右滑動。</p><div class="craft-frame-shell"><iframe class="craft-frame" title="'+tool.title+'道具查詢" src="'+tool.url+'" loading="lazy" referrerpolicy="no-referrer"></iframe></div>';
+        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>完整查詢在全螢幕檢視中開啟，主頁維持直版。窄畫面保留原站寬度，可在工具內左右滑動以看清分類名稱。</p><button type="button" class="craft-open-button" data-open-craft>展開 '+tool.title+' 查詢</button><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">在新分頁開啟 ↗</a></div>'+extras+'</div><dialog class="craft-dialog" id="craft-dialog" aria-labelledby="craft-dialog-title"><div class="craft-dialog-head"><span class="craft-dialog-title" id="craft-dialog-title">'+tool.title+'｜道具查詢</span><div class="craft-dialog-actions"><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">新分頁 ↗</a><button type="button" data-close-craft>關閉</button></div></div><div class="craft-dialog-content"><div class="craft-frame-shell"><iframe class="craft-frame" title="'+tool.title+'道具查詢" src="'+tool.url+'" loading="lazy" referrerpolicy="no-referrer"></iframe></div></div></dialog>';
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -1459,6 +1471,8 @@
       if(barterInput&&!window.PointerEvent)barterInput.addEventListener('touchstart',()=>{if(document.activeElement!==barterInput)barterInput.focus()},{passive:true});
       barterInput?.addEventListener('input',event=>{barterQuery=event.target.value;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-craft-tool]').forEach(button=>button.onclick=()=>{craftTool=button.dataset.craftTool;render()});
+      document.querySelector('[data-open-craft]')?.addEventListener('click',()=>document.querySelector('#craft-dialog')?.showModal());
+      document.querySelector('[data-close-craft]')?.addEventListener('click',()=>document.querySelector('#craft-dialog')?.close());
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>button.onclick=()=>{barterDirectionFilter=button.dataset.barterDirectionFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-plan-route]').forEach(button=>button.onclick=()=>{const route=BARTER_ROUTES.find(item=>item.id===button.dataset.planRoute);if(!route)return;const stateKey=barterPlanStateKey(route.id);const next=Math.max(0,Math.min(BARTER_PLAN_TARGET,barterPlanValue(route.id)+Number(button.dataset.delta)));state[stateKey]=next;save();syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',next,BARTER_PLAN_TARGET);render()});
