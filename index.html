@@ -43,17 +43,12 @@
     .meter b { font-size:.9rem; } .meter span { color:var(--muted); font-size:.83rem; }
     .track { grid-column:1/-1; height:7px; background:#e3edf4; overflow:hidden; border-radius:99px; } .fill { height:100%; background:linear-gradient(90deg,#2170a8,#4a9ccd); border-radius:99px; transition:width .2s; }
 
-    .tabs { display:grid; grid-template-columns:repeat(auto-fit,minmax(5.4rem,1fr)); gap:.36rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:.55rem; }
-    .tab { min-width:0; border:0; background:transparent; color:#5a7081; padding:.53rem .2rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; white-space:nowrap; }
+    .section-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; padding:.7rem 1rem; background:#fff; border-bottom:1px solid var(--line); }
+    .section-tab { display:flex; justify-content:center; align-items:center; min-height:3.15rem; padding:.7rem .8rem; border:1px solid #c8d9e5; border-radius:12px; background:#f4f8fb; color:#47677d; font-size:1.02rem; font-weight:750; cursor:pointer; }
+    .section-tab.active { border-color:var(--navy); background:var(--navy); color:#fff; box-shadow:0 2px 5px #102d4520; }
+    .tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.45rem; padding:.42rem; background:#e5edf3; border-radius:12px; margin-bottom:.8rem; }
+    .tab { min-width:0; border:0; background:transparent; color:#5a7081; padding:.66rem .4rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:1rem; white-space:nowrap; }
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
-    .tool-nav { display:grid; grid-template-columns:auto 1fr; align-items:center; gap:.65rem; margin-bottom:1rem; padding:.45rem .55rem; border:1px solid #b9d2e3; border-radius:12px; background:#edf6fc; }
-    .tool-nav-label { padding:0 .25rem; color:#527083; font-size:.72rem; font-weight:800; white-space:nowrap; }
-    .tool-tab { display:flex; justify-content:space-between; align-items:center; gap:.5rem; width:100%; min-width:0; padding:.55rem .7rem; border:1px solid transparent; border-radius:9px; background:transparent; color:#31566d; text-align:left; cursor:pointer; }
-    .tool-tab span:first-child { display:grid; gap:.05rem; }
-    .tool-tab b { font-size:.86rem; }
-    .tool-tab small { color:#607487; font-size:.7rem; font-weight:500; }
-    .tool-tab .tool-arrow { flex:0 0 auto; font-size:.8rem; font-weight:800; }
-    .tool-tab.active { border-color:#9ec1d9; background:#fff; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
     .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .task { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:.7rem; min-height:3.85rem; padding:.65rem .8rem; border-bottom:1px solid #e8eff4; cursor:pointer; touch-action:manipulation; }
@@ -327,10 +322,12 @@
     .app[data-view="rune"] .identity,
     .app[data-view="rune"] .focus-banner,
     .app[data-view="rune"] .meter { display:none; }
-    .app[data-view="craft"] .rolebar,
-    .app[data-view="craft"] .identity,
-    .app[data-view="craft"] .focus-banner,
-    .app[data-view="craft"] .meter { display:none; }
+    .app[data-app-section="items"] .rolebar,
+    .app[data-app-section="items"] .identity,
+    .app[data-app-section="items"] .focus-banner,
+    .app[data-app-section="items"] .meter,
+    .app[data-app-section="items"] .tabs,
+    .app[data-app-section="items"] .hint { display:none; }
     .craft-intro { background:#fff; border:1px solid var(--line); border-radius:14px; padding:1rem; margin-bottom:.8rem; line-height:1.6; }
     .craft-intro h2 { margin:0 0 .35rem; font-size:1.2rem; }
     .craft-intro p { margin:.3rem 0; color:#486476; font-size:.87rem; }
@@ -341,8 +338,8 @@
     .craft-frame { width:100%; min-height:780px; border:1px solid var(--line); border-radius:14px; background:#fff; }
     @media (max-width:560px) {
       .tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
-      .tool-nav { grid-template-columns:1fr; gap:.15rem; }
-      .tool-nav-label { padding:.05rem .25rem; }
+      .section-nav { padding:.6rem .75rem; gap:.45rem; }
+      .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
       .rune-class-head { display:block; }
       .rune-role-tag { display:inline-block; margin-top:.45rem; }
       .rune-slot-grid { grid-template-columns:1fr; }
@@ -354,14 +351,14 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-12</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-13</p></div><div class="date" id="date"></div></div></header>
+    <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
       <section class="focus-banner" id="focus-banner" aria-live="polite"></section>
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
-      <nav class="tabs" aria-label="角色清單檢視"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="rune">符文</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
-      <nav class="tool-nav" aria-label="獨立工具分頁"><span class="tool-nav-label">獨立工具</span><button class="tool-tab" type="button" data-view="craft" aria-pressed="false"><span><b>道具製作資料庫</b><small>配方、取得方式、材料上下游查詢</small></span><span class="tool-arrow">開啟 ↗</span></button></nav>
+      <nav class="tabs" aria-label="日週清單分頁"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="rune">符文</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
       <p class="hint">未登入或未設定同步時，勾選與進度會留在目前裝置；使用 Google OAuth 登入後可與 Google Sheets 同步。</p>
     </main>
@@ -647,7 +644,7 @@
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>{const active=button.dataset.barterCycleFilter===barterCadenceFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>{const active=button.dataset.barterDirectionFilter===barterDirectionFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))})
     }
-    let active='main',view='daily',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='recipes';
+    let appSection='checklist',active='main',view='daily',checklistView='daily',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='recipes';
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
     const state=loadObject(key);
@@ -1392,15 +1389,16 @@
     }
     function render(){
       resetStaleDailyState();resetStaleWeeklyState();
-      const app=document.querySelector('.app');app.dataset.view=view;app.dataset.exchangeSubview=exchangeSubView;
+      const app=document.querySelector('.app');app.dataset.view=view;app.dataset.appSection=appSection;app.dataset.exchangeSubview=exchangeSubView;
       const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
       document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
-      document.querySelectorAll('[data-view]').forEach(button=>{
-        const current=button.dataset.view===view;
+      document.querySelectorAll('[data-section]').forEach(button=>{
+        const current=button.dataset.section===appSection;
         button.classList.toggle('active',current);
-        if(button.classList.contains('tool-tab'))button.setAttribute('aria-pressed',String(current));
+        button.setAttribute('aria-pressed',String(current));
       });
+      document.querySelectorAll('[data-view]').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;const stockedMaterials=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
       document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'本週採購計畫':view==='storage'?'材料庫存':view==='rune'?'符文指南':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:view==='rune'?'唯讀參考':`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
@@ -1529,7 +1527,17 @@
         syncWrite(roleForSync,purchaseTask(item),item.cycle,checked?1:0,item.target)
       }
     }
-    document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{view=button.dataset.view;render()});
+    document.querySelectorAll('[data-section]').forEach(button=>button.onclick=()=>{
+      if(button.dataset.section==='items'){
+        if(appSection==='checklist')checklistView=view;
+        appSection='items';view='craft';
+      }else{
+        appSection='checklist';
+        if(view==='craft')view=checklistView;
+      }
+      render();
+    });
+    document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>{appSection='checklist';view=button.dataset.view;checklistView=view;render()});
     render();
     scheduleGameDayRefresh();
   </script>
