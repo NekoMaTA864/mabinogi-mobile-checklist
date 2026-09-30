@@ -265,9 +265,14 @@
     .rune-slot-summary { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
     .rune-slot-summary span { background:#fff; border:1px solid #cbdfea; border-radius:999px; padding:.2rem .55rem; font-size:.78rem; color:#426177; }
     .rune-class-description { margin:.45rem 1rem .1rem; padding:.5rem .7rem; border-left:3px solid #b7d0e3; background:#f7fafc; color:#536c7d; font-size:.79rem; }
+    .rune-build-notes { margin:0 1rem 1rem; padding:.65rem .75rem; border:1px solid #dbe7ef; border-radius:10px; background:#f9fbfd; color:#536c7d; font-size:.79rem; }
+    .rune-build-notes h4 { margin:0 0 .35rem; color:#31566d; font-size:.83rem; }
+    .rune-build-notes ul { margin:.25rem 0 0; padding-left:1.1rem; }
+    .rune-build-notes li+li { margin-top:.28rem; }
     .rune-slot-note { display:block; margin-top:.35rem; color:#6a7f8e; font-size:.74rem; }
     .rune-tier-secondary { margin:.7rem .8rem; padding:.55rem .7rem .7rem; border-top:1px solid var(--line); background:#fbfdff; }
     .rune-tier-secondary h4 { margin:.1rem 0 .4rem; color:#5d7485; font-size:.83rem; }
+    .rune-tier-note { margin:.35rem 0 .65rem; padding:.5rem .65rem; border-left:3px solid #b7d0e3; background:#f7fafc; color:#536c7d; font-size:.78rem; }
     .rune-operations { margin:0 1rem 1rem; border:1px solid #cbdfea; border-radius:11px; background:#f8fbfd; overflow:hidden; }
     .rune-operations-heading { margin:0; padding:.7rem .8rem .2rem; color:#245675; font-size:.86rem; font-weight:750; }
     .rune-operations-body { padding:0 .8rem .8rem; color:#486476; font-size:.81rem; }
@@ -320,7 +325,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.29-2</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-4</p></div><div class="date" id="date"></div></div></header>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
@@ -365,7 +370,7 @@
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
     const RUNE_GUIDE_SOURCE_URL='https://app.notion.com/p/3e9716f2a49a81f7a48fe3b8b3dc9e8b?pvs=204';
-    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-29","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","頑強+"],"T0_136":["超音波","內傷","頑強+"],"T1":["超音波","集中/內傷","頑強+"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可","description":"飾品第 2 格依技能改造分支選擇：356 選集中，136 選內傷；第 3 格符文名稱為頑強+，效果對應翼之穿刺技能。"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0":["終章","速奏","共鳴"],"T1":["終章","速奏","博愛"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"終章＋速奏＋博愛","description":"飾品第 3 格：共鳴偏單王；博愛較泛用，較適合分身。"},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"報應優先；有餘裕再追驚異＋、因果、業火"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
+    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-30","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","頑強+"],"T0_136":["超音波","內傷","頑強+"],"T1":["超音波","集中/內傷","頑強+"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可","description":"飾品第 2 格依技能改造分支選擇：356 選集中，136 選內傷；第 3 格符文名稱為頑強+，效果對應翼之穿刺技能。"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0_速奏流":["終章","共鳴","速奏"],"T0_二重奏流":["終章","共鳴","二重奏"]},"badge":{"T0":["絢爛"],"T1":["冷酷（絢爛下位）／睿智（冷卻取向）"]},"stop_line":"終章＋共鳴＋速奏／二重奏其一；兩種第三格依手法取捨","description":"樂師是定點輸出砲手；目前台服 S0 以第 3 樂章八連砲與終章高潮為主力。終章＋共鳴固定，第三格選速奏或二重奏，屬同級操作分支。","unordered_slots":["armor","accessory"],"slot_notes":{"armor":"列出的防具符文是候選組合，原文沒有指定第 1 至第 5 件的固定順序。","accessory":"這是三個飾品符文的流派組合，不代表遊戲裝備欄位順序。"},"t1_note":"目前來源沒有支持一套獨立的 T1 飾品三格。先以終章為核心；共鳴未到手時暫用已擁有的有效符文過渡，不把較早的博愛配置標作現行 T1。","build_notes":["武器：千把劍、千錘百鍊都列為可用；驚異是作者提到的特殊減少空窗玩法。千把劍仍受角色自身 Lv40 劍職條件影響。","飾品：終章＋共鳴為核心，第三格選速奏或二重奏。作者自己的 S0 測試中，速奏約多放 20% 第 3 樂章，二重奏約多放 20% 高潮且漸強銜接較寬鬆；作者偏好速奏，差距不是通用保證。","防具：小格套方向為毀滅烙印＋共鳴水晶；攻擊向候選有狙擊、穩定、岩石巨人、魔力激流、戰慄樂想、紅色盟約、陰險一擊。原文沒有提供唯一五件順序，依手上符文與效果組合。","徽章：絢爛為作者主選；冷酷是下位選項，睿智偏冷卻取向。","屬性與寶石：作者機體把爆擊堆到約 3000 後再補其他屬性，詞條寫作爆擊＞連擊＝技能威力；寶石偏技能威力，標籤方向為干擾（全技）、連擊（第 3 技）、強擊（高潮）。數字是作者機體截面，不是通用門檻。"]},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"報應優先；有餘裕再追驚異＋、因果、業火"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
     // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
     const RUNE_ROLE_CLASS_IDS=RUNE_GUIDE_DATA.roleClassIds;
 
@@ -1076,7 +1081,7 @@
       const tracked=PROCUREMENT_ITEMS.filter(item=>item.track);const catalogCount=PROCUREMENT_ITEMS.filter(item=>item.catalogTier).length;const priorityCount=PROCUREMENT_ITEMS.filter(item=>PROCUREMENT_PRIORITY_IDS.has(item.id)).length;
       const filterLabels={priority:'稀缺優先',cooking:'料理常備',conditional:'需求補買',daily:'每日限購',weekly:'每週限購',info:'材料參考'};
       const filterButtons=Object.entries(filterLabels).map(([id,label])=>'<button class="exchange-filter '+(exchangeFilter===id?'active':'')+'" data-exchange-filter="'+id+'">'+label+'</button>').join('');
-      const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const trackedGroup=npcItems.filter(item=>item.track);const total=trackedGroup.reduce((sum,item)=>sum+(exchangeScope==='all'&&item.scope!=='帳號'?roles.length:1),0);const done=trackedGroup.reduce((sum,item)=>sum+(item.scope==='帳號'?(purchaseDone(item,'account')?1:0):exchangeScope==='all'?roles.filter(role=>purchaseDone(item,role.id)).length:(purchaseDone(item,role.id)?1:0)),0);const summary=trackedGroup.length?done+' / '+total+(exchangeScope==='all'?' 個角色限購已完成':' 項已完成'):'查詢資料';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeScope==='all'?exchangeCardAll(item):exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
+      const groupsHtml=[...regions.entries()].map(([region,vendors])=>{const regionItems=[...vendors.values()].flat();const vendorHtml=[...vendors.entries()].map(([npc,npcItems])=>{const plans=npcItems.filter(item=>item.track&&item.cycle==='每週').flatMap(item=>(item.scope==='帳號'?['account']:exchangeScope==='all'?roles.map(r=>r.id):[role.id]).filter(id=>purchasePlan(item,id)>0).map(id=>({item,id})));const done=plans.filter(({item,id})=>purchaseDone(item,id)).length;const summary=plans.length?done+' / '+plans.length+' 個本週計畫已完成':'按需查詢／未規劃';return '<section class="exchange-vendor"><h4 class="exchange-vendor-heading"><span>'+escapeHtml(npc)+'</span><small>'+summary+'</small></h4><div class="exchange-list">'+npcItems.map(item=>exchangeScope==='all'?exchangeCardAll(item):exchangeCard(item,role)).join('')+'</div></section>'}).join('');return '<section class="exchange-region"><h3 class="exchange-region-heading">'+escapeHtml(region)+'<small>'+regionItems.length+' 項</small></h3><div class="exchange-region-content">'+vendorHtml+'</div></section>'}).join('');
       const currentLabel=exchangeSubView==='routes'?'路線與材料估算':filterLabels[exchangeFilter]||'稀缺優先';
       const scopeButtons='<div class="exchange-view-options"><div class="exchange-scope-buttons" role="group" aria-label="採購角色範圍"><button class="exchange-scope-button '+(exchangeScope==='role'?'active':'')+'" type="button" data-exchange-scope="role" aria-pressed="'+(exchangeScope==='role')+'">本角色</button><button class="exchange-scope-button '+(exchangeScope==='all'?'active':'')+'" type="button" data-exchange-scope="all" aria-pressed="'+(exchangeScope==='all')+'">六角色巡店</button></div><button class="exchange-pending-button '+(exchangePendingOnly?'active':'')+'" type="button" data-exchange-pending aria-pressed="'+exchangePendingOnly+'">'+(exchangePendingOnly?'顯示全部':'只看未完成')+'</button></div>';
       const rareItems=PROCUREMENT_ITEMS.filter(item=>['gilmor-highest-leather','gilmor-highest-spider-web'].includes(item.id));
@@ -1172,18 +1177,29 @@
       const groups=runeTierGroups(classGuide,tier,slot);
       const groupHtml=groups.map(group=>{
         const items=group.values.map((value,index)=>{
-          const prefix=(slot==='armor'||slot==='accessory')?'第'+(index+1)+'格：':'';
+          const unordered=(classGuide.unordered_slots||[]).includes(slot);
+          const prefix=(slot==='armor'||slot==='accessory')&&!unordered?'第'+(index+1)+'格：':'';
           return '<span class="rune-rune-item">'+escapeHtml(prefix+value)+'</span>'
         }).join('');
         return '<div class="rune-branch"><span class="rune-branch-label">'+escapeHtml(group.label)+'</span><div class="rune-rune-list">'+items+'</div></div>'
       }).join('');
-      const note=slot==='weapon'&&groups.some(group=>group.values.includes('千把劍'))&&classGuide.weapon.condition_note?'<small class="rune-slot-note">'+escapeHtml(classGuide.weapon.condition_note)+'</small>':'';
+      const notes=[];
+      if(slot==='weapon'&&groups.some(group=>group.values.includes('千把劍'))&&classGuide.weapon.condition_note)notes.push(classGuide.weapon.condition_note);
+      if(classGuide.slot_notes&&classGuide.slot_notes[slot])notes.push(classGuide.slot_notes[slot]);
+      const note=notes.length?'<small class="rune-slot-note">'+escapeHtml(notes.join(' '))+'</small>':'';
       return '<article class="rune-slot"><div class="rune-slot-head"><b>'+escapeHtml(runeSlotLabel(slot))+'</b><small>'+runeSlotCount(slot)+' 格</small></div>'+groupHtml+note+'</article>'
     }
     function runeTierHtml(classGuide,tier){
-      const slots=['weapon','armor','accessory','badge'].map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
+      const hideAccessory=tier==='T1'&&Boolean(classGuide.t1_note);
+      const slots=['weapon','armor','accessory','badge'].filter(slot=>!(hideAccessory&&slot==='accessory')).map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
       const description=tier==='T1'?'核心機制完整的小畢業解；依你的養成順序，T0 之後再補。':RUNE_GUIDE_DATA.meta.tier_definition[tier];
-      return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong><small>'+escapeHtml(description)+'</small></div><div class="rune-slot-grid">'+slots+'</div></section>'
+      const tierNote=tier==='T1'&&classGuide.t1_note?'<p class="rune-tier-note">'+escapeHtml(classGuide.t1_note)+'</p>':'';
+      return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong><small>'+escapeHtml(description)+'</small></div>'+tierNote+'<div class="rune-slot-grid">'+slots+'</div></section>'
+    }
+    function runeBuildNotesHtml(classGuide){
+      const notes=classGuide.build_notes||[];
+      if(!notes.length)return '';
+      return '<section class="rune-build-notes"><h4>配裝判讀與條件</h4><ul>'+notes.map(note=>'<li>'+escapeHtml(note)+'</li>').join('')+'</ul></section>'
     }
     const RUNE_OPERATION_GUIDES={
       mage:{
@@ -1244,17 +1260,26 @@
         url:'https://bobogameguides.com/mabinogi-mobile/guides/archer-guide.html'
       },
       bard:{
-        lead:'先練半自動：自動維持演奏，手動控制情緒值消耗。',
-        steps:[
-          '可先讓 1 琶音、3 星之奏鳴曲自動；把 4 漸強、5 高潮關閉自動施放。',
-          '情緒值過半、目標弱化已建立後，依冷卻手動按 4／5；5 高潮盡量留在爆發或破防窗口。',
-          '2 小夜曲施放較長；核心技能快轉好時，不要為了唱滿而卡住，可以短唱後取消。',
-          '看情緒值、弱化層數和 4／5 冷卻，不用把五招全改手動。'
+        lead:'樂師是定點輸出砲手，不建議用全自動當作輸出基準。先選第三顆飾品：速奏偏第 3 樂章頻率；二重奏偏高潮次數與漸強容錯。操作時同時看情緒值、弱化、Buff、冷卻和首領位置。',
+        rotations:[
+          {label:'速奏｜第 3 樂章次數較多（作者偏好）',text:'首輪：1 → 3 → 3 → 4 → 3 → 5 → 4 → 1。後續：3 → 3 → 5 → 4 → 3 → 5 → 4 → 1；若第一次 5 時 4 還在冷卻，先按 5 再接。普攻可穿插補情緒，固定軸不放 2。'},
+          {label:'二重奏｜高潮次數與漸強容錯較高',text:'4 → 1 → 3 → 3 → 4 → 3 → 5 → 4 → 1 → 5。暖機為 4 → 1 → 3 → 3；第 3 技第 2 樂章時看 4 的冷卻，未轉好就唱完，已轉好可移動取消。1 技弱化低於作者觀察值 30% 時補上。'}
         ],
-        practice:'不在情緒不足時空放 4／5，且讓 1、3 持續維持核心演奏與弱化。',
-        caution:'這是台服 S0 玩家配置示範；符文、冷卻和隊伍不同，實際節奏會變。',
-        source:'樂師台服 S0 半自動設定與循環',
-        url:'https://bobogameguides.com/mabinogi-mobile/guides/musician-guide.html'
+        steps:[
+          '3 星之奏鳴曲第 3 樂章會在目標周圍打出 8 發砲擊，落點固定；先等首領停定再放，首領移動就可能打空。作者以當時技能值估算全中 257.6%，吃到漸強後 386.4%，請以你角色的技能說明為準。',
+          '4 漸強會依情緒值提供攻擊增益；精華區作者測到情緒值約 60 時增益到頂。先用 1、3 與普攻累積情緒，再把漸強留給第 3 樂章或高潮的輸出窗口。',
+          '5 高潮需要至少 50 情緒值與目標弱化。最新 S0 實測指出可計入的弱化最多 3 層；不要再按舊說法把 5 層以上都算進增傷。',
+          '目前八連砲流的固定爆發軸不放 2 小夜曲；精華區較早的暖機示範雖有用 2，請勿把兩套排軸混在一起。新循環以 1、3 與命中普攻管理弱化和情緒。',
+          '如果暫時不想完整手操，可回到半自動練法：1、3 自動，4、5 手動，2 視情緒與冷卻處理；這是低操作量備用方式，不等同目前八連砲手操軸。'
+        ],
+        practice:'先分開練情緒跨過 50、3 技第三樂章命中、5 技在弱化足夠時爆發，再依你選的速奏／二重奏分支接完整循環。遇到會移動的首領，以命中與存活優先，不硬背木樁按鍵。',
+        caution:'9/1 新文是台服 S0 八連砲流；7/30 精華區是較早的二重終章流，適合看技能與情緒機制，不要把舊排軸和新分支混成一套。約 20% 的差距、爆擊 3000 與倍率都是作者機體測試，不是全玩家保證。',
+        sources:[
+          {label:'巴哈｜S0 第 3 樂章八連裝砲手（2026/09/01）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2562'},
+          {label:'巴哈精華｜二重終章流：技能、情緒與舊排軸',url:'https://forum.gamer.com.tw/G2.php?bsn=32564&sn=76'},
+          {label:'巴哈｜半自動樂師簡介（低操作量備用）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2314'},
+          {label:'循環逐步整理（依 9/1 原文，供核對按鍵）',url:'https://bobogameguides.com/mabinogi-mobile/guides/musician-guide.html'}
+        ]
       },
       priest:{
         lead:'你目前規格以聖戰為核心時，先練「聖域圈內打聖矛」。',
@@ -1309,7 +1334,7 @@
       const roleText=runeRoleLabel(classGuide.role);
       const cardId='rune-class-'+classGuide.id;
       const description=classGuide.description?'<p class="rune-class-description">'+escapeHtml(classGuide.description)+'</p>':'';
-      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section><div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
+      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
     }
     function renderRuneGuide(role){
       const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
@@ -1396,9 +1421,8 @@
         return [done+sharedDone,tasks.length+ACCOUNT_WEEKLY_TASKS.length]
       }
       if(view==='exchange'){
-        const items=PROCUREMENT_ITEMS.filter(item=>item.track);
-        if(exchangeScope==='all')return [items.reduce((sum,item)=>sum+(item.scope==='帳號'?(purchaseDone(item,'account')?1:0):roles.filter(current=>purchaseDone(item,current.id)).length),0),items.reduce((sum,item)=>sum+(item.scope==='帳號'?1:roles.length),0)];
-        return [items.filter(item=>purchaseDone(item,role.id)).length,items.length]
+        const plans=PROCUREMENT_ITEMS.filter(item=>item.track&&item.cycle==='每週').flatMap(item=>(item.scope==='帳號'?['account']:exchangeScope==='all'?roles.map(r=>r.id):[role.id]).filter(id=>purchasePlan(item,id)>0).map(id=>({item,id})));
+        return [plans.filter(({item,id})=>purchaseDone(item,id)).length,plans.length]
       }
       return [0,0]
     }
@@ -1410,7 +1434,7 @@
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.view===view));
       const [done,total]=progress();const syncLabel=oauthSignedIn()?`已登入：${oauth.user.email}`:syncReady()?'Token 備援可用':syncStatus;const stockedMaterials=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
-      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'採購限購進度':view==='storage'?'材料庫存':view==='rune'?'符文指南':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:view==='rune'?'唯讀參考':`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
+      document.querySelector('#meter-title').textContent=view==='overview'?'六角色今日進度':view==='daily'?'今日完成度':view==='weekly'?'本週完成度':view==='exchange'?'本週採購計畫':view==='storage'?'材料庫存':view==='rune'?'符文指南':'同步狀態';document.querySelector('#meter-label').textContent=view==='storage'?`${stockedMaterials} / ${MATERIAL_CATALOG.length} 種材料 · ${MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0)} 件`:view==='exchange'?`${done} / ${total} 已完成`:view==='sync'?syncLabel:view==='rune'?'唯讀參考':`${done} / ${total}`;document.querySelector('#meter-fill').style.width=view==='storage'?`${MATERIAL_CATALOG.length?stockedMaterials/MATERIAL_CATALOG.length*100:0}%`:view==='sync'?(oauthSignedIn()||syncReady()?'100%':'0%'):`${total?done/total*100:0}%`;
       document.querySelector('#date').textContent='遊戲日 '+gameDateLabel();
       const root=document.querySelector('#view');
       if(view==='overview')root.innerHTML=overviewHtml();
