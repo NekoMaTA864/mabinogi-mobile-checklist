@@ -275,17 +275,13 @@
     .rune-tier-note { margin:.35rem 0 .65rem; padding:.5rem .65rem; border-left:3px solid #b7d0e3; background:#f7fafc; color:#536c7d; font-size:.78rem; }
     .rune-operations { margin:0 1rem 1rem; border:1px solid #cbdfea; border-radius:11px; background:#f8fbfd; overflow:hidden; }
     .rune-operations-heading { margin:0; padding:.7rem .8rem .2rem; color:#245675; font-size:.86rem; font-weight:750; }
-    .rune-operations-body { padding:0 .8rem .8rem; color:#486476; font-size:.81rem; }
-    .rune-operations-body p { margin:.35rem 0; }
-    .rune-operations-body ol { margin:.4rem 0; padding-left:1.25rem; }
-    .rune-operations-body li+li { margin-top:.32rem; }
-    .rune-operations-body b { color:#31566d; }
-    .rune-operations-body h5 { margin:.65rem 0 .25rem; color:#31566d; font-size:.8rem; }
-    .rune-rotation-list { display:grid; gap:.35rem; margin:.35rem 0 .6rem; }
-    .rune-rotation-row { padding:.45rem .55rem; border-left:3px solid #9fc3dc; background:#fff; border-radius:0 7px 7px 0; }
-    .rune-rotation-row strong { display:block; margin-bottom:.08rem; }
-    .rune-operation-caution { color:#6d8494; font-size:.75rem; }
-    .rune-operation-source { margin-top:.55rem !important; font-size:.74rem; }
+    .rune-operations-body { display:grid; gap:.38rem; padding:.3rem .8rem .75rem; color:#486476; font-size:.81rem; }
+    .rune-operation-item { padding:.42rem .55rem; border-left:3px solid #9fc3dc; border-radius:0 7px 7px 0; background:#fff; }
+    .rune-operation-item b { color:#31566d; }
+    .rune-operation-item p { margin:.12rem 0 0; line-height:1.5; }
+    .rune-operation-cycle { border-left-color:#68a98d; background:#f3faf6; }
+    .rune-operation-cycle p { color:var(--ink); font-weight:700; }
+    .rune-operation-source { margin:.08rem 0 0; color:#6d8494; font-size:.74rem; line-height:1.45; }
     .rune-operation-source a { color:var(--blue); font-weight:700; }
     .rune-class-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .rune-class-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; background:linear-gradient(135deg,#f8fbfd,#edf5fa); }
@@ -325,7 +321,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-4</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-5</p></div><div class="date" id="date"></div></div></header>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
@@ -1203,132 +1199,61 @@
     }
     const RUNE_OPERATION_GUIDES={
       mage:{
-        lead:'先確認目前技能改造走 124 或 126，只練其中一條；以下數字是技能槽位。',
-        steps:[
-          '124 平穩循環：4 → 1 → 2 → 1 → 5；其他技能在冷卻時用 1 填空。',
-          '124 絕招練習：4 → 1 → 2 → 1 → 5 → 1×3 → 1 → 2 → 4 → 6。',
-          '126 爆發循環：1 → 2 → 1 → 4 → 6 → 2 → 1 → 4 → 1 → 5 → 1×3。',
-          '木樁練習時保持「其他技能一轉好就按、空檔補 1」；熟了再練絕招窗口。'
-        ],
-        practice:'1 技有沒有填進空檔；其他技能是否一亮就施放。',
-        caution:'循環來自玩家整理，先對照你的台服技能改造；技能名與動畫以客戶端為準。',
-        source:'魔法師 S0 循環與操作',
-        url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'
+        core:'短冷卻技能不用等整輪；依火球、冰刺、雷電的優先序連續輸出。山崩 4 技負責補易傷與增傷。',
+        priority:'火球（2） > 冰刺（3） > 雷電（1）',
+        cycle:'山崩增傷快結束時補 4 → 2 → 3 → 1；其他技能亮起後，照優先序接續。',
+        note:'4 技不用每輪固定插；山崩效果還在時，先打可用的輸出技。',
+        sources:[{label:'魔法師 S0 配裝與循環參考',url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'}]
       },
       lightning_mage:{
-        lead:'此卡套用你目前的 T0 單王方向：技能 1 霹靂、2 力場、3 導管。先看魔力條再決定下一招；數字對應遊戲技能格。',
-        skillPriority:[
-          '技能等級投資（霹靂單體向）：1 落雷 → 5 過載 → 2 電磁風暴 → 6 超越 → 3 分岔閃電／4 電漿披風。',
-          '若改成以超越為核心的流派，再把 6 往前。這是玩家 S0 配置建議，不是官方固定排名。'
-        ],
-        rotations:[
-          {label:'起手',text:'魔力充足、首領準備站定時按住 5，等過載引導完成；再用 3 對王掛閃電導管，接 1 蓄力落雷。'},
-          {label:'常態循環',text:'魔力高：蓄滿 1。魔力下滑：完整引導 2 或 3 回魔，再回 1；導管快消失時補 3。簡記：5 → 3 → 1 →（2／3 回魔）→ 1。'},
-          {label:'過載疊層',text:'過載期間 5 格會變成「破壞的閃光」；魔力夠、首領站定時蓄放。低魔力時以 2／3 回魔，若兩招都在冷卻，可用 4 或變身後 5 的不蓄力短放疊層，避免把魔力蓄光。'},
-          {label:'爆發窗口',text:'首領破防或確定站定時按 6 → 連續用 1。超越期間技能免魔、施放加快；免費蓄力觸發後也優先給 1。'}
-        ],
-        steps:[
-          '1 落雷是霹靂單王方向的主力。魔力高時蓄滿；「魔力集中」觸發免費蓄力時，優先把效果給 1。',
-          '2 電磁風暴、3 分岔閃電／導管是回魔引導技；機制安全時完整引導，才有機會觸發「魔力集中」的免費蓄力。看到閃電特效，下一個蓄力優先給 1；要躲招時直接移動取消。',
-          '3 導管先掛王，後續攻擊命中可觸發追加傷害與少量回魔；看圖示將消失時再補，不用每輪盲目重放。',
-          '2 力場用於回魔與聚怪；超越期間若技能格變成「魔力爆發」，瞄準王會停留的位置施放，讓力場落在有效位置。',
-          '4 電漿披風偏功能／保命，通常不是這套 T0 的主要輸出。近身危險時再用；技能格變成派生技時，以畫面上的名稱與效果為準。',
-          '分清 5 的兩個狀態：起手的 5 是引導過載、先回一段魔；過載啟動後 5 格改成蓄力攻擊「破壞的閃光」。',
-          '紅招、地板技與需要走位的機制優先處理；王快死或安全窗口很短時，可提早放出技能，不必硬等滿蓄。'
-        ],
-        practice:'分三輪練：先練「5 → 3 → 1」起手；再練高魔力打 1、低魔力用 2／3 回魔；最後在木樁練「6 → 連按 1」。觀察導管圖示、魔力條與過載狀態是否能接上。',
-        caution:'依 2026/09 台服 S0 新職上線後的玩家指南整理。技能等級順位採霹靂單體方向；不同攻略對超越／導管的投資順序有分歧，超越流需另調。韓服 S1／S2 的數值與循環未直接套用。',
-        sources:[
-          {label:'巴哈｜技能圖解、資源機制與強化順序（台服 S0 玩家整理）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2784'},
-          {label:'巴哈｜電擊術士配裝與技能按法討論',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2688'},
-          {label:'巴哈｜27k 實戰研究：依魔力選技能、免費蓄力',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'},
-          {label:'LDPlayer｜六招定位與魔力機制（2026/09/10）',url:'https://www.ldplayer.tw/blog/mabinogi-mobile-lightning-mage-guide.html'},
-          {label:'OSLink｜另一套強化順位，作交叉比對',url:'https://www.oslink.io/tw/blog/guide/mabinogi-mobile-lightning-mage-build-guide.html'}
-        ]
+        core:'依目前的霹靂單王方向，1 落雷是主力；5 開過載、3 掛導管，低魔力時用 2／3 回魔。',
+        priority:'高魔力蓄力 1；低魔力完整引導 2／3 回魔；免費蓄力優先給 1。',
+        cycle:'5 → 3 → 1；魔力下滑時引導 2／3 回魔，再回 1。首領破防時 6 → 1。',
+        note:'導管快消失時補 3；4 偏功能與保命。此循環只對應目前的霹靂單王配置。',
+        sources:[{label:'巴哈｜電擊術士資源機制與按法',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'}]
       },
       longbow:{
-        lead:'先確認 356 或 136 改造分支；以下基本手法兩條都適用。',
-        steps:[
-          '開打前拉到能穩定瞄準的距離；蓄力時盡量站穩，首領位移後先重新瞄準再放箭。',
-          '把主要蓄力輸出留給首領停頓或破防窗口；危險招式出現時先取消輸出、移出範圍。',
-          '若裝備「頑強+」符文，其效果會強化翼之穿刺技能的投槍支援攻擊；觀察首領韌性與準備動作後再交，不要在目標即將跑位時硬蓄力。',
-          '每次只記三件事：蓄力被中斷幾次、空放幾箭、破防窗口打進幾次主力。'
-        ],
-        practice:'減少移動造成的蓄力中斷，並讓主力命中破防窗口。',
-        caution:'356／136 的技能改造與符文分支不同；不要把另一分支的固定序列直接照抄。',
-        source:'長弓兵台服 S0 蓄力、站位與輸出窗口',
-        url:'https://bobogameguides.com/mabinogi-mobile/guides/archer-guide.html'
+        core:'站穩蓄力，把高倍率箭留給破防／停頓窗口；能否命中窗口比背固定按鍵更重要。',
+        priority:'安全站位與蓄力 → 破防窗口交高倍率技能 → 回到蓄力。',
+        cycle:'拉開距離站穩蓄力 → 用翼之穿刺等破防技 → 破防成立後打主力箭 → 回到蓄力。',
+        note:'356 與 136 改造不要混軸；356 可把烈焰箭放進爆發窗。目標要跑位時先停蓄力、重新瞄準。',
+        sources:[{label:'長弓兵蓄力、站位與破防攻略',url:'https://bobogameguides.com/mabinogi-mobile/guides/archer-guide.html'}]
       },
       bard:{
-        lead:'樂師是定點輸出砲手，不建議用全自動當作輸出基準。先選第三顆飾品：速奏偏第 3 樂章頻率；二重奏偏高潮次數與漸強容錯。操作時同時看情緒值、弱化、Buff、冷卻和首領位置。',
-        rotations:[
-          {label:'速奏｜第 3 樂章次數較多（作者偏好）',text:'首輪：1 → 3 → 3 → 4 → 3 → 5 → 4 → 1。後續：3 → 3 → 5 → 4 → 3 → 5 → 4 → 1；若第一次 5 時 4 還在冷卻，先按 5 再接。普攻可穿插補情緒，固定軸不放 2。'},
-          {label:'二重奏｜高潮次數與漸強容錯較高',text:'4 → 1 → 3 → 3 → 4 → 3 → 5 → 4 → 1 → 5。暖機為 4 → 1 → 3 → 3；第 3 技第 2 樂章時看 4 的冷卻，未轉好就唱完，已轉好可移動取消。1 技弱化低於作者觀察值 30% 時補上。'}
-        ],
-        steps:[
-          '3 星之奏鳴曲第 3 樂章會在目標周圍打出 8 發砲擊，落點固定；先等首領停定再放，首領移動就可能打空。作者以當時技能值估算全中 257.6%，吃到漸強後 386.4%，請以你角色的技能說明為準。',
-          '4 漸強會依情緒值提供攻擊增益；精華區作者測到情緒值約 60 時增益到頂。先用 1、3 與普攻累積情緒，再把漸強留給第 3 樂章或高潮的輸出窗口。',
-          '5 高潮需要至少 50 情緒值與目標弱化。最新 S0 實測指出可計入的弱化最多 3 層；不要再按舊說法把 5 層以上都算進增傷。',
-          '目前八連砲流的固定爆發軸不放 2 小夜曲；精華區較早的暖機示範雖有用 2，請勿把兩套排軸混在一起。新循環以 1、3 與命中普攻管理弱化和情緒。',
-          '如果暫時不想完整手操，可回到半自動練法：1、3 自動，4、5 手動，2 視情緒與冷卻處理；這是低操作量備用方式，不等同目前八連砲手操軸。'
-        ],
-        practice:'先分開練情緒跨過 50、3 技第三樂章命中、5 技在弱化足夠時爆發，再依你選的速奏／二重奏分支接完整循環。遇到會移動的首領，以命中與存活優先，不硬背木樁按鍵。',
-        caution:'9/1 新文是台服 S0 八連砲流；7/30 精華區是較早的二重終章流，適合看技能與情緒機制，不要把舊排軸和新分支混成一套。約 20% 的差距、爆擊 3000 與倍率都是作者機體測試，不是全玩家保證。',
+        core:'情緒值以 50 為平衡軸；每次從一側跨到另一側，下一招增傷。下排 1／2／3 增加情緒，上排 4／5 降低情緒，讓情緒來回跨線。',
+        cycle:'起手 1 → 3 → 3 → 4 → 3 → 5 → 4 → 1；後續 3 → 3 → 5（4 還在冷卻就先按 5）→ 4 → 3 → 5 → 4 → 1。',
+        note:'附圖作者偏好速奏軸。普攻穿插補情緒；3 技第二樂章看 4 的冷卻，未好就唱完、已好可移動取消；1 技弱化剩約 30% 時補。此軸不排 2。',
         sources:[
-          {label:'巴哈｜S0 第 3 樂章八連裝砲手（2026/09/01）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2562'},
-          {label:'巴哈精華｜二重終章流：技能、情緒與舊排軸',url:'https://forum.gamer.com.tw/G2.php?bsn=32564&sn=76'},
-          {label:'巴哈｜半自動樂師簡介（低操作量備用）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2314'},
-          {label:'循環逐步整理（依 9/1 原文，供核對按鍵）',url:'https://bobogameguides.com/mabinogi-mobile/guides/musician-guide.html'}
+          {label:'巴哈｜第 3 樂章八連砲與速奏循環',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2562'},
+          {label:'巴哈精華｜二重終章技能與情緒機制',url:'https://forum.gamer.com.tw/G2.php?bsn=32564&sn=76'}
         ]
       },
       priest:{
-        lead:'你目前規格以聖戰為核心時，先練「聖域圈內打聖矛」。',
-        steps:[
-          '4 聖域先放在首領會停留的位置；若使用聖戰符文，在圈內接主要攻擊以吃到增傷。',
-          '留意神聖力；台服玩家實測回報 4 技可回復神聖力，實際數值以遊戲內資源條為準。',
-          '首領停定或破防時再詠唱 5 聖矛；看到紅招、準備跳走時先閃，不要硬站著讀條。',
-          '如果改用穿刺之光，練習對準後分開放兩發；它較快但傷害與聖矛型不同。'
-        ],
-        practice:'5 聖矛能在聖域與安全輸出窗口內命中，而不是被首領位移打斷。',
-        caution:'圈內增傷、回復量和技能型態依符文配置；隊友連結與目標互動先在安全場景確認。',
-        source:'祭司 S0 玩家實測與技能討論',
-        url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14310&page=1&snA=2920'
+        core:'5 聖矛是主要輸出；4 聖域負責佈場並回復神聖力，目標是在安全時多打出聖矛。',
+        priority:'4 聖域佈場／補能 → 安全窗口放 5 聖矛 → 2／3 填空與管理資源。',
+        cycle:'4 → 安全時讀 5 → 用 2／3 填空 → 4 快結束時補上。',
+        note:'首領準備移動或出紅招時先閃，別為了完成讀條站樁；此循環依聖矛／聖戰方向。',
+        sources:[{label:'巴哈｜祭司 S0 技能與聖矛方向',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14310&page=1&snA=2920'}]
       },
       monk:{
-        lead:'5 化身是主要輸出窗口；你目前 T0 方向的 4 業火會把治療技改成攻擊技。',
-        steps:[
-          '先站到能穩定打到首領的位置；首領即將移動或出紅招時，先不要開 5。',
-          '首領停定時開 5 化身；窗口內優先施放 1、2，這兩招在化身期間會強化。',
-          '若穿業火，4 是輸出技；若切回支援配置，先重新確認 4 的技能效果再按。',
-          '把大招窗口練熟後，再加入走位；不要為了打滿循環吃首領紅招。'
-        ],
-        practice:'化身期間 1、2 都能命中；5 快轉好時能在安全窗口接上下一輪。',
-        caution:'化身覆蓋率與技能順序會受驚異＋、因果、冷卻詞條和符文改造影響。',
-        source:'修道士台服 S0 化身與符文操作',
-        url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'
+        core:'5 化身期間會強化 1、2；在安全窗口開化身，盡量把強化技打進增益時間。裝業火時，4 會轉為輸出技。',
+        cycle:'4（裝業火時） → 5 化身 → 窗口內優先 1／2 → 安全時補其他技能 → 5 轉好再開。',
+        note:'未裝業火時，4 依目前改造作治療／功能技；紅招優先閃。',
+        sources:[{label:'修道士 S0 化身與符文操作',url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'}]
       },
       dancer:{
-        lead:'先練大招兩段與二拍子時間窗。下列數字串是一位台服玩家的個人示範，不是唯一標準循環。',
-        steps:[
-          '第一次按 6 開啟二拍子後，先把增益窗口留給核心技能，不要立刻按第二段。',
-          '木樁示範序列：6 → 1 → 5 → 4（普攻 4 下）→ 1 → 1 → 6 → 5；最後一次 6 是大招第二段。',
-          '核心是把五招和大招第二段都放進二拍子的加成時間；若動畫、冷卻或技能改造不同，先減少普攻次數再重排。',
-          '先慢速練到第二段穩定命中，再逐步加快，不要為了抄序列漏掉躲招。'
-        ],
-        practice:'大招第二段在二拍子結束前命中；重播錄影檢查是否被動畫或走位拖出窗口。',
-        caution:'此流程是 2026-09-19 單一玩家偏好示範，並非多來源共識；先以實際技能描述驗證。',
-        source:'舞者 S0 玩家心得（單一玩家操作示範）',
-        url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14431&page=1&snA=2937'
+        core:'6 第一段開啟二拍子，第二段結算；先在二拍子內打完五個核心技能，再按第二段 6 收招。',
+        cycle:'6（第一段） → 1 → 5 → 4＋普攻×4 → 1 → 1 → 6（第二段） → 5。',
+        note:'這是巴哈作者的木樁示範；動畫或改造不同時少插普攻，確保第二段 6 在二拍子內命中。',
+        sources:[{label:'巴哈｜舞者 S0 雙段大招操作示範',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14431&page=1&snA=2937'}]
       }
     };
     function runeOperationsHtml(classGuide){
       const guide=RUNE_OPERATION_GUIDES[classGuide.id];
       if(!guide)return '';
-      const priority=guide.skillPriority?'<h5>技能等級投資優先序</h5><ol>'+guide.skillPriority.map(item=>'<li>'+escapeHtml(item)+'</li>').join('')+'</ol>':'';
-      const rotations=guide.rotations?'<h5>照著按：基本循環</h5><div class="rune-rotation-list">'+guide.rotations.map(item=>'<div class="rune-rotation-row"><strong>'+escapeHtml(item.label)+'</strong>'+escapeHtml(item.text)+'</div>').join('')+'</div>':'';
-      const steps=guide.steps.map(item=>'<li>'+escapeHtml(item)+'</li>').join('');
-      const sources=guide.sources?guide.sources.map(item=>'<a href="'+escapeHtml(item.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(item.label)+'</a>').join(' · '):'<a href="'+escapeHtml(guide.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(guide.source)+'</a>';
-      return '<section class="rune-operations"><h4 class="rune-operations-heading">手操練習</h4><div class="rune-operations-body"><p>'+escapeHtml(guide.lead)+'</p>'+priority+rotations+'<h5>手操重點</h5><ol>'+steps+'</ol><p><b>練習目標：</b>'+escapeHtml(guide.practice)+'</p><p class="rune-operation-caution">'+escapeHtml(guide.caution)+'</p><p class="rune-operation-source">參考：'+sources+'</p></div></section>'
+      const priority=guide.priority?'<div class="rune-operation-item"><b>技能優先順序</b><p>'+escapeHtml(guide.priority)+'</p></div>':'';
+      const sources=guide.sources.map(item=>'<a href="'+escapeHtml(item.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(item.label)+'</a>').join(' · ');
+      return '<section class="rune-operations"><h4 class="rune-operations-heading">核心概念・手操速查</h4><div class="rune-operations-body"><div class="rune-operation-item"><b>核心概念</b><p>'+escapeHtml(guide.core)+'</p></div>'+priority+'<div class="rune-operation-item rune-operation-cycle"><b>照著按</b><p>'+escapeHtml(guide.cycle)+'</p></div><div class="rune-operation-item"><b>補充</b><p>'+escapeHtml(guide.note)+'</p></div><p class="rune-operation-source">參考：'+sources+'</p></div></section>'
     }
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
