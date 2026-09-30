@@ -321,7 +321,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-5</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單</h1><p class="sub">六角色 · 每日／每週 · 材料倉庫分工 · 版本 2026.09.30-6</p></div><div class="date" id="date"></div></div></header>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
@@ -1206,11 +1206,14 @@
         sources:[{label:'魔法師 S0 配裝與循環參考',url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'}]
       },
       lightning_mage:{
-        core:'依目前的霹靂單王方向，1 落雷是主力；5 開過載、3 掛導管，低魔力時用 2／3 回魔。',
+        core:'這是霹靂單王軸：1 落雷主攻，5 開過載；2 力場、3 導管負責回魔與維持增益，依魔力在主攻和引導間切換。',
         priority:'高魔力蓄力 1；低魔力完整引導 2／3 回魔；免費蓄力優先給 1。',
-        cycle:'5 → 3 → 1；魔力下滑時引導 2／3 回魔，再回 1。首領破防時 6 → 1。',
-        note:'導管快消失時補 3；4 偏功能與保命。此循環只對應目前的霹靂單王配置。',
-        sources:[{label:'巴哈｜電擊術士資源機制與按法',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'}]
+        cycle:'5 開過載 →（2／3 引導回魔 → 1 主攻）循環 → 6 超越 → 連按 1 爆發。',
+        note:'導管快結束時補 3。此循環對應 T0「霹靂＋力場＋導管」單王配置；雷霆範圍流要另排。',
+        sources:[
+          {label:'巴哈｜霹靂單王配裝與技能循環',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2688'},
+          {label:'巴哈｜電擊術士資源控制與蓄力研究',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'}
+        ]
       },
       longbow:{
         core:'站穩蓄力，把高倍率箭留給破防／停頓窗口；能否命中窗口比背固定按鍵更重要。',
@@ -1236,10 +1239,13 @@
         sources:[{label:'巴哈｜祭司 S0 技能與聖矛方向',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14310&page=1&snA=2920'}]
       },
       monk:{
-        core:'5 化身期間會強化 1、2；在安全窗口開化身，盡量把強化技打進增益時間。裝業火時，4 會轉為輸出技。',
-        cycle:'4（裝業火時） → 5 化身 → 窗口內優先 1／2 → 安全時補其他技能 → 5 轉好再開。',
-        note:'未裝業火時，4 依目前改造作治療／功能技；紅招優先閃。',
-        sources:[{label:'修道士 S0 化身與符文操作',url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'}]
+        core:'T0 驚異＋／業火軸：5 化身強化 1、2；普攻命中幫忙縮短冷卻，裝業火時 4 也放進輸出循環。',
+        cycle:'5 化身 → 1 奔襲 → 2 霹靂掌 → 4 業火 → 1 奔襲 → 3 霹靂擊 → 4 業火 → 1 奔襲 → 2 霹靂掌 → 4 業火 → 5 化身（循環）。',
+        note:'這是驚異＋、業火分支的完整接法；技能還在冷卻時穿插普攻，紅招優先閃。尚未有驚異＋時，改看來源中的替代循環。',
+        sources:[
+          {label:'巴哈｜修道士驚異＋、業火完整接法',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1857'},
+          {label:'Nipponhashi｜修道士符文與冷卻分支',url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'}
+        ]
       },
       dancer:{
         core:'6 第一段開啟二拍子，第二段結算；先在二拍子內打完五個核心技能，再按第二段 6 收招。',
