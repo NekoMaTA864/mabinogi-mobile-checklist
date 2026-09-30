@@ -341,7 +341,7 @@
     .craft-open-button:hover { background:#174c76; }
     body.craft-dialog-open { overflow:hidden; }
     .craft-dialog { position:fixed; inset:0; z-index:9999; display:none; grid-template-rows:auto minmax(0,1fr); width:100vw; height:100dvh; margin:0; padding:0; overflow:hidden; background:#f6f9fc; color:var(--ink); }
-    .craft-dialog:not([hidden]) { display:grid; }
+    .craft-dialog.is-open { display:grid; }
     .craft-dialog-head { display:flex; justify-content:space-between; align-items:center; gap:.75rem; min-height:3.5rem; padding:.55rem .8rem; border-bottom:1px solid var(--line); background:#fff; }
     .craft-dialog-title { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:750; }
     .craft-dialog-actions { display:flex; flex:none; align-items:center; gap:.45rem; }
@@ -370,7 +370,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-17</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-18</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1410,13 +1410,13 @@
     function setCraftDialogOpen(open,trigger=null){
       const dialog=document.querySelector('#craft-dialog');
       if(!dialog)return;
-      dialog.hidden=!open;
+      dialog.classList.toggle('is-open',open);
       document.body.classList.toggle('craft-dialog-open',open);
       if(open){craftDialogTrigger=trigger||document.activeElement;dialog.querySelector('[data-close-craft]')?.focus()}
       else{if(craftDialogTrigger?.isConnected)craftDialogTrigger.focus();craftDialogTrigger=null}
     }
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&!document.querySelector('#craft-dialog')?.hidden)setCraftDialogOpen(false);
+      if(event.key==='Escape'&&document.querySelector('#craft-dialog')?.classList.contains('is-open'))setCraftDialogOpen(false);
     });
     function render(){
       resetStaleDailyState();resetStaleWeeklyState();
@@ -1464,7 +1464,7 @@
       if(view==='craft'){
         const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',note:'台服資料版 2026-09-16：查取得方式、每份配方的材料數量、設備等級、產量與製作時間；有些來源仍標示待確認。'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',note:'2026-09-25 資料快照：沿著材料與成品追查製作關聯；未提供素材數量、取得地點或完整版本資訊。'};
         const extras=craftTool==='recipes'?'<p>同站延伸：<a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a>。計算器只算直接材料，且不會讀取本站六倉庫存。</p>':'';
-        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>完整查詢在全螢幕檢視中開啟，主頁維持直版。窄畫面保留原站寬度，可在工具內左右滑動以看清分類名稱。</p><button type="button" class="craft-open-button" data-open-craft>展開 '+tool.title+' 查詢</button><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">在新分頁開啟 ↗</a></div>'+extras+'</div><div class="craft-dialog" id="craft-dialog" role="dialog" aria-modal="true" aria-labelledby="craft-dialog-title" hidden><div class="craft-dialog-head"><span class="craft-dialog-title" id="craft-dialog-title">'+tool.title+'｜道具查詢</span><div class="craft-dialog-actions"><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">新分頁 ↗</a><button type="button" data-close-craft>關閉</button></div></div><div class="craft-dialog-content"><div class="craft-frame-shell"><iframe class="craft-frame" title="'+tool.title+'道具查詢" src="'+tool.url+'" loading="lazy" referrerpolicy="no-referrer"></iframe></div></div></div>';
+        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>完整查詢在全螢幕檢視中開啟，主頁維持直版。窄畫面保留原站寬度，可在工具內左右滑動以看清分類名稱。</p><button type="button" class="craft-open-button" data-open-craft>展開 '+tool.title+' 查詢</button><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">在新分頁開啟 ↗</a></div>'+extras+'</div><div class="craft-dialog" id="craft-dialog" role="dialog" aria-modal="true" aria-labelledby="craft-dialog-title"><div class="craft-dialog-head"><span class="craft-dialog-title" id="craft-dialog-title">'+tool.title+'｜道具查詢</span><div class="craft-dialog-actions"><a href="'+tool.url+'" target="_blank" rel="noopener noreferrer">新分頁 ↗</a><button type="button" data-close-craft>關閉</button></div></div><div class="craft-dialog-content"><div class="craft-frame-shell"><iframe class="craft-frame" title="'+tool.title+'道具查詢" src="'+tool.url+'" loading="lazy" referrerpolicy="no-referrer"></iframe></div></div></div>';
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -1485,7 +1485,7 @@
       document.querySelectorAll('[data-craft-tool]').forEach(button=>button.onclick=()=>{craftTool=button.dataset.craftTool;render()});
       document.querySelector('[data-open-craft]')?.addEventListener('click',event=>setCraftDialogOpen(true,event.currentTarget));
       document.querySelector('[data-close-craft]')?.addEventListener('click',()=>setCraftDialogOpen(false));
-      document.querySelector('#craft-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget)setCraftDialogOpen(false)});
+      document.querySelector('#craft-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget&&event.currentTarget.classList.contains('is-open'))setCraftDialogOpen(false)});
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>button.onclick=()=>{barterDirectionFilter=button.dataset.barterDirectionFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-plan-route]').forEach(button=>button.onclick=()=>{const route=BARTER_ROUTES.find(item=>item.id===button.dataset.planRoute);if(!route)return;const stateKey=barterPlanStateKey(route.id);const next=Math.max(0,Math.min(BARTER_PLAN_TARGET,barterPlanValue(route.id)+Number(button.dataset.delta)));state[stateKey]=next;save();syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',next,BARTER_PLAN_TARGET);render()});
