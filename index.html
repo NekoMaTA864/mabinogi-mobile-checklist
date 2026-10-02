@@ -338,8 +338,20 @@
     .craft-preview { display:grid; gap:.7rem; padding:1rem; border:1px solid var(--line); border-radius:14px; background:#fff; }
     .craft-preview p { margin:0; color:#486476; font-size:.87rem; line-height:1.6; }
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
-    .craft-frame-shell { position:relative; left:50%; transform:translateX(-50%); width:calc(100vw - 1rem); max-width:1600px; height:max(740px,92dvh); overflow:hidden; border:1px solid var(--line); border-radius:14px; background:#fff; }
-    .craft-frame { display:block; width:100%; height:100%; border:0; background:#fff; }
+    .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff; cursor:pointer; font-weight:750; }
+    .craft-dialog { position:fixed; inset:0; margin:0; width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; padding:0; overflow:hidden; border:0; background:var(--paper); color:var(--ink); }
+    .craft-dialog[open] { display:grid; grid-template-rows:auto minmax(0,1fr); }
+    .craft-dialog::backdrop { background:#102d45c9; }
+    .craft-dialog-head { display:flex; justify-content:space-between; align-items:center; gap:.75rem; min-height:3.35rem; padding:.45rem .75rem; background:var(--navy); color:#fff; }
+    .craft-dialog-title { min-width:0; }
+    .craft-dialog-title small { display:block; color:#bfd4e6; font-size:.72rem; }
+    .craft-dialog-title strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.95rem; }
+    .craft-dialog-actions { display:flex; align-items:center; gap:.45rem; flex:none; }
+    .craft-dialog-actions a, .craft-dialog-actions button { display:inline-flex; align-items:center; justify-content:center; min-height:2.45rem; padding:.4rem .65rem; border:1px solid #c8d9e5; border-radius:8px; background:#fff; color:#31566d; font-size:.8rem; font-weight:700; text-decoration:none; cursor:pointer; white-space:nowrap; }
+    .craft-dialog-frame { display:block; width:100%; height:100%; min-height:0; border:0; background:#fff; }
+    .rune-version-warning { margin:.6rem 0 .8rem; padding:.65rem .8rem; border:1px solid #eadcae; border-radius:11px; background:#fff9e9; color:#6f5721; font-size:.8rem; line-height:1.55; }
+    .rune-version-warning b { color:#624600; }
+    .rune-version-warning a { margin-left:.2rem; color:#1e5d8f; font-weight:750; }
     @media (max-width:560px) {
       .tabs { grid-template-columns:repeat(7,minmax(0,1fr)); gap:.14rem; padding:.28rem; }
       .tab { padding:.54rem .04rem; font-size:.84rem; }
@@ -347,7 +359,9 @@
       .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
       .craft-intro { padding:.75rem; }
       .craft-preview { padding:.75rem; }
-      .craft-frame-shell { height:max(680px,88dvh); border-radius:10px; }
+      .craft-dialog-head { gap:.4rem; padding:.4rem .45rem; }
+      .craft-dialog-actions { gap:.28rem; }
+      .craft-dialog-actions a, .craft-dialog-actions button { padding:.38rem .48rem; font-size:.76rem; }
       .rune-class-head { display:block; }
       .rune-role-tag { display:inline-block; margin-top:.45rem; }
       .rune-slot-grid { grid-template-columns:1fr; }
@@ -359,7 +373,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.09.30-20</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.02-1</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1253,11 +1267,16 @@
         ]
       },
       longbow:{
-        core:'站穩蓄力，把高倍率箭留給破防／停頓窗口；能否命中窗口比背固定按鍵更重要。',
-        priority:'安全站位與蓄力 → 破防窗口交高倍率技能 → 回到蓄力。',
-        cycle:'拉開距離站穩蓄力 → 用翼之穿刺等破防技 → 破防成立後打主力箭 → 回到蓄力。',
-        note:'356 與 136 改造不要混軸；356 可把烈焰箭放進爆發窗。目標要跑位時先停蓄力、重新瞄準。',
-        sources:[{label:'長弓兵蓄力、站位與破防攻略',url:'https://bobogameguides.com/mabinogi-mobile/guides/archer-guide.html'}]
+        core:'長弓靠安全站位與蓄力：台服 S0 來源記載站定約 3 秒啟動狙擊術；1 破甲連射掛受傷增加，3 追心箭是蓄力主砲，2 翼之穿刺可協助推破防。6 龍之獵人留給破防或安全長停頓。',
+        priority:'非破防：先確保站位，用 1 維持易傷、3 蓄力輸出；只有韌性條需要加速時才插基本技能 2。破防窗：356 優先保留大招 6 與主力技；136 以 1／3／6 穩定輸出。',
+        cycle:'非破防（136）：站定約 3 秒 → 1（破甲連射） → 3（蓄力追心箭）；易傷快結束才補 1，韌性條要加速才插基本技能 2；大招 6 等安全窗口。\n破防前（356）：拉開並站穩 → 確認 1 易傷有效 → 留好 6、3；破防期間若安全 → 6（龍之獵人／架弓） → 架弓姿勢 2 → 2 → 2 → 3。長破防窗才追加 5（集中火焰箭）蓄力；短窗先完成已準備好的 2223。',
+        note:'巴哈作者分享的 2223 是 356 Boss 破防特化開大手法；這裡的 2、3 指「架弓姿勢」中的技能，不是平常技能列的 2 翼之穿刺、3 追心箭。136／356 是技能改造組合，不是按鍵循環。分身平常自動掛機可沿用原設定；高難手動先躲招、重站位，首領移動就停蓄力並重新瞄準。9/30 後追擊可依最終機率多次觸發；舊攻略與影片尚未按新規則重測，先不沿用舊追擊收益數值。',
+        sources:[
+          {label:'巴哈｜長弓兵資訊整理（8/29 更新）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1743'},
+          {label:'巴哈｜長弓 356 破防與開大 2223',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2979'},
+          {label:'YouTube｜Nia 長弓兵 S0 循環與符文',url:'https://www.youtube.com/watch?v=ZwEEJCCyCG0'},
+          {label:'官方｜9/30 更新日誌',url:'https://tw.nexon.com/mabinogimobile/home/news/update/3550874'}
+        ]
       },
       bard:{
         core:'情緒值以 50 為平衡軸；每次從一側跨到另一側，下一招增傷。下排 1／2／3 增加情緒，上排 4／5 降低情緒，讓情緒來回跨線。',
@@ -1311,7 +1330,7 @@
       const cards=classGuides.map(runeClassHtml).join('');
       const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
       const intro=classGuides.length>1?'本尊與預計轉職方向都先以 T0 為目標；T1 作為次要的小畢業選項。':'本尊與分身都先追 T0；T1 是小畢業選項，需要時再展開查看。';
-      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>依角色列出 T0 優先目標與 T1 後續選項；流派差異寫在對應角色卡內。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div>'+cards+'</div>'
+      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>依角色列出 T0 優先目標與 T1 後續選項；流派差異寫在對應角色卡內。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><aside class="rune-version-warning"><b>新符文待驗證：</b>9/30 維護公告新增 26 種原型符文，但公告沒有列出名稱與效果。等台服遊戲內資料及實測補齊前，這份 T0／T1 先維持 Notion 已確認版本。<a href="https://tw.nexon.com/mabinogimobile/home/news/notice/3554669" target="_blank" rel="noreferrer">官方公告 ↗</a></aside>'+cards+'</div>'
     }
 
     function rotationRole(){
@@ -1441,7 +1460,7 @@
       if(view==='craft'){
         const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',note:'台服資料版 2026-09-16：查取得方式、每份配方的材料數量、設備等級、產量與製作時間；有些來源仍標示待確認。'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',note:'2026-09-25 資料快照：沿著材料與成品追查製作關聯；未提供素材數量、取得地點或完整版本資訊。'};
         const extras=craftTool==='recipes'?'<p>同站延伸：<a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a>。計算器只算直接材料，且不會讀取本站六倉庫存。</p>':'';
-        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>查詢資料直接放在下方加寬、加高的視窗；外站會依目前視窗寬度自行排列，不強制本站左右滑動。需要原站完整畫面時也可另開分頁。</p><a class="craft-external-link" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">另開 '+tool.title+' ↗</a></div>'+extras+'</div><div class="craft-frame-shell"><iframe class="craft-frame" title="'+tool.title+'道具查詢" src="'+tool.url+'" loading="lazy" referrerpolicy="no-referrer"></iframe></div>';
+        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>外站會在獨立的全畫面工作區中開啟，保留它原本的操作寬度與字體，不縮放塞進清單欄位；關閉後回到道具資訊。若裝置太窄，分類列仍依外站自身設計顯示。</p><button class="craft-open-button" type="button" data-craft-open data-craft-url="'+tool.url+'" data-craft-title="'+tool.title+'">全畫面查詢 ↗</button><a class="craft-external-link" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">直接另開原站 ↗</a></div>'+extras+'</div><dialog class="craft-dialog" id="craft-dialog" aria-labelledby="craft-dialog-title"><div class="craft-dialog-head"><div class="craft-dialog-title"><small>獨立工作區 · 返回不會改變清單版面</small><strong id="craft-dialog-title">道具查詢</strong></div><div class="craft-dialog-actions"><a data-craft-dialog-link href="'+tool.url+'" target="_blank" rel="noopener noreferrer">原站 ↗</a><button type="button" data-craft-close aria-label="關閉道具查詢">關閉</button></div></div><iframe class="craft-dialog-frame" title="'+tool.title+' 道具查詢" loading="lazy" referrerpolicy="no-referrer"></iframe></dialog>';
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -1460,6 +1479,8 @@
       if(barterInput&&!window.PointerEvent)barterInput.addEventListener('touchstart',()=>{if(document.activeElement!==barterInput)barterInput.focus()},{passive:true});
       barterInput?.addEventListener('input',event=>{barterQuery=event.target.value;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-craft-tool]').forEach(button=>button.onclick=()=>{craftTool=button.dataset.craftTool;render()});
+      document.querySelector('[data-craft-open]')?.addEventListener('click',event=>{const button=event.currentTarget;const dialog=document.querySelector('#craft-dialog');const frame=dialog?.querySelector('.craft-dialog-frame');const title=dialog?.querySelector('#craft-dialog-title');const link=dialog?.querySelector('[data-craft-dialog-link]');if(!dialog||!frame)return;const url=button.dataset.craftUrl;if(frame.src!==url)frame.src=url;if(title)title.textContent=button.dataset.craftTitle||'道具查詢';if(link)link.href=url;if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','')});
+      document.querySelector('[data-craft-close]')?.addEventListener('click',()=>{const dialog=document.querySelector('#craft-dialog');if(dialog?.open&&typeof dialog.close==='function')dialog.close();else dialog?.removeAttribute('open')});
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>button.onclick=()=>{barterDirectionFilter=button.dataset.barterDirectionFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-plan-route]').forEach(button=>button.onclick=()=>{const route=BARTER_ROUTES.find(item=>item.id===button.dataset.planRoute);if(!route)return;const stateKey=barterPlanStateKey(route.id);const next=Math.max(0,Math.min(BARTER_PLAN_TARGET,barterPlanValue(route.id)+Number(button.dataset.delta)));state[stateKey]=next;save();syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',next,BARTER_PLAN_TARGET);render()});
