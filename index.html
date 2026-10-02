@@ -338,18 +338,7 @@
     .craft-preview { display:grid; gap:.7rem; padding:1rem; border:1px solid var(--line); border-radius:14px; background:#fff; }
     .craft-preview p { margin:0; color:#486476; font-size:.87rem; line-height:1.6; }
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
-    .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff; cursor:pointer; font-weight:750; }
-    body.craft-workspace-open { overflow:hidden; }
-    .craft-dialog { position:fixed; inset:0; z-index:10000; width:100vw; height:100dvh; padding:0; overflow:hidden; background:var(--paper); color:var(--ink); }
-    .craft-dialog[hidden] { display:none!important; }
-    .craft-dialog:not([hidden]) { display:grid; grid-template-rows:auto minmax(0,1fr); }
-    .craft-dialog-head { display:flex; justify-content:space-between; align-items:center; gap:.75rem; min-height:3.35rem; padding:.45rem .75rem; background:var(--navy); color:#fff; }
-    .craft-dialog-title { min-width:0; }
-    .craft-dialog-title small { display:block; color:#bfd4e6; font-size:.72rem; }
-    .craft-dialog-title strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.95rem; }
-    .craft-dialog-actions { display:flex; align-items:center; gap:.45rem; flex:none; }
-    .craft-dialog-actions a, .craft-dialog-actions button { display:inline-flex; align-items:center; justify-content:center; min-height:2.45rem; padding:.4rem .65rem; border:1px solid #c8d9e5; border-radius:8px; background:#fff; color:#31566d; font-size:.8rem; font-weight:700; text-decoration:none; cursor:pointer; white-space:nowrap; }
-    .craft-dialog-frame { display:block; width:100%; height:100%; min-height:0; border:0; background:#fff; }
+    .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff!important; cursor:pointer; font-size:.9rem; font-weight:750; text-decoration:none; }
     .rune-version-warning { margin:.6rem 0 .8rem; padding:.65rem .8rem; border:1px solid #eadcae; border-radius:11px; background:#fff9e9; color:#6f5721; font-size:.8rem; line-height:1.55; }
     .rune-version-warning b { color:#624600; }
     .rune-version-warning a { margin-left:.2rem; color:#1e5d8f; font-weight:750; }
@@ -360,9 +349,6 @@
       .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
       .craft-intro { padding:.75rem; }
       .craft-preview { padding:.75rem; }
-      .craft-dialog-head { gap:.4rem; padding:.4rem .45rem; }
-      .craft-dialog-actions { gap:.28rem; }
-      .craft-dialog-actions a, .craft-dialog-actions button { padding:.38rem .48rem; font-size:.76rem; }
       .rune-class-head { display:block; }
       .rune-role-tag { display:inline-block; margin-top:.45rem; }
       .rune-slot-grid { grid-template-columns:1fr; }
@@ -374,7 +360,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.02-4</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.02-5</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1271,7 +1257,7 @@
         core:'長弓靠安全站位與蓄力：台服 S0 來源記載站定約 3 秒啟動狙擊術；1 破甲連射掛受傷增加，3 追心箭是蓄力主砲，2 翼之穿刺可協助推破防。6 龍之獵人留給破防或安全長停頓。',
         priority:'非破防：先確保站位，用 1 維持易傷、3 蓄力輸出；只有韌性條需要加速時才插基本技能 2。破防窗：356 優先保留大招 6 與主力技；136 以 1／3／6 穩定輸出。',
         cycle:'非破防（136）：站定約 3 秒 → 1（破甲連射） → 3（蓄力追心箭）；易傷快結束才補 1，韌性條要加速才插基本技能 2；大招 6 等安全窗口。\n破防前（356）：拉開並站穩 → 確認 1 易傷有效 → 留好 6、3；破防期間若安全 → 6（龍之獵人／架弓） → 架弓姿勢 2 → 2 → 2 → 3。長破防窗才追加 5（集中火焰箭）蓄力；短窗先完成已準備好的 2223。',
-        note:'巴哈作者分享的 2223 是 356 Boss 破防特化開大手法；這裡的 2、3 指「架弓姿勢」中的技能，不是平常技能列的 2 翼之穿刺、3 追心箭。136／356 是技能改造組合，不是按鍵循環。分身平常自動掛機可沿用原設定；高難手動先躲招、重站位，首領移動就停蓄力並重新瞄準。9/30 後追擊可依最終機率多次觸發；舊攻略與影片尚未按新規則重測，先不沿用舊追擊收益數值。',
+        note:'巴哈作者分享的 2223 是 356 Boss 破防特化開大手法；這裡的 2、3 指「架弓姿勢」中的技能，不是平常技能列的 2 翼之穿刺、3 追心箭。136／356 是技能改造組合，不是按鍵循環。台服 S0 整理記載狙擊術約需站定 3 秒；同文另提韓服已改為約 2 秒且移動不中斷，台服是否同步以角色技能說明與實測為準，不直接套用韓服數值。分身平常自動掛機可沿用原設定；高難手動先躲招、重站位，首領移動就停蓄力並重新瞄準。9/30 後追擊可依最終機率多次觸發；舊攻略與影片尚未按新規則重測，先不沿用舊追擊收益數值。',
         sources:[
           {label:'巴哈｜長弓兵資訊整理（8/29 更新）',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1743'},
           {label:'巴哈｜長弓 356 破防與開大 2223',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2979'},
@@ -1318,15 +1304,6 @@
       const priority=guide.priority?'<div class="rune-operation-item"><b>技能優先順序</b><p>'+escapeHtml(guide.priority)+'</p></div>':'';
       const sources=guide.sources.map(item=>'<a href="'+escapeHtml(item.url)+'" target="_blank" rel="noreferrer">'+escapeHtml(item.label)+'</a>').join(' · ');
       return '<section class="rune-operations"><h4 class="rune-operations-heading">核心概念・手操速查</h4><div class="rune-operations-body"><div class="rune-operation-item"><b>核心概念</b><p>'+escapeHtml(guide.core)+'</p></div>'+priority+'<div class="rune-operation-item rune-operation-cycle"><b>照著按</b><p>'+escapeHtml(guide.cycle)+'</p></div><div class="rune-operation-item"><b>補充</b><p>'+escapeHtml(guide.note)+'</p></div><p class="rune-operation-source">參考：'+sources+'</p></div></section>'
-    }
-    function openCraftQuery(button){
-      const dialog=document.querySelector('#craft-dialog');const frame=dialog?.querySelector('.craft-dialog-frame');const title=dialog?.querySelector('#craft-dialog-title');const link=dialog?.querySelector('[data-craft-dialog-link]');
-      if(!dialog||!frame)return;
-      const url=button.dataset.craftUrl;if(frame.src!==url)frame.src=url;if(title)title.textContent=button.dataset.craftTitle||'道具查詢';if(link)link.href=url;
-      dialog.removeAttribute('hidden');document.body.classList.add('craft-workspace-open');
-    }
-    function closeCraftQuery(){
-      const dialog=document.querySelector('#craft-dialog');if(!dialog)return;dialog.setAttribute('hidden','');document.body.classList.remove('craft-workspace-open');
     }
     function runeClassHtml(classGuide){
       const roleText=runeRoleLabel(classGuide.role);
@@ -1470,7 +1447,7 @@
       if(view==='craft'){
         const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',note:'台服資料版 2026-09-16：查取得方式、每份配方的材料數量、設備等級、產量與製作時間；有些來源仍標示待確認。'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',note:'2026-09-25 資料快照：沿著材料與成品追查製作關聯；未提供素材數量、取得地點或完整版本資訊。'};
         const extras=craftTool==='recipes'?'<p>同站延伸：<a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a>。計算器只算直接材料，且不會讀取本站六倉庫存。</p>':'';
-        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>外站會在獨立的全畫面工作區中開啟，保留它原本的操作寬度與字體，不縮放塞進清單欄位；關閉後回到道具資訊。若裝置太窄，分類列仍依外站自身設計顯示。</p><button class="craft-open-button" type="button" data-craft-open data-craft-url="'+tool.url+'" data-craft-title="'+tool.title+'" onclick="openCraftQuery(this)">全畫面查詢 ↗</button><a class="craft-external-link" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">直接另開原站 ↗</a></div>'+extras+'</div><div class="craft-dialog" id="craft-dialog" role="dialog" aria-modal="true" aria-labelledby="craft-dialog-title" tabindex="-1" hidden><div class="craft-dialog-head"><div class="craft-dialog-title"><small>獨立工作區 · 返回不會改變清單版面</small><strong id="craft-dialog-title">道具查詢</strong></div><div class="craft-dialog-actions"><a data-craft-dialog-link href="'+tool.url+'" target="_blank" rel="noopener noreferrer">原站 ↗</a><button type="button" data-craft-close aria-label="關閉道具查詢" onclick="closeCraftQuery()">關閉</button></div></div><iframe class="craft-dialog-frame" title="'+tool.title+' 道具查詢" loading="lazy" referrerpolicy="no-referrer"></iframe></div>';
+        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>全畫面查詢會在新分頁開啟原站，使用完整瀏覽器視窗；切回本站分頁即可回到目前頁面。這樣外站不會擠壓本站的清單與文字。分類列仍依外站自己的手機版面顯示。</p><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">全畫面查詢 · '+tool.title+' ↗</a></div>'+extras+'</div>';
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
