@@ -22,12 +22,10 @@
     .role { border:1px solid var(--line); background:#fff; color:#456176; border-radius:999px; padding:.44rem .72rem; white-space:nowrap; cursor:pointer; font-size:.85rem; }
     .role.active { border-color:var(--blue); background:var(--blue); color:white; font-weight:700; }
     main { padding:1rem; padding-bottom:2rem; }
-    .identity { background:var(--ice); border:1px solid #cfe1ef; border-radius:14px; padding:.8rem .9rem; margin-bottom:.8rem; }
-    .identity strong { font-size:1.02rem; }
-    .identity p { margin:.22rem 0 0; font-size:.84rem; color:#35556d; }
-    .focus-banner { display:flex; justify-content:space-between; gap:.7rem; align-items:center; padding:.68rem .85rem; margin-bottom:.8rem; background:#fffdf4; border:1px solid #eadcae; border-radius:12px; color:#68552b; }
-    .focus-banner strong { font-size:.86rem; }
-    .focus-banner small { color:#816f45; font-size:.76rem; text-align:right; }
+    .identity { padding:.3rem .15rem; margin-bottom:.25rem; }
+    .identity strong { font-size:.9rem; }
+    .focus-banner { padding:.45rem .7rem; margin-bottom:.55rem; background:#fffdf4; border:1px solid #eadcae; border-radius:10px; color:#68552b; }
+    .focus-banner strong { font-size:.82rem; }
     .role-marker { margin-bottom:.8rem; }
     .role-marker .task { background:#eef6fb; }
     .special-event .task { background:#fffaf0; }
@@ -199,8 +197,6 @@
     .barter-plan-row b { white-space:nowrap; }
     .barter-plan-clear { margin-top:.5rem; border:1px solid #c9dae6; border-radius:8px; padding:.38rem .58rem; background:#f8fbfd; color:#527083; cursor:pointer; font-size:.72rem; font-weight:700; }
     .barter-plan-empty { padding:.55rem; border:1px dashed #d4e2eb; border-radius:8px; color:#6d8494; font-size:.73rem; }
-    .overview-intro { margin-bottom:.8rem; padding:.78rem .85rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#31566d; font-size:.82rem; }
-    .overview-intro strong { display:block; margin-bottom:.12rem; font-size:.9rem; }
     .overview-shared { display:flex; justify-content:space-between; align-items:center; gap:.6rem; margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #eadcae; border-radius:12px; background:#fffaf0; color:#704d00; font-size:.82rem; }
     .overview-shared b { font-size:.86rem; }
     .overview-grid { display:grid; grid-template-columns:1fr; gap:.65rem; }
@@ -284,14 +280,12 @@
     .rune-class-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
     .rune-class-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; padding:.85rem 1rem; background:linear-gradient(135deg,#f8fbfd,#edf5fa); }
     .rune-class-head h3 { margin:0; font-size:1.05rem; }
-    .rune-class-head small { color:var(--muted); }
     .rune-role-tag { flex:0 0 auto; background:#dcecf7; color:#22577b; border-radius:999px; padding:.22rem .55rem; font-size:.75rem; font-weight:700; }
     .rune-tier { padding:.85rem 1rem 1rem; border-top:1px solid var(--line); }
     .rune-tier.t0 { background:linear-gradient(180deg,#fffdf6,#fff); }
     .rune-tier.t1 { background:#fbfdff; }
     .rune-tier-title { display:flex; justify-content:space-between; align-items:baseline; gap:.5rem; margin-bottom:.65rem; }
     .rune-tier-title strong { color:var(--navy); }
-    .rune-tier-title small { color:var(--muted); text-align:right; }
     .rune-slot-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; }
     .rune-slot { border:1px solid #dbe7ef; border-radius:11px; padding:.6rem .65rem; background:#fff; }
     .rune-slot-head { display:flex; justify-content:space-between; gap:.5rem; margin-bottom:.35rem; color:#31556e; }
@@ -313,15 +307,12 @@
     .app[data-app-section="items"] .meter,
     .app[data-app-section="items"] .tabs,
     .app[data-app-section="items"] .hint { display:none; }
-    .craft-intro { background:#fff; border:1px solid var(--line); border-radius:14px; padding:1rem; margin-bottom:.8rem; line-height:1.6; }
-    .craft-intro h2 { margin:0 0 .35rem; font-size:1.2rem; }
-    .craft-intro p { margin:.3rem 0; color:#486476; font-size:.87rem; }
-    .craft-intro a { color:#1e5d8f; }
-    .craft-choices { display:flex; gap:.5rem; margin:.7rem 0; flex-wrap:wrap; }
+    .craft-toolbar { display:grid; justify-items:start; gap:.45rem; margin-bottom:.8rem; }
+    .craft-choices { display:flex; gap:.5rem; margin:0; flex-wrap:wrap; }
     .craft-choices button { padding:.5rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#fff; color:#31566d; cursor:pointer; font-weight:700; }
     .craft-choices button.active { background:var(--blue); border-color:var(--blue); color:#fff; }
-    .craft-preview { display:grid; gap:.7rem; padding:1rem; border:1px solid var(--line); border-radius:14px; background:#fff; }
-    .craft-preview p { margin:0; color:#486476; font-size:.87rem; line-height:1.6; }
+    .craft-links { margin:0; font-size:.82rem; }
+    .craft-data-stamp { color:var(--muted); font-size:.75rem; }
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
     .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff!important; cursor:pointer; font-size:.9rem; font-weight:750; text-decoration:none; }
     @media (max-width:560px) {
@@ -329,20 +320,17 @@
       .tab { padding:.54rem .04rem; font-size:.84rem; }
       .section-nav { padding:.6rem .75rem; gap:.45rem; }
       .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
-      .craft-intro { padding:.75rem; }
-      .craft-preview { padding:.75rem; }
       .rune-class-head { display:block; }
       .rune-role-tag { display:inline-block; margin-top:.45rem; }
       .rune-slot-grid { grid-template-columns:1fr; }
       .rune-tier-title { display:block; }
-      .rune-tier-title small { display:block; text-align:left; margin-top:.2rem; }
     }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-4</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-5</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1156,10 +1144,8 @@
     }
     function focusBannerHtml(){
       const focus=rotationRole();
-      if(!focus)return '<strong>今日：六角色週課總盤點</strong><small>建議切到「本週」查看各角色補漏摘要。</small>';
-      const monday=new Date(gameDateKey()+'T12:00:00').getDay()===1;
-      const mondayTip=monday?' 週一先讓六角色各領一次野外首領戰利品，並優先清理兼職庫存。':'';
-      return '<strong>今日值日角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
+      if(!focus)return '<strong>週日總盤點：六角色</strong>';
+      return '<strong>今日值日：'+escapeHtml(focus.name)+'</strong>'
     }
     function weeklyAuditHtml(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
@@ -1210,9 +1196,8 @@
     function runeTierHtml(classGuide,tier){
       const hideAccessory=tier==='T1'&&Boolean(classGuide.t1_note);
       const slots=['weapon','armor','accessory','badge'].filter(slot=>!(hideAccessory&&slot==='accessory')).map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
-      const description=tier==='T1'?'核心機制完整的小畢業解；依你的養成順序，T0 之後再補。':RUNE_GUIDE_DATA.meta.tier_definition[tier];
       const tierNote=tier==='T1'&&classGuide.t1_note?'<p class="rune-tier-note">'+escapeHtml(classGuide.t1_note)+'</p>':'';
-      return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong><small>'+escapeHtml(description)+'</small></div>'+tierNote+'<div class="rune-slot-grid">'+slots+'</div></section>'
+      return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong></div>'+tierNote+'<div class="rune-slot-grid">'+slots+'</div></section>'
     }
     function runeBuildNotesHtml(classGuide){
       const notes=classGuide.build_notes||[];
@@ -1293,7 +1278,7 @@
       const roleText=runeRoleLabel(classGuide.role);
       const cardId='rune-class-'+classGuide.id;
       const description=classGuide.description?'<p class="rune-class-description">'+escapeHtml(classGuide.description)+'</p>':'';
-      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><div><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><small>'+escapeHtml(roleText)+'</small></div><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
+      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
     }
     function renderRuneGuide(role){
       const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
@@ -1309,10 +1294,8 @@
     }
     function focusBannerHtml(){
       const focus=rotationRole();
-      if(!focus)return '<strong>今日：六角色週課總盤點</strong><small>建議切到「本週」查看各角色補漏摘要。</small>';
-      const monday=new Date(gameDateKey()+'T12:00:00').getDay()===1;
-      const mondayTip=monday?' 週初：建議六角色優先清理兼職庫存。':'';
-      return '<strong>今日值日角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
+      if(!focus)return '<strong>週日總盤點：六角色</strong>';
+      return '<strong>今日值日：'+escapeHtml(focus.name)+'</strong>'
     }
     function weeklyAuditHtml(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
@@ -1353,7 +1336,6 @@
     }
     function overviewHtml(){
       const focus=rotationRole();
-      const focusText=focus?'今日值日角色：'+escapeHtml(focus.name)+'。先處理該角色，再依時間補其他角色。':'今天是週日：查看六角色週課進度並補漏。';
       const sharedDone=ACCOUNT_WEEKLY_TASKS.filter(item=>number(get(ACCOUNT_WEEKLY_STATE_KEYS[item.label],0))>=1).length;
       const sharedWeekly='<div class="overview-shared"><span>伺服器共通週任務</span><b>'+sharedDone+' / '+ACCOUNT_WEEKLY_TASKS.length+' 已完成</b></div>';
       const cards=roles.map(role=>{
@@ -1361,7 +1343,7 @@
         const challengeProgress=challenge.total?'<div class="overview-progress challenge"><span>深淵／高難＋小格通關</span><b>'+challenge.done+' / '+challenge.total+' 次</b><progress value="'+challenge.done+'" max="'+challenge.total+'"></progress></div>':'';
         return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+challengeProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
-      return '<div class="section-title"><h2>六角色總覽</h2><small>依本尊／分身目標列出週課</small></div><div class="overview-intro"><strong>'+focusText+'</strong><span>六角色週課都按各自目標難度計算；白魅魔僅列本尊。</span></div>'+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
+      return '<div class="section-title"><h2>六角色總覽</h2></div>'+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
     function progress(){
       const role=roles.find(x=>x.id===active);
@@ -1387,7 +1369,7 @@
       resetStaleDailyState();resetStaleWeeklyState();
       const app=document.querySelector('.app');app.dataset.view=view;app.dataset.appSection=appSection;app.dataset.exchangeSubview=exchangeSubView;
       const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
-      document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong><p>倉庫分工：<b>${role.store}</b>　${role.rule}</p>`;
+      document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong>`;
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('[data-section]').forEach(button=>{
         const current=button.dataset.section===appSection;
@@ -1427,9 +1409,9 @@
       if(view==='exchange'){root.innerHTML=renderExchange(role);updateBarterRouteVisibility()}
       if(view==='storage')root.innerHTML=renderInventory();
       if(view==='craft'){
-        const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',note:'台服資料版 2026-09-16：查取得方式、每份配方的材料數量、設備等級、產量與製作時間；有些來源仍標示待確認。'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',note:'2026-09-25 資料快照：沿著材料與成品追查製作關聯；未提供素材數量、取得地點或完整版本資訊。'};
-        const extras=craftTool==='recipes'?'<p>同站延伸：<a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a>。計算器只算直接材料，且不會讀取本站六倉庫存。</p>':'';
-        root.innerHTML='<div class="craft-intro"><h2>道具製作資料庫</h2><p>查配方、取得方式與後續用途，再決定六倉材料的保留與投入方向。</p><div class="craft-choices" role="group" aria-label="切換道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><p>'+tool.note+' 目前顯示作者的獨立網站，資料不會自動寫入本站庫存或採購進度；遊戲內資訊優先。</p><div class="craft-preview"><p>全畫面查詢會在新分頁開啟原站，使用完整瀏覽器視窗；切回本站分頁即可回到目前頁面。這樣外站不會擠壓本站的清單與文字。分類列仍依外站自己的手機版面顯示。</p><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">全畫面查詢 · '+tool.title+' ↗</a></div>'+extras+'</div>';
+        const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',stamp:'台服資料版 · 2026-09-16'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',stamp:'資料快照 · 2026-09-25'};
+        const extras=craftTool==='recipes'?'<p class="craft-links"><a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a></p>':'';
+        root.innerHTML='<div class="craft-toolbar"><div class="craft-choices" role="group" aria-label="道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><small class="craft-data-stamp">'+tool.stamp+'</small><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">開啟 '+tool.title+' ↗</a>'+extras+'</div>';
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
