@@ -312,6 +312,14 @@
     .craft-choices button { padding:.5rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#fff; color:#31566d; cursor:pointer; font-weight:700; }
     .craft-choices button.active { background:var(--blue); border-color:var(--blue); color:#fff; }
     .craft-links { margin:0; font-size:.82rem; }
+    .bahamut-guide-panel { margin-top:.15rem; }
+    .guide-intro { margin:.1rem 0 .65rem; color:var(--muted); font-size:.82rem; }
+    .guide-list { display:grid; gap:.55rem; }
+    .guide-card { display:grid; grid-template-columns:auto 1fr; align-items:start; gap:.65rem; padding:.78rem; background:#fff; border:1px solid var(--line); border-radius:12px; }
+    .guide-tag { display:inline-flex; align-items:center; border-radius:99px; padding:.22rem .48rem; background:#eef5fa; color:#47677d; font-size:.72rem; white-space:nowrap; }
+    .guide-card a { color:var(--blue); font-weight:750; text-decoration:none; overflow-wrap:anywhere; }
+    .guide-card a:hover { text-decoration:underline; }
+    .guide-card p { margin:.2rem 0 0; color:var(--muted); font-size:.82rem; }
     .craft-data-stamp { color:var(--muted); font-size:.75rem; }
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
     .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff!important; cursor:pointer; font-size:.9rem; font-weight:750; text-decoration:none; }
@@ -330,7 +338,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-6</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-7</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1162,8 +1170,20 @@
       if(!cards)return '';
       return '<div class="shared-card special-event"><div class="section-title"><h2>特殊事件</h2><small>不影響完成率</small></div><div class="card">'+cards+'</div></div>'
     }
+    const BAHAMUT_GUIDES=[
+      {category:'入門與週課',title:'新手 1 至 65 等 S0 賽季指南及規劃建議',description:'整理升級階段、65 等後副本與週資源；可拿來檢查分身養成階段。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2945'},
+      {category:'深淵副本',title:'瑪奇 Mobile 深淵副本全攻略',description:'三個深淵關卡的首領機制與走位提示；獎勵次數和可選難度以遊戲當期畫面為準。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&last=1&snA=1560&tnum=1'},
+      {category:'小格副本',title:'格里斯貝恩單人／八人攻略',description:'以入門難度為主的首領招式與團隊機制分享；高難數值請另以最新資料核對。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=8608&page=1&snA=1781'},
+      {category:'生活技能',title:'整理生活玩法和一些採集小訣竅',description:'從採集、加工到製作的生活技能循環整理，適合規劃六角色的材料分工。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1388&tnum=1'},
+      {category:'料理',title:'低消耗快速練料理方法',description:'雞蛋、水與簡易料理的低成本練法，包含材料取得和掛採集的小訣竅。',url:'https://forum.gamer.com.tw/Co.php?bsn=32564&sn=4471'},
+      {category:'商店與交換',title:'班克爾 7 個 NPC 商店與交換一覽',description:'班克爾各 NPC 商店、使用貨幣與以物易物項目整理；限購以遊戲內當期資訊為準。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2836'}
+    ];
+    function bahamutGuidesHtml(){
+      const cards=BAHAMUT_GUIDES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
+      return '<section class="bahamut-guide-panel"><div class="section-title"><h2>巴哈攻略參考</h2><small>精選 '+BAHAMUT_GUIDES.length+' 篇</small></div><p class="guide-intro">玩家整理內容適合快速查閱；更新時效、獎勵與商店限額以遊戲內資訊為準。</p><div class="guide-list">'+cards+'</div></section>'
+    }
     function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
-    function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜T0 之後的小畢業選項'}
+    function runeTierLabel(tier){return tier==='T0'?'T0｜優先配置（防具・徽章）':'T1｜T0 之後的小畢業選項'}
     function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
     function runeSlotCount(slot){return RUNE_GUIDE_DATA.meta.rune_slots[slot]||1}
     function runeTierGroups(classGuide,tier,slot){
@@ -1192,8 +1212,9 @@
     }
     function runeTierHtml(classGuide,tier){
       const hideAccessory=tier==='T1'&&Boolean(classGuide.t1_note);
-      const slots=['weapon','armor','accessory','badge'].filter(slot=>!(hideAccessory&&slot==='accessory')).map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
-      const tierNote=tier==='T1'&&classGuide.t1_note?'<p class="rune-tier-note">'+escapeHtml(classGuide.t1_note)+'</p>':'';
+      const visibleSlots=tier==='T0'?['armor','badge']:['weapon','armor','accessory','badge'];
+      const slots=visibleSlots.filter(slot=>!(hideAccessory&&slot==='accessory')).map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
+      const tierNote=tier==='T0'?'<p class="rune-tier-note">武器與飾品配置大多固定，暫不列出。</p>':tier==='T1'&&classGuide.t1_note?'<p class="rune-tier-note">'+escapeHtml(classGuide.t1_note)+'</p>':'';
       return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong></div>'+tierNote+'<div class="rune-slot-grid">'+slots+'</div></section>'
     }
     function runeBuildNotesHtml(classGuide){
@@ -1401,9 +1422,15 @@
       if(view==='exchange'){root.innerHTML=renderExchange(role);updateBarterRouteVisibility()}
       if(view==='storage')root.innerHTML=renderInventory();
       if(view==='craft'){
-        const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',stamp:'台服資料版 · 2026-09-16'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',stamp:'資料快照 · 2026-09-25'};
-        const extras=craftTool==='recipes'?'<p class="craft-links"><a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a></p>':'';
-        root.innerHTML='<div class="craft-toolbar"><div class="craft-choices" role="group" aria-label="道具查詢工具"><button type="button" data-craft-tool="recipes" class="'+(craftTool==='recipes'?'active':'')+'" aria-pressed="'+(craftTool==='recipes')+'">配方與取得</button><button type="button" data-craft-tool="graph" class="'+(craftTool==='graph'?'active':'')+'" aria-pressed="'+(craftTool==='graph')+'">上下游關聯</button></div><small class="craft-data-stamp">'+tool.stamp+'</small><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">開啟 '+tool.title+' ↗</a>'+extras+'</div>';
+        const choice=(id,label)=>'<button type="button" data-craft-tool="'+id+'" class="'+(craftTool===id?'active':'')+'" aria-pressed="'+(craftTool===id)+'">'+label+'</button>';
+        const choices='<div class="craft-choices" role="group" aria-label="道具資訊工具">'+choice('recipes','配方與取得')+choice('graph','上下游關聯')+choice('guides','巴哈攻略')+'</div>';
+        if(craftTool==='guides'){
+          root.innerHTML='<div class="craft-toolbar">'+choices+bahamutGuidesHtml()+'</div>';
+        }else{
+          const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',stamp:'台服資料版 · 2026-09-16'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',stamp:'資料快照 · 2026-09-25'};
+          const extras=craftTool==='recipes'?'<p class="craft-links"><a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a></p>':'';
+          root.innerHTML='<div class="craft-toolbar">'+choices+'<small class="craft-data-stamp">'+tool.stamp+'</small><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">開啟 '+tool.title+' ↗</a>'+extras+'</div>';
+        }
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
