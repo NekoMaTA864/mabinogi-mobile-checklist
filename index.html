@@ -338,7 +338,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-8</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-9</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1170,17 +1170,16 @@
       if(!cards)return '';
       return '<div class="shared-card special-event"><div class="section-title"><h2>特殊事件</h2><small>不影響完成率</small></div><div class="card">'+cards+'</div></div>'
     }
-    const BAHAMUT_GUIDES=[
-      {category:'入門與週課',title:'新手 1 至 65 等 S0 賽季指南及規劃建議',description:'整理升級階段、65 等後副本與週資源；可拿來檢查分身養成階段。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2945'},
-      {category:'深淵副本',title:'瑪奇 Mobile 深淵副本全攻略',description:'三個深淵關卡的首領機制與走位提示；獎勵次數和可選難度以遊戲當期畫面為準。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&last=1&snA=1560&tnum=1'},
-      {category:'小格副本',title:'格里斯貝恩單人／八人攻略',description:'以入門難度為主的首領招式與團隊機制分享；高難數值請另以最新資料核對。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=8608&page=1&snA=1781'},
-      {category:'生活技能',title:'整理生活玩法和一些採集小訣竅',description:'從採集、加工到製作的生活技能循環整理，適合規劃六角色的材料分工。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1388&tnum=1'},
-      {category:'料理',title:'低消耗快速練料理方法',description:'雞蛋、水與簡易料理的低成本練法，包含材料取得和掛採集的小訣竅。',url:'https://forum.gamer.com.tw/Co.php?bsn=32564&sn=4471'},
-      {category:'商店與交換',title:'班克爾 7 個 NPC 商店與交換一覽',description:'班克爾各 NPC 商店、使用貨幣與以物易物項目整理；限購以遊戲內當期資訊為準。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2836'}
+    const PRACTICAL_REFERENCES=[
+      {category:'資料庫｜採集點',title:'全素材採集點總表（地圖與區域）',description:'按素材查採集技能、工具、地圖與區域，找指定材料時可直接定位到分區。資料更新至 2026-09-14；社群整理，請以台服遊戲內為準。',url:'https://mabinogimobile.nipponhashi.com/guides/gathering-map/'},
+      {category:'資料庫｜以物換物',title:'以物換物與代幣查詢',description:'從材料或 NPC 反向查交換路線、所在地與每日／每週次數；可補查本清單未列的交換項目。社群整理，實際額度以遊戲內為準。',url:'https://mabinogimobile.nipponhashi.com/barter/'},
+      {category:'巴哈｜製造效率',title:'製造系各技能升級花費 CP 值最高之項目',description:'比較各製造技能適合的練等項目。作者提醒製作經驗會遞減，且未計取得材料的時間；適合先估製作成本，不是保證最快路線。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2526'},
+      {category:'巴哈｜素材盤點',title:'六大製造技能基本素材消耗表',description:'按製造技能整理基礎素材消耗，方便規劃採集與庫存；等級區間和效率建議需連同留言修正一起看。',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2437&tnum=5'},
+      {category:'巴哈｜條件參考',title:'低消耗快速練料理方法',description:'只在要補料理等級時值得看；內容聚焦雞蛋、水等材料的低成本做法，取得方式與成本以目前遊戲狀況核對。',url:'https://forum.gamer.com.tw/Co.php?bsn=32564&sn=4471'}
     ];
-    function bahamutGuidesHtml(){
-      const cards=BAHAMUT_GUIDES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
-      return '<section class="bahamut-guide-panel"><div class="section-title"><h2>巴哈攻略參考</h2><small>精選 '+BAHAMUT_GUIDES.length+' 篇</small></div><p class="guide-intro">玩家整理內容適合快速查閱；更新時效、獎勵與商店限額以遊戲內資訊為準。</p><div class="guide-list">'+cards+'</div></section>'
+    function practicalReferencesHtml(){
+      const cards=PRACTICAL_REFERENCES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
+      return '<section class="bahamut-guide-panel"><div class="section-title"><h2>實用資料庫與生活效率</h2><small>依日常查詢與養成效益排序 · '+PRACTICAL_REFERENCES.length+' 項</small></div><p class="guide-intro">先放採集與交換資料庫，再放生活技能成本參考。社群整理的數值、限額與練法可能隨更新變動，重要決定請再看遊戲內資訊。</p><div class="guide-list">'+cards+'</div></section>'
     }
     function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
     function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜替代選項（防具・徽章）'}
@@ -1422,9 +1421,9 @@
       if(view==='storage')root.innerHTML=renderInventory();
       if(view==='craft'){
         const choice=(id,label)=>'<button type="button" data-craft-tool="'+id+'" class="'+(craftTool===id?'active':'')+'" aria-pressed="'+(craftTool===id)+'">'+label+'</button>';
-        const choices='<div class="craft-choices" role="group" aria-label="道具資訊工具">'+choice('recipes','配方與取得')+choice('graph','上下游關聯')+choice('guides','巴哈攻略')+'</div>';
+        const choices='<div class="craft-choices" role="group" aria-label="道具資訊工具">'+choice('recipes','配方與取得')+choice('graph','上下游關聯')+choice('guides','常用資料')+'</div>';
         if(craftTool==='guides'){
-          root.innerHTML='<div class="craft-toolbar">'+choices+bahamutGuidesHtml()+'</div>';
+          root.innerHTML='<div class="craft-toolbar">'+choices+practicalReferencesHtml()+'</div>';
         }else{
           const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',stamp:'台服資料版 · 2026-09-16'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',stamp:'資料快照 · 2026-09-25'};
           const extras=craftTool==='recipes'?'<p class="craft-links"><a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a></p>':'';
