@@ -225,8 +225,6 @@
     .exchange-subnav button.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     @media (min-width:700px) { .overview-grid,.external-tool-grid,.barter-route-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .exchange-role-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
     @media (max-width:450px) { .exchange-card { grid-template-columns:1fr auto; gap:.45rem; } .exchange-route { font-size:.75rem; } .exchange-meta span, .evidence { font-size:.67rem; } }
-    .warehouse { display:grid; grid-template-columns:auto 1fr; gap:.75rem; align-items:start; padding:1rem; background:white; border:1px solid var(--line); border-radius:14px; } .warehouse-icon { width:2.4rem; height:2.4rem; display:grid; place-items:center; border-radius:10px; background:#edf4f8; font-size:1.25rem; } .warehouse h2 { margin:0; font-size:1rem; } .warehouse p { margin:.25rem 0 0; color:#486476; font-size:.87rem; } .warehouse .rule { grid-column:1/-1; border-radius:9px; padding:.65rem .72rem; background:var(--amber); color:var(--amber-ink); font-size:.82rem; }
-    .inventory-intro { margin-bottom:.75rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.78rem; }
     .inventory-group { margin-bottom:.65rem; }
     .inventory-group summary { display:flex; justify-content:space-between; align-items:center; gap:.5rem; min-height:2.8rem; padding:.62rem .72rem; border:1px solid var(--line); border-radius:12px; background:#edf4f8; color:#31566d; cursor:pointer; font-size:.82rem; font-weight:750; }
     .inventory-group[open] summary { border-radius:12px 12px 0 0; }
@@ -243,7 +241,6 @@
     .inventory-total { color:#31566d!important; font-weight:750; }
     .inventory-summary { color:var(--muted); font-size:.76rem; }
     .inventory-group-total { color:#6d8494; font-size:.7rem; font-weight:500; }
-    .inventory-key { display:flex; justify-content:space-between; gap:.5rem; align-items:center; margin:.8rem 0 .4rem; color:#31566d; font-size:.82rem; font-weight:750; }
     .inventory-role-legend { display:flex; flex-wrap:wrap; gap:.28rem; margin:0 0 .55rem; }
     .inventory-role-legend span { padding:.18rem .4rem; border:1px solid #dbe7ef; border-radius:999px; background:#fff; color:#607487; font-size:.65rem; }
     .inventory-role-legend b { color:#31566d; }
@@ -265,12 +262,6 @@
     @media (min-width:700px) { main { padding:1.25rem 1.5rem 2.5rem; } header { padding:1.35rem 1.5rem; } .rolebar { padding-left:1.5rem; padding-right:1.5rem; } }
 
     .rune-guide { display:grid; gap:.8rem; }
-    .rune-intro { background:#eef6fc; border:1px solid #cbdfea; border-radius:14px; padding:.85rem 1rem; color:#31556e; }
-    .rune-intro strong { display:block; color:var(--navy); margin-bottom:.2rem; }
-    .rune-source { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem .75rem; color:var(--muted); font-size:.8rem; }
-    .rune-source a { color:var(--blue); font-weight:700; }
-    .rune-slot-summary { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
-    .rune-slot-summary span { background:#fff; border:1px solid #cbdfea; border-radius:999px; padding:.2rem .55rem; font-size:.78rem; color:#426177; }
     .rune-class-description { margin:.45rem 1rem .1rem; padding:.5rem .7rem; border-left:3px solid #b7d0e3; background:#f7fafc; color:#536c7d; font-size:.79rem; }
     .rune-build-notes { margin:0 1rem 1rem; padding:.65rem .75rem; border:1px solid #dbe7ef; border-radius:10px; background:#f9fbfd; color:#536c7d; font-size:.79rem; }
     .rune-build-notes h4 { margin:0 0 .35rem; color:#31566d; font-size:.83rem; }
@@ -333,9 +324,6 @@
     .craft-preview p { margin:0; color:#486476; font-size:.87rem; line-height:1.6; }
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
     .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff!important; cursor:pointer; font-size:.9rem; font-weight:750; text-decoration:none; }
-    .rune-version-warning { margin:.6rem 0 .8rem; padding:.65rem .8rem; border:1px solid #eadcae; border-radius:11px; background:#fff9e9; color:#6f5721; font-size:.8rem; line-height:1.55; }
-    .rune-version-warning b { color:#624600; }
-    .rune-version-warning a { margin-left:.2rem; color:#1e5d8f; font-weight:750; }
     @media (max-width:560px) {
       .tabs { grid-template-columns:repeat(7,minmax(0,1fr)); gap:.14rem; padding:.28rem; }
       .tab { padding:.54rem .04rem; font-size:.84rem; }
@@ -354,7 +342,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-3</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-4</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -399,7 +387,6 @@
     });
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
-    const RUNE_GUIDE_SOURCE_URL='https://app.notion.com/p/3e9716f2a49a81f7a48fe3b8b3dc9e8b?pvs=204';
     const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-09-30.3","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"longbow","name_zh_tw":"長弓兵","character":"貓又老師zz","role":"alt","weapon":{"T0":["千把劍"],"T1":["荊棘藤蔓","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","魔力激流","毀滅烙印","共鳴水晶","猛烈驟雨"],"T1":["岩石巨人","魔力激流","寂靜之風","穩定","狙擊"]},"accessory":{"T0_356":["超音波","集中","頑強+"],"T0_136":["超音波","內傷","頑強+"],"T1":["超音波","集中/內傷","頑強+"]},"badge":{"T0":["絢爛"],"T1":["睿智","有效高品質徽章"]},"stop_line":"超音波＋對應改造流核心飾品完成即可","description":"飾品第 2 格依技能改造分支選擇：356 選集中，136 選內傷；第 3 格符文名稱為頑強+，效果對應翼之穿刺技能。"},{"id":"bard","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0_速奏流":["終章","共鳴","速奏"],"T0_二重奏流":["終章","共鳴","二重奏"]},"badge":{"T0":["絢爛"],"T1":["冷酷（絢爛下位）／睿智（冷卻取向）"]},"stop_line":"終章＋共鳴＋速奏／二重奏其一；兩種第三格依手法取捨","description":"樂師是定點輸出砲手；目前台服 S0 以第 3 樂章八連砲與終章高潮為主力。終章＋共鳴固定，第三格選速奏或二重奏，屬同級操作分支。","unordered_slots":["armor","accessory"],"slot_notes":{"armor":"列出的防具符文是候選組合，原文沒有指定第 1 至第 5 件的固定順序。","accessory":"這是三個飾品符文的流派組合，不代表遊戲裝備欄位順序。"},"t1_note":"目前來源沒有支持一套獨立的 T1 飾品三格。先以終章為核心；共鳴未到手時暫用已擁有的有效符文過渡，不把較早的博愛配置標作現行 T1。","build_notes":["武器：千把劍、千錘百鍊都列為可用；驚異是作者提到的特殊減少空窗玩法。千把劍仍受角色自身 Lv40 劍職條件影響。","飾品：終章＋共鳴為核心，第三格選速奏或二重奏。作者自己的 S0 測試中，速奏約多放 20% 第 3 樂章，二重奏約多放 20% 高潮且漸強銜接較寬鬆；作者偏好速奏，差距不是通用保證。","防具：小格套方向為毀滅烙印＋共鳴水晶；攻擊向候選有狙擊、穩定、岩石巨人、魔力激流、戰慄樂想、紅色盟約、陰險一擊。原文沒有提供唯一五件順序，依手上符文與效果組合。","徽章：絢爛為作者主選；冷酷是下位選項，睿智偏冷卻取向。","屬性與寶石：作者機體把爆擊堆到約 3000 後再補其他屬性，詞條寫作爆擊＞連擊＝技能威力；寶石偏技能威力，標籤方向為干擾（全技）、連擊（第 3 技）、強擊（高潮）。數字是作者機體截面，不是通用門檻。"]},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","description":"本表以輸出向列 T0：驚異＋；治療／防護向改用千把劍（該分支核心，不是低階替代）。","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"輸出向以報應為優先核心，再追驚異＋、因果、業火；治療／防護向以千把劍為武器核心。"},{"id":"dancer","name_zh_tw":"舞者","character":"貓又老師","role":"main_planned","weapon":{"T0":["千把劍"],"T1":["盲目憤怒","千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["岩石巨人","毀滅烙印","共鳴水晶","平原流浪者","魔力激流"],"T1":["岩石巨人","魔力激流","平原流浪者","穩定","戰慄樂想"]},"accessory":{"T0":["蝴蝶","喝采","清爽"],"T1":["蝴蝶","喝采","來臨"]},"badge":{"T0":["絢爛"],"T1":["冷酷","睿智"]},"stop_line":"本尊近期轉職目標，可追完整 T0；蝴蝶＋喝采優先"}],"roleClassIds":{"main":["mage","dancer"],"z":["lightning_mage"],"zz":["longbow"],"o":["bard"],"p":["priest"],"oo":["monk"]}};
     // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
     const RUNE_ROLE_CLASS_IDS=RUNE_GUIDE_DATA.roleClassIds;
@@ -1143,7 +1130,7 @@
       const totalItems=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
       const totalUnits=MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0);
       const roleLegend=roles.map(item=>'<span><b>'+(item.id==='main'?'本尊':escapeHtml(item.id))+'</b> '+escapeHtml(item.name)+'</span>').join('');
-      return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small class="inventory-summary" id="inventory-summary">'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記 · 六倉 '+totalUnits+' 件</small></div><div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>六角色分倉庫存</h2><p>依礦物、木材、皮革、布料、藥品、食材六條加工線分組管理。</p></div><div class="rule">每種材料可分別登記本尊、z、zz、o、p、oo 六位角色的實際庫存；窄版會以三欄排列。同一材料可同時記在多倉，六倉合計會用於以物易物缺料估算。角色分工代表加工線管理人，不限制實際保管角色；生活技能與設施等級仍按伺服器共享。預設展開目前選取角色的加工線，其他類別可按標題打開。</div></div><div class="inventory-intro">目前追蹤 '+MATERIAL_CATALOG.length+' 種以物易物路線中有明確數量的投入材料，不是遊戲內全部道具。請填各角色實際可用庫存；未標示數量的金幣或條件文字不推算。資料會依角色分開同步到 Google Sheets。</div><div class="inventory-key"><span>六角色庫存</span><span>各欄輸入實際數量</span></div><div class="inventory-role-legend">'+roleLegend+'</div>'+groups
+      return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small class="inventory-summary" id="inventory-summary">'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記 · 六倉 '+totalUnits+' 件</small></div><div class="inventory-role-legend">'+roleLegend+'</div>'+groups
     }
     function roleWeeklyItems(role,includeOptional=true){
       return role.weekly.map(([task,target],index)=>({task,target,index,id:taskIdFor('每週',task)})).filter(item=>!isAccountWeeklyTask(item.task)&&!HIDDEN_WEEKLY_TASKS.has(item.task)&&!(role.id!=='main'&&item.task==='白魅魔通關戰利品')&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
@@ -1312,9 +1299,7 @@
       const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
       const classGuides=classIds.map(id=>RUNE_GUIDE_DATA.classes.find(item=>item.id===id)).filter(Boolean);
       const cards=classGuides.map(runeClassHtml).join('');
-      const slots=Object.entries(RUNE_GUIDE_DATA.meta.rune_slots).map(([slot,count])=>'<span>'+escapeHtml(runeSlotLabel(slot))+' '+count+' 格</span>').join('');
-      const intro=classGuides.length>1?'本尊與預計轉職方向都先以 T0 為目標；T1 作為次要的小畢業選項。':'本尊與分身都先追 T0；T1 是小畢業選項，需要時再展開查看。';
-      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>職業符文指南</h2><small>'+escapeHtml(role.name)+'｜唯讀參考</small></div><div class="rune-intro"><strong>'+escapeHtml(intro)+'</strong><span>依角色列出 T0 優先目標與 T1 後續選項；流派差異寫在對應角色卡內。</span><div class="rune-slot-summary">'+slots+'</div></div><div class="rune-source"><span>TMS S0 · 版本 '+escapeHtml(RUNE_GUIDE_DATA.meta.version)+'</span><span>平衡基準：'+escapeHtml(RUNE_GUIDE_DATA.meta.balance_reference)+'</span><span>排除 KMS S2-only 符文</span><a href="'+escapeHtml(RUNE_GUIDE_SOURCE_URL)+'" target="_blank" rel="noreferrer">開啟 Notion YAML 規格</a></div><aside class="rune-version-warning"><b>新符文待驗證：</b>9/30 維護公告新增 26 種原型符文，但公告沒有列出名稱與效果。等台服遊戲內資料及實測補齊前，這份 T0／T1 先維持 Notion 已確認版本。<a href="https://tw.nexon.com/mabinogimobile/home/news/notice/3554669" target="_blank" rel="noreferrer">官方公告 ↗</a></aside>'+cards+'</div>'
+      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>符文</h2><small>'+escapeHtml(role.name)+'</small></div>'+cards+'</div>'
     }
 
     function rotationRole(){
