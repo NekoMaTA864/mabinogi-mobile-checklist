@@ -338,7 +338,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-7</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-8</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1183,7 +1183,7 @@
       return '<section class="bahamut-guide-panel"><div class="section-title"><h2>巴哈攻略參考</h2><small>精選 '+BAHAMUT_GUIDES.length+' 篇</small></div><p class="guide-intro">玩家整理內容適合快速查閱；更新時效、獎勵與商店限額以遊戲內資訊為準。</p><div class="guide-list">'+cards+'</div></section>'
     }
     function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
-    function runeTierLabel(tier){return tier==='T0'?'T0｜優先配置（防具・徽章）':'T1｜T0 之後的小畢業選項'}
+    function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜替代選項（防具・徽章）'}
     function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
     function runeSlotCount(slot){return RUNE_GUIDE_DATA.meta.rune_slots[slot]||1}
     function runeTierGroups(classGuide,tier,slot){
@@ -1211,10 +1211,9 @@
       return '<article class="rune-slot"><div class="rune-slot-head"><b>'+escapeHtml(runeSlotLabel(slot))+'</b><small>'+runeSlotCount(slot)+' 格</small></div>'+groupHtml+note+'</article>'
     }
     function runeTierHtml(classGuide,tier){
-      const hideAccessory=tier==='T1'&&Boolean(classGuide.t1_note);
-      const visibleSlots=tier==='T0'?['armor','badge']:['weapon','armor','accessory','badge'];
-      const slots=visibleSlots.filter(slot=>!(hideAccessory&&slot==='accessory')).map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
-      const tierNote=tier==='T0'?'<p class="rune-tier-note">武器與飾品配置大多固定，暫不列出。</p>':tier==='T1'&&classGuide.t1_note?'<p class="rune-tier-note">'+escapeHtml(classGuide.t1_note)+'</p>':'';
+      const visibleSlots=tier==='T1'?['armor','badge']:['weapon','armor','accessory','badge'];
+      const slots=visibleSlots.map(slot=>runeSlotHtml(classGuide,tier,slot)).join('');
+      const tierNote=tier==='T1'?'<p class="rune-tier-note">武器與飾品相對固定；T1 聚焦較難湊的防具與徽章替代。</p>':'';
       return '<section class="rune-tier '+tier.toLowerCase()+'"><div class="rune-tier-title"><strong>'+escapeHtml(runeTierLabel(tier))+'</strong></div>'+tierNote+'<div class="rune-slot-grid">'+slots+'</div></section>'
     }
     function runeBuildNotesHtml(classGuide){
