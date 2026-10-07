@@ -366,7 +366,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-1</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-2</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1136,7 +1136,10 @@
     function renderInventory(){
       const groups=roles.map(owner=>{
         const items=MATERIAL_CATALOG.filter(item=>item.defaultRole===owner.id);
-        if(!items.length)return '';
+        if(!items.length){
+          const open=owner.id===active?' open':'';
+          return '<details class="inventory-group" data-inventory-group="'+owner.id+'"'+open+'><summary><span>'+escapeHtml(owner.name)+'｜'+escapeHtml(owner.store)+'</span><small class="inventory-group-total">目前無追蹤材料</small></summary><div class="inventory-list"><div class="inventory-row"><div><b>目前沒有列入估算的材料</b><small>這份以物易物清單尚無明確數量的此類投入材料。</small></div></div></div></details>'
+        }
         const rows=items.map(item=>{
           const total=inventoryTotal(item.id);
           const quantities=roles.map(holder=>{
