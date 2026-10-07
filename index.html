@@ -200,6 +200,12 @@
     .barter-plan-clear { margin-top:.5rem; border:1px solid #c9dae6; border-radius:8px; padding:.38rem .58rem; background:#f8fbfd; color:#527083; cursor:pointer; font-size:.72rem; font-weight:700; }
     .barter-plan-empty { padding:.55rem; border:1px dashed #d4e2eb; border-radius:8px; color:#6d8494; font-size:.73rem; }
     .weekly-tip { margin-bottom:.8rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.8rem; }
+    .weekly-guide { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:.55rem; margin-bottom:.8rem; }
+    .weekly-guide-card { min-width:0; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#f5f9fc; }
+    .weekly-guide-card h3 { margin:0 0 .35rem; color:#31566d; font-size:.84rem; }
+    .weekly-guide-list { margin:0; padding-left:1.05rem; color:#486476; font-size:.77rem; line-height:1.5; }
+    .weekly-guide-list li+li { margin-top:.24rem; }
+    .weekly-guide-card a { display:inline-block; margin-top:.42rem; color:#1e5d8f; font-size:.76rem; font-weight:750; }
     .weekly-tip b { color:#31566d; }
     .overview-intro { margin-bottom:.8rem; padding:.78rem .85rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#31566d; font-size:.82rem; }
     .overview-intro strong { display:block; margin-bottom:.12rem; font-size:.9rem; }
@@ -234,7 +240,7 @@
     .warehouse-tool-plan p { margin:.28rem 0 0; }
     .inventory-intro { margin-bottom:.75rem; padding:.72rem .8rem; border:1px solid #cfe1ef; border-radius:12px; background:#eef6fb; color:#486476; font-size:.78rem; }
     .inventory-group { margin-bottom:.65rem; }
-    .inventory-group summary { display:flex; justify-content:space-between; align-items:center; gap:.5rem; padding:.62rem .72rem; border:1px solid var(--line); border-radius:12px; background:#edf4f8; color:#31566d; cursor:pointer; font-size:.82rem; font-weight:750; }
+    .inventory-group summary { display:flex; justify-content:space-between; align-items:center; gap:.5rem; min-height:2.8rem; padding:.62rem .72rem; border:1px solid var(--line); border-radius:12px; background:#edf4f8; color:#31566d; cursor:pointer; font-size:.82rem; font-weight:750; }
     .inventory-group[open] summary { border-radius:12px 12px 0 0; }
     .inventory-group summary small { color:#6d8494; font-size:.7rem; font-weight:500; }
     .inventory-list { overflow:hidden; border:1px solid var(--line); border-top:0; border-radius:0 0 12px 12px; background:white; }
@@ -244,8 +250,8 @@
     .inventory-row small { display:block; margin-top:.08rem; color:#6d8494; font-size:.67rem; }
     .inventory-quantities { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.3rem; }
     .inventory-quantity { display:grid; gap:.16rem; min-width:0; padding:.28rem; border:1px solid #e2ebf1; border-radius:8px; background:#f8fbfd; }
-    .inventory-quantity span { overflow:hidden; color:#607487; font-size:.64rem; font-weight:750; text-overflow:ellipsis; white-space:nowrap; }
-    .inventory-quantity input { min-width:0; width:100%; padding:.34rem .28rem; border:1px solid #cbdbe6; border-radius:6px; background:#fff; color:var(--ink); font-size:.76rem; text-align:right; }
+    .inventory-quantity span { overflow:hidden; color:#607487; font-size:.7rem; font-weight:750; text-overflow:ellipsis; white-space:nowrap; }
+    .inventory-quantity input { min-width:0; width:100%; min-height:2.75rem; padding:.4rem .35rem; border:1px solid #cbdbe6; border-radius:6px; background:#fff; color:var(--ink); font-size:1rem; text-align:right; }
     .inventory-total { color:#31566d!important; font-weight:750; }
     .inventory-summary { color:var(--muted); font-size:.76rem; }
     .inventory-group-total { color:#6d8494; font-size:.7rem; font-weight:500; }
@@ -253,7 +259,7 @@
     .inventory-role-legend { display:flex; flex-wrap:wrap; gap:.28rem; margin:0 0 .55rem; }
     .inventory-role-legend span { padding:.18rem .4rem; border:1px solid #dbe7ef; border-radius:999px; background:#fff; color:#607487; font-size:.65rem; }
     .inventory-role-legend b { color:#31566d; }
-    @media (max-width:560px) { .inventory-quantities { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+    @media (max-width:560px) { .weekly-guide { grid-template-columns:1fr; } .inventory-quantities { grid-template-columns:repeat(3,minmax(0,1fr)); gap:.38rem; } }
     .sync-panel { background:white; border:1px solid var(--line); border-radius:14px; padding:1rem; }
     .sync-panel h2 { margin:0 0 .35rem; font-size:1rem; } .sync-panel p { margin:.3rem 0 .8rem; color:#486476; font-size:.84rem; }
     .sync-panel label { display:block; margin:.7rem 0 .25rem; font-size:.8rem; color:#486476; font-weight:700; }
@@ -360,7 +366,7 @@
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.02-5</p></div><div class="date" id="date"></div></div></header>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具配方與製作關聯 · 版本 2026.10.07-1</p></div><div class="date" id="date"></div></div></header>
     <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
@@ -1141,12 +1147,12 @@
           return '<article class="inventory-row"><div><b>'+escapeHtml(item.name)+'</b><small class="inventory-total" data-inventory-total="'+escapeHtml(item.id)+'">六倉合計 '+total+'</small></div><div class="inventory-quantities" role="group" aria-label="'+escapeHtml(item.name)+' 六角色庫存">'+quantities+'</div></article>'
         }).join('');
         const total=items.reduce((sum,item)=>sum+inventoryTotal(item.id),0);
-        return '<details class="inventory-group" data-inventory-group="'+owner.id+'" open><summary><span>'+escapeHtml(owner.name)+'｜'+escapeHtml(owner.store)+'</span><small class="inventory-group-total" data-inventory-group-total="'+owner.id+'">管理 '+items.length+' 種 · 六倉共 '+total+'</small></summary><div class="inventory-list">'+rows+'</div></details>'
+        return '<details class="inventory-group" data-inventory-group="'+owner.id+'"'+(owner.id===active?' open':'')+'><summary><span>'+escapeHtml(owner.name)+'｜'+escapeHtml(owner.store)+'</span><small class="inventory-group-total" data-inventory-group-total="'+owner.id+'">管理 '+items.length+' 種 · 六倉共 '+total+'</small></summary><div class="inventory-list">'+rows+'</div></details>'
       }).join('');
       const totalItems=MATERIAL_CATALOG.filter(item=>inventoryTotal(item.id)>0).length;
       const totalUnits=MATERIAL_CATALOG.reduce((sum,item)=>sum+inventoryTotal(item.id),0);
       const roleLegend=roles.map(item=>'<span><b>'+(item.id==='main'?'本尊':escapeHtml(item.id))+'</b> '+escapeHtml(item.name)+'</span>').join('');
-      return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small class="inventory-summary" id="inventory-summary">'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記 · 六倉 '+totalUnits+' 件</small></div><div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>六角色分倉庫存</h2><p>依礦物、木材、皮革、布料、藥品、食材六條加工線分組管理。</p></div><div class="rule">每列可分別輸入本尊、z、zz、o、p、oo 六位角色持有的數量，同一材料可以同時登記在多倉；六倉合計會用於以物易物缺料估算。角色分工代表材料線管理人，不限制實際保管角色。生活技能與設施等級仍按伺服器共享。</div></div><div class="inventory-intro">目前追蹤 '+MATERIAL_CATALOG.length+' 種以物易物路線中有明確數量的投入材料，不是遊戲內全部道具。請填各角色實際可用庫存；未標示數量的金幣或條件文字不推算。資料會依角色分開同步到 Google Sheets。</div><div class="inventory-key"><span>六角色庫存</span><span>各欄輸入實際數量</span></div><div class="inventory-role-legend">'+roleLegend+'</div>'+groups+'<div class="warehouse-list">'+roles.map(item=>'<div><b>'+escapeHtml(item.name)+'｜'+escapeHtml(item.store)+'</b><span>'+escapeHtml(item.detail)+'</span></div>').join('')+'</div><div class="warehouse-tool-plan"><h3>藍色生活工具怎麼分</h3><p>工具按採集材料安排，不按戰鬥職業配整套：木材線由貓又老師z負責時，給他藍色伐木斧；礦物線由本尊採集時，優先用採礦工具。</p><p>先做木材與礦物等實際高需求採集線的工具；不用六角色各做一整套。只有多角同時採集、或耐久消耗跟不上產量時再增產。若工具可放共用倉就輪用，不能轉移的工具才固定給對應採集角色；以道具存倉標示為準。</p></div>'
+      return '<div class="section-title"><h2>材料庫存與缺料估算</h2><small class="inventory-summary" id="inventory-summary">'+totalItems+' / '+MATERIAL_CATALOG.length+' 項已登記 · 六倉 '+totalUnits+' 件</small></div><div class="warehouse"><div class="warehouse-icon">▣</div><div><h2>六角色分倉庫存</h2><p>依礦物、木材、皮革、布料、藥品、食材六條加工線分組管理。</p></div><div class="rule">每種材料可分別登記本尊、z、zz、o、p、oo 六位角色的實際庫存；窄版會以三欄排列。同一材料可同時記在多倉，六倉合計會用於以物易物缺料估算。角色分工代表加工線管理人，不限制實際保管角色；生活技能與設施等級仍按伺服器共享。預設展開目前選取角色的加工線，其他類別可按標題打開。</div></div><div class="inventory-intro">目前追蹤 '+MATERIAL_CATALOG.length+' 種以物易物路線中有明確數量的投入材料，不是遊戲內全部道具。請填各角色實際可用庫存；未標示數量的金幣或條件文字不推算。資料會依角色分開同步到 Google Sheets。</div><div class="inventory-key"><span>六角色庫存</span><span>各欄輸入實際數量</span></div><div class="inventory-role-legend">'+roleLegend+'</div>'+groups+'<div class="warehouse-list">'+roles.map(item=>'<div><b>'+escapeHtml(item.name)+'｜'+escapeHtml(item.store)+'</b><span>'+escapeHtml(item.detail)+'</span></div>').join('')+'</div><div class="warehouse-tool-plan"><h3>藍色生活工具怎麼分</h3><p>工具按採集材料安排，不按戰鬥職業配整套：木材線由貓又老師z負責時，給他藍色伐木斧；礦物線由本尊採集時，優先用採礦工具。</p><p>先做木材與礦物等實際高需求採集線的工具；不用六角色各做一整套。只有多角同時採集、或耐久消耗跟不上產量時再增產。若工具可放共用倉就輪用，不能轉移的工具才固定給對應採集角色；以道具存倉標示為準。</p></div>'
     }
     function roleWeeklyItems(role,includeOptional=true){
       return role.weekly.map(([task,target],index)=>({task,target,index,id:taskIdFor('每週',task)})).filter(item=>!isAccountWeeklyTask(item.task)&&!HIDDEN_WEEKLY_TASKS.has(item.task)&&!(role.id!=='main'&&item.task==='白魅魔通關戰利品')&&(includeOptional||!isOptionalWeeklyTask(item.task,role.id)))
@@ -1175,7 +1181,21 @@
       if(!focus)return '<strong>今日：六角色週課總盤點</strong><small>建議切到「本週」查看各角色補漏摘要。</small>';
       const monday=new Date(gameDateKey()+'T12:00:00').getDay()===1;
       const mondayTip=monday?' 週一先讓六角色各領一次野外首領戰利品，並優先清理兼職庫存。':'';
-      return '<strong>今日主角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
+      return '<strong>今日值日角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
+    }
+    function weeklyGuideHtml(){
+      return '<section class="weekly-guide" aria-label="本週規則速查">'+
+        '<article class="weekly-guide-card"><h3>普通黑色坑洞</h3><ul class="weekly-guide-list">'+
+          '<li><b>目標：</b>每角色每週 14 次，逐角色記錄已領獎次數。</li>'+
+          '<li>今日基本次數與週計數會連動，同一次不用記兩次；戰利品箱會消耗既有額度。</li>'+
+          '<li>過期的今日次數不能補回。韓服官方指南列每日基本 1 次＋每週超額 7 次；台服角色範圍以遊戲內為準。</li>'+
+        '</ul><a href="'+escapeHtml(OFFICIAL_BLACK_HOLE_GUIDE_URL)+'" target="_blank" rel="noreferrer">韓服官方指南 ↗</a></article>'+
+        '<article class="weekly-guide-card"><h3>六角色本週目標</h3><ul class="weekly-guide-list">'+
+          '<li><b>結界：</b>每角色 7 次；<b>野外首領：</b>每角色 1 次，建議週一輪完六角。</li>'+
+          '<li><b>本尊：</b>小格困難 1 次、深淵最高可挑戰難度 3 次、白魅魔單人 1 次。</li>'+
+          '<li><b>五分身：</b>小格入門 1 次、深淵單人地獄 1 各 3 次。</li>'+
+          '<li><b>採購：</b>依「採購」頁各項商品的本週計畫記錄。</li>'+
+        '</ul></article></section>'
     }
     function weeklyAuditHtml(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
@@ -1330,7 +1350,7 @@
       if(!focus)return '<strong>今日：六角色週課總盤點</strong><small>建議切到「本週」查看各角色補漏摘要。</small>';
       const monday=new Date(gameDateKey()+'T12:00:00').getDay()===1;
       const mondayTip=monday?' 週初：建議六角色優先清理兼職庫存。':'';
-      return '<strong>今日主角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
+      return '<strong>今日值日角色：'+escapeHtml(focus.name)+'</strong><small>建議集中處理結界、黑洞、小格與其他週課。'+mondayTip+'</small>'
     }
     function weeklyAuditHtml(){
       const day=new Date(gameDateKey()+'T12:00:00').getDay();
@@ -1440,7 +1460,7 @@
           const progressBar=completion?'':'<progress value="'+value+'" max="'+item.target+'"></progress>';
           return '<div class="week '+(value>=item.target?'complete ':'')+(optional?'optional':'')+'"><div><div class="week-name">'+escapeHtml(weeklyDisplayName(item.task))+'</div><small>'+escapeHtml(status)+amount+'</small></div>'+control+progressBar+'</div>'
         }).join('')+'</div></details>').join('');
-        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div><div class="weekly-tip"><b>普通黑色坑洞</b>逐角色記錄已領獎次數，目標 14。首次增加本週次數會連動該角色今日基本獎勵；今日勾選也會加到本週，同一筆不必記兩次。戰利品箱消耗既有獎勵次數，無法補回昨日過期額度。韓服官方指南列每日基本 1 次＋週超額 7 次；台服角色範圍以遊戲內確認。<a href="'+escapeHtml(OFFICIAL_BLACK_HOLE_GUIDE_URL)+'" target="_blank" rel="noreferrer">官方指南</a>。<b>結界</b>每角色 7 次；<b>小格</b>本尊困難、分身入門各 1 次；<b>深淵</b>本尊最高可挑戰難度、分身單人地獄1 各 3 次；<b>白魅魔</b>本尊單人 1 次。週一建議六角色各領一次野外首領獎勵；採購依各品本週計畫到「採購」頁記錄。</div>'+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
+        root.innerHTML='<div class="section-title"><h2>本週待辦</h2><small>週一 06:00 重置</small></div>'+weeklyGuideHtml()+weeklyAuditHtml()+sharedWeeklyHtml+groups+specialEventsHtml()
       }
       if(view==='exchange'){root.innerHTML=renderExchange(role);updateBarterRouteVisibility()}
       if(view==='storage')root.innerHTML=renderInventory();
