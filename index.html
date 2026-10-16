@@ -348,6 +348,9 @@
     .kb-note { background:var(--ice); border-radius:10px; padding:.85rem; margin:.75rem 0; line-height:1.55; font-size:.9rem; }
     .kb-note a { color:var(--blue); }
     .kb-empty { color:var(--muted); padding:1rem; }
+    .kb-frame-wrap { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    .kb-frame-wrap iframe { display:block; width:100%; min-height:75vh; border:0; }
+    .kb-frame-note { color:var(--muted); font-size:.8rem; line-height:1.5; }
     .kb-choices { display:flex; flex-wrap:wrap; }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -646,7 +649,7 @@
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>{const active=button.dataset.barterCycleFilter===barterCadenceFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>{const active=button.dataset.barterDirectionFilter===barterDirectionFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))})
     }
-    let appSection='items',active='main',view='craft',checklistView='overview',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='search',knowledgeQuery='';
+    let appSection='items',active='main',view='craft',checklistView='overview',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='search',knowledgeQuery='',embedTool='recipes';
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
     const state=loadObject(key);
@@ -1455,6 +1458,17 @@
         kbCard('韓服參考｜騎士','韓服於 2026/04/23 加入騎士職業；台服 11 月聖騎士章節不等於已公布騎士職業。','跨服參考',KNOWLEDGE_SOURCES.krKnight)
       ].join('')+'</div><div class="kb-note">截至 2026/10/16 台服最新維護內容含地獄 6（10/19 開放），尚未公布上述新職業確切日期。'+kbSource(KNOWLEDGE_SOURCES.twUpdate,'台服維護公告')+'</div>'
     }
+    const KB_EMBED_TOOLS=[
+      {id:'recipes',title:'配方與取得',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html'},
+      {id:'relations',title:'道具上下游',url:'https://kingex1124.github.io/MabiMGuide/items.html'},
+      {id:'crafting',title:'製造時間',url:'https://starmoon.game-db.tw/tools/crafting/'},
+      {id:'cooking',title:'料理採購',url:'https://starmoon.game-db.tw/tools/cooking-planner/'},
+      {id:'spirit',title:'精靈痕跡',url:'https://starmoon.game-db.tw/tools/spirit-trace/'}
+    ];
+    function kbEmbedHtml(){
+      const tool=KB_EMBED_TOOLS.find(item=>item.id===embedTool)||KB_EMBED_TOOLS[0];
+      return '<div class="kb-intro"><h2>站內工具</h2><p>在此頁操作原作者的工具；工具資料仍由原網站提供，可能與你的 Google Sheet 進度不同步。</p><div class="kb-quick">'+KB_EMBED_TOOLS.map(item=>'<button type="button" data-kb-embed="'+item.id+'" class="'+(item.id===tool.id?'active':'')+'">'+escapeHtml(item.title)+'</button>').join('')+'</div></div><div class="kb-frame-wrap"><iframe src="'+escapeHtml(tool.url)+'" title="'+escapeHtml(tool.title)+'" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"></iframe></div><p class="kb-frame-note">若作者網站禁止內嵌，此工具會顯示空白或錯誤；站內「材料與交換」仍可直接查已整理的資料。'+kbSource(tool.url,'原作者網站')+'</p>'
+    }
     function kbSourcesHtml(){
       return '<div class="kb-intro"><h2>資料來源</h2><p>這一頁只列出查證來源。站內保留個人用到的摘要與計算；其他作者的完整工具、資料庫與圖片不直接複製。</p></div>'+practicalReferencesHtml()+'<div class="kb-results">'+COMMUNITY_TOOLS.map(x=>kbCard(x.title,x.description,x.category,x.href)).join('')+'</div>'
     }
@@ -1503,9 +1517,9 @@
       if(view==='storage')root.innerHTML=renderInventory();
       if(view==='craft'){
         const choice=(id,label)=>'<button type="button" data-craft-tool="'+id+'" class="'+(craftTool===id?'active':'')+'" aria-pressed="'+(craftTool===id)+'">'+label+'</button>';
-        const choices='<div class="craft-choices kb-choices" role="group" aria-label="知識庫分類">'+choice('search','材料與交換')+choice('roles','角色配裝')+choice('fashion','時裝')+choice('roadmap','更新目標')+choice('sources','來源')+'</div>';
+        const choices='<div class="craft-choices kb-choices" role="group" aria-label="知識庫分類">'+choice('search','材料與交換')+choice('roles','角色配裝')+choice('fashion','時裝')+choice('roadmap','更新目標')+choice('embed','站內工具')+choice('sources','來源')+'</div>';
         root.innerHTML='<div class="craft-toolbar">'+choices+'</div>'+
-          (craftTool==='roles'?kbRolesHtml():craftTool==='fashion'?kbFashionHtml():craftTool==='roadmap'?kbRoadmapHtml():craftTool==='sources'?kbSourcesHtml():kbSearchHtml());
+          (craftTool==='roles'?kbRolesHtml():craftTool==='fashion'?kbFashionHtml():craftTool==='roadmap'?kbRoadmapHtml():craftTool==='embed'?kbEmbedHtml():craftTool==='sources'?kbSourcesHtml():kbSearchHtml());
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -1525,6 +1539,7 @@
       barterInput?.addEventListener('input',event=>{barterQuery=event.target.value;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-craft-tool]').forEach(button=>button.onclick=()=>{craftTool=button.dataset.craftTool;render()});
       document.querySelectorAll('[data-kb-role]').forEach(button=>button.onclick=()=>{active=button.dataset.kbRole;render()});
+      document.querySelectorAll('[data-kb-embed]').forEach(button=>button.onclick=()=>{embedTool=button.dataset.kbEmbed;render()});
       document.querySelectorAll('[data-kb-query]').forEach(button=>button.onclick=()=>{knowledgeQuery=button.dataset.kbQuery;render();document.querySelector('#kb-query')?.focus()});
       document.querySelector('#kb-query')?.addEventListener('input',event=>{knowledgeQuery=event.target.value;document.querySelector('#kb-results').innerHTML=kbSearchResults(knowledgeQuery)});
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
