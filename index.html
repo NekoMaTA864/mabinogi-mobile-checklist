@@ -361,6 +361,7 @@
     const SHEETS_API = 'https://sheets.googleapis.com/v4/spreadsheets';
     const USERINFO_API = 'https://openidconnect.googleapis.com/v1/userinfo';
 
+    // sheetRole is a legacy display label for existing Sheet formulas and old Apps Script deployments; id is the stable sync key.
     const roles=[
       {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'礦物加工',detail:'礦石、銅礦、煤炭、金屬錠、分解零件',rule:'本尊兼共通匯點；可轉移稀缺材料與跨角色備料優先留存。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
       {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'木材加工',detail:'原木、高級原木、樹液、高級／最高級木材',rule:'木材線由此角色管理；藍色伐木斧只在確實安排伐木時投入。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
@@ -397,7 +398,10 @@
     const ACCOUNT_TASK_ALIASES=new Set(['每日限購／免費商品檢查',ACCOUNT_DAILY_TASK.label]);
     const DAILY_BLACK_HOLE_TASK={id:'normal_black_hole_daily',label:'普通黑色坑洞：今日基本獎勵',sheetTask:'黑色坑洞：每日保底',note:'每角色今日 1 次；勾選會計入本週 14 次。戰利品箱消耗既有額度，過期的今日次數不能補回。'};
     const HIDDEN_DAILY_TASKS=new Set(['每日任務','銀幣清理（狩獵場／地下城）',...ACCOUNT_TASK_ALIASES]);
-    const ACCOUNT_ROLE_RECORD={sheetRole:ACCOUNT_ROLE};
+    const ACCOUNT_ROLE_RECORD={id:'account',sheetRole:ACCOUNT_ROLE};
+    const ROLE_ID_BY_LEGACY_SHEET_NAME=Object.fromEntries(roles.map(role=>[role.sheetRole,role.id]));
+    function syncRoleId(roleId,legacyName){return roleId||ROLE_ID_BY_LEGACY_SHEET_NAME[legacyName]||(legacyName===ACCOUNT_ROLE?'account':'')}
+    function roleForSyncItem(item){return roles.find(role=>role.id===syncRoleId(item.roleId,item.role))}
     // Stable task IDs decouple saved progress from display names and array positions.
     // Existing spreadsheet labels and array positions remain readable during migration.
     const DAILY_TASK_IDS={
@@ -765,7 +769,7 @@
 
     async function syncWriteLegacy(r,task,cycle,progress,target){
       if(!syncReady())return;
-      try{await jsonp({action:'save',role:r.sheetRole,task,cycle,progress,target});syncStatus='已由 Token 備援同步至 Google Sheets';if(view==='sync')render()}
+      try{await jsonp({action:'save',role:r.sheetRole,roleId:r.id||'',task,cycle,progress,target});syncStatus='已由 Token 備援同步至 Google Sheets';if(view==='sync')render()}
       catch(err){syncStatus='Token 備援寫入失敗：'+err.message;if(view==='sync')render()}
     }
 
@@ -860,7 +864,7 @@
         const row=values[index]||[];const cycle=text(row[header.cols['週期']]);const date=dateText(row[header.cols['重置日']]);
         if((cycle==='每日'&&date!==currentDate)||(cycle==='每週'&&date!==weeklyDate)||(cycle==='常駐'&&date!=='永久'))continue;
         if(cycle!=='每日'&&cycle!=='每週'&&cycle!=='常駐')continue;
-        items.push({resetDate:date,role:text(row[header.cols['角色']]),task:text(row[header.cols['任務名稱']]),cycle,progress:number(row[header.cols['進度']]),target:number(row[header.cols['目標']]),complete:completeValue(row[header.cols['完成']])});
+        items.push({resetDate:date,role:text(row[header.cols['角色']]),roleId:header.cols['角色 ID']===undefined?'':text(row[header.cols['角色 ID']]),task:text(row[header.cols['任務名稱']]),cycle,progress:number(row[header.cols['進度']]),target:number(row[header.cols['目標']]),complete:completeValue(row[header.cols['完成']])});
       }
       return {items,gameDate:currentDate};
     }
@@ -873,7 +877,7 @@
       const sharedWeeklySeen=new Set();const sharedWeeklyProgress={};
       (items||[]).forEach(item=>{
         if(item.cycle==='常駐'&&text(item.task).startsWith('庫存｜')){
-          const materialId=text(item.task).slice('庫存｜'.length);const material=MATERIAL_CATALOG.find(candidate=>candidate.id===materialId);const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          const materialId=text(item.task).slice('庫存｜'.length);const material=MATERIAL_CATALOG.find(candidate=>candidate.id===materialId);const role=roleForSyncItem(item);
           if(material&&role)state[inventoryStateKey(material.id,role.id)]=Math.max(0,number(item.progress));
           return
         }
@@ -887,7 +891,7 @@
           return;
         }
         if(item.cycle==='每日'&&item.task===DAILY_ROLE_PURCHASE_TASK.sheetTask){
-          const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          const role=roleForSyncItem(item);
           if(role)state[roleDailyPurchaseStateKey(role.id)]=Boolean(item.complete||number(item.progress)>=1);
           return;
         }
@@ -895,7 +899,7 @@
           const completed=Boolean(item.complete||number(item.progress)>=1);
           if(item.role===ACCOUNT_ROLE)legacyAccountPitItem=item;
           else{
-            const role=roles.find(candidate=>candidate.sheetRole===item.role);
+            const role=roleForSyncItem(item);
             if(role)state[dailyTaskStateKey(role.id,DAILY_BLACK_HOLE_TASK.id)]=completed
           }
           return;
@@ -908,7 +912,7 @@
         }
         if(item.cycle==='每週'&&text(item.task).startsWith('採購計畫｜')){
           const product=PROCUREMENT_ITEMS.find(candidate=>`採購計畫｜${candidate.id}`===item.task);
-          const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          const role=roleForSyncItem(item);
           if(product&&product.track&&product.cycle==='每週'&&(product.scope==='帳號'?item.role===ACCOUNT_ROLE:Boolean(role))){
             state[purchasePlanKey(product,product.scope==='帳號'?'account':role.id)]=Math.max(0,Math.min(product.target,number(item.progress)))
           }
@@ -917,12 +921,12 @@
         if(text(item.task).startsWith('採購｜')){
           const procurement=PROCUREMENT_ITEMS.find(candidate=>`採購｜${candidate.id}`===item.task);
           if(!procurement||!procurement.track)return;
-          const role=roles.find(candidate=>candidate.sheetRole===item.role);
+          const role=roleForSyncItem(item);
           if(procurement.scope==='帳號'&&item.role===ACCOUNT_ROLE)state[purchaseStateKey(procurement,'account')]=Math.min(procurement.target,number(item.progress));
           else if(procurement.scope==='角色'&&role)state[purchaseStateKey(procurement,role.id)]=Math.min(procurement.target,number(item.progress));
           return;
         }
-        const role=roles.find(candidate=>candidate.sheetRole===item.role);if(!role)return;
+        const role=roleForSyncItem(item);if(!role)return;
         if(item.cycle==='每日'){
           if(HIDDEN_DAILY_TASKS.has(item.task))return;
           const taskId=taskIdFor('每日',item.task);
@@ -959,10 +963,10 @@
     async function oauthSaveItem(role,task,cycle,progress,target){
       if(!oauthSignedIn())return;
       const result=await sheetsRequest(`values/${encodedRange(sheetRange())}?majorDimension=ROWS`);const values=result.values||[];const header=findHeader(values);const resetDate=cycle==='常駐'?'永久':cycle==='每日'?gameDateKey():weekStart(gameDateKey());const boundedProgress=Math.max(0,Math.min(Math.max(1,number(target)),number(progress)));const complete=boundedProgress>=Math.max(1,number(target));
-      const keyValue=`${resetDate}\u0000${role.sheetRole}\u0000${task}`;let targetIndex=-1;
-      for(let index=header.rowIndex+1;index<values.length;index++){const row=values[index]||[];const rowKey=`${dateText(row[header.cols['重置日']])}\u0000${text(row[header.cols['角色']])}\u0000${text(row[header.cols['任務名稱']])}`;if(rowKey===keyValue&&text(row[header.cols['週期']])===cycle){targetIndex=index;break}}
-      if(targetIndex<0){const row=Array(header.width).fill('');row[header.cols['重置日']]=resetDate;row[header.cols['角色']]=role.sheetRole;row[header.cols['任務名稱']]=task;row[header.cols['週期']]=cycle;row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;if(header.cols['備註']!==undefined)row[header.cols['備註']]='由 GitHub Pages OAuth 同步建立';await sheetsRequest(`values/${encodedRange(sheetRange())}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
-      else{const row=Array(Math.max(header.width,(values[targetIndex]||[]).length)).fill('');(values[targetIndex]||[]).forEach((value,index)=>{row[index]=value});row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;const range=`${sheetTitle()}!A${targetIndex+1}:${columnName(row.length-1)}${targetIndex+1}`;await sheetsRequest(`values/${encodedRange(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
+      const roleId=role.id||syncRoleId('',role.sheetRole);const keyValue=`${resetDate}\u0000${roleId}\u0000${task}`;let targetIndex=-1;
+      for(let index=header.rowIndex+1;index<values.length;index++){const row=values[index]||[];const rowId=syncRoleId(header.cols['角色 ID']===undefined?'':text(row[header.cols['角色 ID']]),text(row[header.cols['角色']]));const rowKey=`${dateText(row[header.cols['重置日']])}\u0000${rowId}\u0000${text(row[header.cols['任務名稱']])}`;if(rowKey===keyValue&&text(row[header.cols['週期']])===cycle){targetIndex=index;break}}
+      if(targetIndex<0){const row=Array(header.width).fill('');row[header.cols['重置日']]=resetDate;row[header.cols['角色']]=role.sheetRole;if(header.cols['角色 ID']!==undefined)row[header.cols['角色 ID']]=roleId;row[header.cols['任務名稱']]=task;row[header.cols['週期']]=cycle;row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;if(header.cols['備註']!==undefined)row[header.cols['備註']]='由 GitHub Pages OAuth 同步建立';await sheetsRequest(`values/${encodedRange(sheetRange())}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`,{method:'POST',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
+      else{const row=Array(Math.max(header.width,(values[targetIndex]||[]).length)).fill('');(values[targetIndex]||[]).forEach((value,index)=>{row[index]=value});row[header.cols['進度']]=boundedProgress;row[header.cols['目標']]=Math.max(1,number(target));row[header.cols['完成']]=complete;if(header.cols['角色 ID']!==undefined)row[header.cols['角色 ID']]=roleId;const range=`${sheetTitle()}!A${targetIndex+1}:${columnName(row.length-1)}${targetIndex+1}`;await sheetsRequest(`values/${encodedRange(range)}?valueInputOption=USER_ENTERED`,{method:'PUT',body:JSON.stringify({majorDimension:'ROWS',values:[row]})})}
     }
 
     async function performSyncWrite(role,task,cycle,progress,target){
