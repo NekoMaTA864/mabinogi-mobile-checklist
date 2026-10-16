@@ -2,6 +2,8 @@
 
 GitHub Pages：<https://nekomata864.github.io/mabinogi-mobile-checklist/>
 
+> 轉職／同步待辦：正式 Apps Script 尚未確認重新部署。下次修改角色職業、網站或 Sheet 前，先看 [角色 ID 同步交接](docs/ROLE_ID_SYNC_HANDOFF.md)。
+
 這是一個純前端、手機友善的六角色清單。未設定同步時，資料會保存在目前裝置的瀏覽器；設定 Google Sheets 同步後，日週進度、材料庫存與交換計畫會寫入既有試算表的「歷史紀錄」，不同裝置可以讀回同一份資料。
 
 ## Google Sheets 同步設定
