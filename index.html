@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#102d45" />
-  <title>瑪奇 Mobile｜日週清單</title>
+  <title>瑪奇 Mobile｜個人知識庫</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23102d45'/%3E%3Cpath d='M18 34l9 9 19-22' fill='none' stroke='%23dcecff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style>
     :root { --navy:#102d45; --blue:#1e5d8f; --ice:#e6f2fb; --paper:#f6f9fc; --ink:#183145; --muted:#607487; --line:#d7e3ed; --mint:#e9f6ef; --mint-ink:#176043; --amber:#fff4d7; --amber-ink:#815400; }
@@ -44,7 +44,7 @@
     .section-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem; padding:.7rem 1rem; background:#fff; border-bottom:1px solid var(--line); }
     .section-tab { display:flex; justify-content:center; align-items:center; min-height:3.15rem; padding:.7rem .8rem; border:1px solid #c8d9e5; border-radius:12px; background:#f4f8fb; color:#47677d; font-size:1.02rem; font-weight:750; cursor:pointer; }
     .section-tab.active { border-color:var(--navy); background:var(--navy); color:#fff; box-shadow:0 2px 5px #102d4520; }
-    .tabs { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:.28rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:.8rem; }
+    .tabs { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:.28rem; padding:.34rem; background:#e5edf3; border-radius:12px; margin-bottom:.8rem; }
     .tab { min-width:0; border:0; background:transparent; color:#5a7081; padding:.58rem .12rem; border-radius:9px; cursor:pointer; font-weight:700; font-size:.9rem; white-space:nowrap; }
     .tab.active { background:white; color:var(--navy); box-shadow:0 1px 3px #18314519; }
     .section-title { display:flex; justify-content:space-between; align-items:center; margin:.2rem 0 .5rem; } .section-title h2 { margin:0; font-size:1rem; } .section-title small { color:var(--muted); }
@@ -320,7 +320,7 @@
     .craft-external-link { justify-self:start; display:inline-flex; align-items:center; min-height:2.4rem; padding:.45rem .7rem; border:1px solid #c9dae6; border-radius:9px; background:#f7fafc; color:#31566d!important; font-size:.85rem; font-weight:700; text-decoration:none; }
     .craft-open-button { justify-self:start; display:inline-flex; align-items:center; min-height:2.6rem; padding:.5rem .8rem; border:1px solid var(--blue); border-radius:9px; background:var(--blue); color:#fff!important; cursor:pointer; font-size:.9rem; font-weight:750; text-decoration:none; }
     @media (max-width:560px) {
-      .tabs { grid-template-columns:repeat(7,minmax(0,1fr)); gap:.14rem; padding:.28rem; }
+      .tabs { grid-template-columns:repeat(6,minmax(0,1fr)); gap:.14rem; padding:.28rem; }
       .tab { padding:.54rem .04rem; font-size:.84rem; }
       .section-nav { padding:.6rem .75rem; gap:.45rem; }
       .section-tab { min-height:3rem; padding:.65rem .35rem; font-size:1rem; }
@@ -329,19 +329,39 @@
       .rune-slot-grid { grid-template-columns:1fr; }
       .rune-tier-title { display:block; }
     }
+
+    .kb-intro { background:#fff; border:1px solid var(--line); border-radius:14px; padding:1rem; margin:.8rem 0; }
+    .kb-intro h2 { margin:0 0 .35rem; font-size:1.12rem; }
+    .kb-intro p { color:var(--muted); margin:.2rem 0 .8rem; line-height:1.55; }
+    .kb-search-label { display:block; font-weight:700; margin-bottom:.3rem; }
+    #kb-query { width:100%; font:inherit; border:1px solid #b7cad9; border-radius:10px; padding:.7rem; background:white; color:var(--ink); }
+    .kb-quick { display:flex; gap:.45rem; flex-wrap:wrap; margin-top:.7rem; }
+    .kb-quick button { font:inherit; border:1px solid #c7d9e6; background:#f4f8fb; border-radius:9px; color:var(--ink); padding:.48rem .65rem; cursor:pointer; }
+    .kb-quick button.active { background:var(--navy); color:white; }
+    .kb-results { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:.7rem; align-items:stretch; }
+    .kb-card { background:#fff; border:1px solid var(--line); border-radius:13px; padding:.85rem; }
+    .kb-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; }
+    .kb-card h3 { font-size:.98rem; margin:0; }
+    .kb-card p { margin:.55rem 0; line-height:1.5; font-size:.88rem; }
+    .kb-card small, .kb-card a { color:var(--blue); }
+    .kb-status { flex:none; color:var(--amber-ink); background:var(--amber); border-radius:7px; padding:.2rem .35rem; font-size:.73rem; }
+    .kb-note { background:var(--ice); border-radius:10px; padding:.85rem; margin:.75rem 0; line-height:1.55; font-size:.9rem; }
+    .kb-note a { color:var(--blue); }
+    .kb-empty { color:var(--muted); padding:1rem; }
+    .kb-choices { display:flex; flex-wrap:wrap; }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="app">
-    <header><div class="topline"><div><h1>瑪奇 Mobile｜日週清單與道具資訊</h1><p class="sub">六角色 · 日週進度 · 道具資訊</p></div><div class="date" id="date"></div></div></header>
-    <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="checklist" aria-pressed="true">日週清單</button><button class="section-tab" type="button" data-section="items" aria-pressed="false">道具資訊</button></nav>
+    <header><div class="topline"><div><h1>瑪奇 Mobile｜個人知識庫</h1><p class="sub">六角色配裝 · 材料交換 · 更新時程</p></div><div class="date" id="date"></div></div></header>
+    <nav class="section-nav" aria-label="主要功能"><button class="section-tab active" type="button" data-section="items" aria-pressed="true">知識庫</button><button class="section-tab" type="button" data-section="checklist" aria-pressed="false">進度與庫存</button></nav>
     <nav class="rolebar" id="rolebar" aria-label="選擇角色"></nav>
     <main>
       <section class="identity" id="identity"></section>
       <section class="focus-banner" id="focus-banner" aria-live="polite"></section>
       <section class="meter"><b id="meter-title">今日完成度</b><span id="meter-label"></span><div class="track"><div class="fill" id="meter-fill"></div></div></section>
-      <nav class="tabs" aria-label="日週清單分頁"><button class="tab" data-view="overview">總覽</button><button class="tab active" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="rune">符文</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
+      <nav class="tabs" aria-label="進度與庫存分頁"><button class="tab" data-view="overview">總覽</button><button class="tab" data-view="daily">今日</button><button class="tab" data-view="weekly">本週</button><button class="tab" data-view="exchange">採購</button><button class="tab" data-view="storage">倉庫</button><button class="tab" data-view="sync">同步</button></nav>
       <section id="view"></section>
       
     </main>
@@ -528,7 +548,7 @@
       {id:'tracy-rawhide',npc:'特蕾西',region:'杜加德走廊',input:'原木 ×1',output:'生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'原木轉生皮的直接材料路線。',source:BARTER_DATABASE_URL},
       {id:'naris-high-hide',npc:'奈麗絲',region:'杜巴頓',input:'銅礦石 ×1',output:'高級生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'可把金屬採集材料轉成皮革製作原料。',source:BARTER_DATABASE_URL},
       {id:'tracy-high-hide',npc:'特蕾西',region:'杜加德走廊',input:'原木 ×10',output:'高級生皮 ×1',cycle:'每日',limit:'資料列每日 10 次',note:'與銅礦石路線產物相同，依手上材料選擇。',source:BARTER_DATABASE_URL},
-      {id:'elwyn-high-wood',npc:'艾爾文',region:'杜加德走廊',input:'炒蔬菜 ×2',output:'高級木材 ×4',cycle:'每日',limit:'韓服玩家列每日 2 次；台服覆核',note:'韓服與台服玩家資料庫均有此配方；與特蕾西生皮交換是獨立路線。',source:BARTER_DATABASE_URL,evidence:'玩家交叉／台服待核對'},
+      {id:'elwyn-high-wood',npc:'艾爾文',region:'杜加德走廊',input:'炒蔬菜（數量待核對）',output:'高級木材 ×4',cycle:'每日',limit:'韓服玩家列每日 2 次；台服覆核',note:'社群來源的投入數量有 ×1／×2 歧異，請先在遊戲內核對，再列入材料計畫。',source:BARTER_DATABASE_URL,evidence:'玩家交叉／台服待核對'},
       {id:'fergus-alloy',npc:'佛格斯',region:'提爾克那',input:'鋼錠 ×2',output:'合金鋼錠 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'有鍛造需求再規劃；不能把韓服額度當台服定案。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
       {id:'lasa-catalyst-juice',npc:'拉薩',region:'提爾克那',input:'蘋果汁 ×1',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'與碎屑交換是兩個投入選項；在遊戲內確認當期額度。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
       {id:'lasa-catalyst-fragments',npc:'拉薩',region:'提爾克那',input:'鍊金術碎屑 ×3',output:'高級鍊金術再燃燒催化劑 ×1',cycle:'每日',limit:'韓服舊資料；台服覆核',note:'有催化需求才排入計畫。',source:KOREAN_BARTER_URL,evidence:'韓服玩家／台服待核對'},
@@ -626,7 +646,7 @@
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>{const active=button.dataset.barterCycleFilter===barterCadenceFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>{const active=button.dataset.barterDirectionFilter===barterDirectionFilter;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))})
     }
-    let appSection='checklist',active='main',view='daily',checklistView='daily',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='recipes';
+    let appSection='items',active='main',view='craft',checklistView='overview',exchangeSubView='purchase',exchangeFilter='priority',exchangeScope='role',exchangePendingOnly=false,barterQuery='',barterCadenceFilter='all',barterDirectionFilter='all',craftTool='search',knowledgeQuery='';
     const key='mabi-mobile-web-demo-v1';
     const syncKey='mabi-mobile-sync-v1';
     const state=loadObject(key);
@@ -1374,6 +1394,69 @@
       }
       return [0,0]
     }
+
+    // Personal knowledge base: compact, attributable notes. External databases remain their authors' work.
+    const KNOWLEDGE_SOURCES={
+      twShop:'https://tw.nexon.com/mabinogimobile/home/news/notice/3562703',
+      twUpdate:'https://tw.nexon.com/mabinogimobile/home/news/notice/3562593',
+      showcase:'https://youtu.be/XiSxc3HD3A8',
+      krFashion:'https://starmoon.game-db.tw/game-data/fashion-timeline/kr/',
+      twFashion:'https://starmoon.game-db.tw/game-data/fashion-timeline/tw/',
+      krDark:'https://mabinogimobile.nexon.com/News/Notice/2839206',
+      krKnight:'https://mabinogimobile.nexon.com/News/Devnote',
+      barter:'https://starmoon.game-db.tw/game-data/special-shops/',
+      recipe:'https://pokeasou.github.io/mabi-backpack-helper/items.html'
+    };
+    const KNOWLEDGE_NOTES=[
+      {title:'牛奶 → 麵包 → 聖水',tags:'牛奶 凱琳 麵包 安黛莉 聖水',body:'凱琳以牛奶 ×10 交換麵包 ×3；安黛莉的聖水 ×10 路線需要麵包 ×10。兩段各自核對角色／伺服器額度。',source:KNOWLEDGE_SOURCES.barter,status:'社群表'},
+      {title:'艾爾文高級木材',tags:'炒蔬菜 高級木材 艾爾文',body:'玩家資料對炒蔬菜投入數量列 ×1 或 ×2，先在台服遊戲內確認。下方交換路線保留雙版本提示，不把其中一個當成定案。',source:KNOWLEDGE_SOURCES.barter,status:'待核對'},
+      {title:'加工台 3 級設計圖',tags:'設計圖 加工台 煤炭 幼蟲 布料',body:'金屬、木材、皮革等設計圖是一次性需求；先查交換路線，再按實際缺的製作台準備材料。',source:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1181',status:'玩家整理'}
+    ];
+    const KB_FASHION=[
+      {type:'傳說時裝',current:'古樹統治者',end:'11/25 05:59',next:'神聖光輝（韓服下一代，暫譯）',confidence:'韓服順序推測'},
+      {type:'全套套組',current:'皇家交響',end:'11/25 05:59',next:'領主騎士（韓服下一代，暫譯）',confidence:'韓服順序推測'},
+      {type:'頂級時裝幸運箱',current:'偵察員／微風旅行／高潔恩典',end:'11/25 05:59',next:'韓服下一輪為神聖審判／莊嚴光輝；台服已跳輪，無法據此確定下一檔',confidence:'僅候選'}
+    ];
+    function kbSource(url,label='來源'){return '<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(label)+' ↗</a>'}
+    function kbCard(title,body,status,source){
+      return '<article class="kb-card"><div class="kb-card-head"><h3>'+escapeHtml(title)+'</h3><span class="kb-status">'+escapeHtml(status)+'</span></div><p>'+escapeHtml(body)+'</p><small>'+kbSource(source)+'</small></article>'
+    }
+    function kbSearchResults(query){
+      const q=query.trim().toLocaleLowerCase();
+      const match=text=>!q||String(text).toLocaleLowerCase().includes(q);
+      const notes=KNOWLEDGE_NOTES.filter(n=>match(n.title+' '+n.tags+' '+n.body)).map(n=>kbCard(n.title,n.body,n.status,n.source));
+      const routes=BARTER_ROUTES.filter(r=>match(r.npc+' '+r.region+' '+r.input+' '+r.output)).slice(0,50).map(r=>kbCard(
+        r.output+'｜'+r.npc,r.region+' · 投入 '+r.input+' → '+r.output+' · '+r.cycle+' · '+r.limit+(r.note?'。'+r.note:''),r.evidence||'社群資料',r.source));
+      const shops=PROCUREMENT_ITEMS.filter(item=>match(item.product+' '+item.npc+' '+item.region+' '+item.cost)).slice(0,35).map(item=>kbCard(
+        item.product+'｜'+item.npc,item.region+' · '+item.cost+' · '+item.cycle+' · '+(item.note||''),item.evidence||'採購資料',item.source));
+      const inventory=MATERIAL_CATALOG.filter(item=>match(item.name)).map(item=>kbCard(
+        item.name+'｜六倉 '+inventoryTotal(item.id), '保管角色：'+(roles.find(role=>role.id===item.defaultRole)?.name||'未指定')+'。數量可在「進度與庫存 → 倉庫」修改。','個人庫存',KNOWLEDGE_SOURCES.barter));
+      const result=[...notes,...inventory,...routes,...shops];
+      return result.length?result.join(''):'<p class="kb-empty">目前沒有符合的站內資料；可以換 NPC、材料或產物名稱搜尋。</p>'
+    }
+    function kbSearchHtml(){
+      return '<div class="kb-intro"><h2>材料與交換</h2><p>搜尋材料、產物或 NPC，直接看已有的交換路線、採購資訊及六倉庫存。配方大全目前沒有可靠的可重用資料來源；這裡只收已整理的高頻鏈條。</p><label class="kb-search-label" for="kb-query">查詢</label><input id="kb-query" type="search" autocomplete="off" placeholder="例如：牛奶、聖水、高級生皮、艾爾文" value="'+escapeHtml(knowledgeQuery)+'"><div class="kb-quick">'+['聖水','最高級生皮','蜘蛛網','魔力石','設計圖'].map(x=>'<button type="button" data-kb-query="'+x+'">'+x+'</button>').join('')+'</div></div><div class="kb-results" id="kb-results">'+kbSearchResults(knowledgeQuery)+'</div>'
+    }
+    function kbRolesHtml(){
+      const selector='<div class="kb-quick">'+roles.map(r=>'<button type="button" data-kb-role="'+r.id+'" class="'+(r.id===active?'active':'')+'">'+escapeHtml(r.name)+'｜'+escapeHtml(r.job)+'</button>').join('')+'</div>';
+      const extra=active==='main'?'<div class="kb-note"><b>本尊目前：</b>岩石巨人／魔力激流／毀滅烙印／共鳴水晶／超自然均 +10；前 1～2 排詞條已略作整理，技能特化尚未全點。比較火炬前先補完技能特化與武器／飾品投資的成本效益。未來騎士轉職僅為個人規劃。</div>':
+        active==='z'?'<div class="kb-note"><b>個人規劃：</b>電擊術士後續可能轉暗黑術士；台服日期未公告。</div>':
+        active==='zz'?'<div class="kb-note"><b>職業核對：</b>此角色是吟遊詩人（支援）；貓又老師o 才是樂師（輸出）。兩者符文與操作循環分開。</div>':'';
+      return '<div class="kb-intro"><h2>六角色配裝</h2><p>個人配置與台服 S0 指南；轉職時保留角色固定 ID。</p>'+selector+'</div>'+extra+renderRuneGuide(roles.find(r=>r.id===active))
+    }
+    function kbFashionHtml(){
+      return '<div class="kb-intro"><h2>時裝順序</h2><p>台服已公告的本期販售至 11/25 05:59；以下「下一批」只按韓服上架順序列候選，沒有台服開賣日期。台服曾提前或跳輪。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,item.confidence==='韓服順序推測'?KNOWLEDGE_SOURCES.krFashion:KNOWLEDGE_SOURCES.twShop)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
+    }
+    function kbRoadmapHtml(){
+      return '<div class="kb-intro"><h2>官方更新目標</h2><p>「章節」與「可轉職的職業」分開看；月份是 Showcase 的規劃，正式日期以日後台服公告為準。</p></div><div class="kb-results">'+[
+        kbCard('11 月｜第三章「聖騎士」','台港澳 Showcase 預告新章節及相關地區、副本。這是章節名稱，不能據此認定「騎士職業」11 月開放。','官方規劃',KNOWLEDGE_SOURCES.showcase),
+        kbCard('12 月｜新職業','Showcase 預告年底新職業，但未在此明指職業名稱。暗黑術士是按韓服推出先後的合理候選，尚非台服正式公告。','官方月份／職業待公布',KNOWLEDGE_SOURCES.showcase),
+        kbCard('韓服參考｜暗黑術士與騎士','暗黑術士在韓服 2025/10/16 更新；騎士在韓服 2026/04/23 更新。台服可調整先後與時程。','跨服參考',KNOWLEDGE_SOURCES.krKnight)
+      ].join('')+'</div><div class="kb-note">截至 2026/10/16 台服最新維護內容含地獄 6（10/19 開放），尚未公布上述新職業確切日期。'+kbSource(KNOWLEDGE_SOURCES.twUpdate,'台服維護公告')+'</div>'
+    }
+    function kbSourcesHtml(){
+      return '<div class="kb-intro"><h2>資料來源</h2><p>這一頁只列出查證來源。站內保留個人用到的摘要與計算；其他作者的完整工具、資料庫與圖片不直接複製。</p></div>'+practicalReferencesHtml()+'<div class="kb-results">'+COMMUNITY_TOOLS.map(x=>kbCard(x.title,x.description,x.category,x.href)).join('')+'</div>'
+    }
     function render(){
       resetStaleDailyState();resetStaleWeeklyState();
       const app=document.querySelector('.app');app.dataset.view=view;app.dataset.appSection=appSection;app.dataset.exchangeSubview=exchangeSubView;
@@ -1419,14 +1502,9 @@
       if(view==='storage')root.innerHTML=renderInventory();
       if(view==='craft'){
         const choice=(id,label)=>'<button type="button" data-craft-tool="'+id+'" class="'+(craftTool===id?'active':'')+'" aria-pressed="'+(craftTool===id)+'">'+label+'</button>';
-        const choices='<div class="craft-choices" role="group" aria-label="道具資訊工具">'+choice('recipes','配方與取得')+choice('graph','上下游關聯')+choice('guides','常用資料')+'</div>';
-        if(craftTool==='guides'){
-          root.innerHTML='<div class="craft-toolbar">'+choices+practicalReferencesHtml()+'</div>';
-        }else{
-          const tool=craftTool==='recipes'?{title:'瑪奇M 背包小救星',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html',stamp:'台服資料版 · 2026-09-16'}:{title:'瑪奇 M 冒險手札',url:'https://kingex1124.github.io/MabiMGuide/items.html',stamp:'資料快照 · 2026-09-25'};
-          const extras=craftTool==='recipes'?'<p class="craft-links"><a href="https://pokeasou.github.io/mabi-backpack-helper/map.html" target="_blank" rel="noopener noreferrer">材料地圖 ↗</a> · <a href="https://pokeasou.github.io/mabi-backpack-helper/inventory.html" target="_blank" rel="noopener noreferrer">倉庫計算器 ↗</a></p>':'';
-          root.innerHTML='<div class="craft-toolbar">'+choices+'<small class="craft-data-stamp">'+tool.stamp+'</small><a class="craft-open-button" href="'+tool.url+'" target="_blank" rel="noopener noreferrer">開啟 '+tool.title+' ↗</a>'+extras+'</div>';
-        }
+        const choices='<div class="craft-choices kb-choices" role="group" aria-label="知識庫分類">'+choice('search','材料與交換')+choice('roles','角色配裝')+choice('fashion','時裝')+choice('roadmap','更新目標')+choice('sources','來源')+'</div>';
+        root.innerHTML='<div class="craft-toolbar">'+choices+'</div>'+
+          (craftTool==='roles'?kbRolesHtml():craftTool==='fashion'?kbFashionHtml():craftTool==='roadmap'?kbRoadmapHtml():craftTool==='sources'?kbSourcesHtml():kbSearchHtml());
       }
       if(view==='sync'){
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
@@ -1445,6 +1523,9 @@
       if(barterInput&&!window.PointerEvent)barterInput.addEventListener('touchstart',()=>{if(document.activeElement!==barterInput)barterInput.focus()},{passive:true});
       barterInput?.addEventListener('input',event=>{barterQuery=event.target.value;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-craft-tool]').forEach(button=>button.onclick=()=>{craftTool=button.dataset.craftTool;render()});
+      document.querySelectorAll('[data-kb-role]').forEach(button=>button.onclick=()=>{active=button.dataset.kbRole;render()});
+      document.querySelectorAll('[data-kb-query]').forEach(button=>button.onclick=()=>{knowledgeQuery=button.dataset.kbQuery;render();document.querySelector('#kb-query')?.focus()});
+      document.querySelector('#kb-query')?.addEventListener('input',event=>{knowledgeQuery=event.target.value;document.querySelector('#kb-results').innerHTML=kbSearchResults(knowledgeQuery)});
       document.querySelectorAll('[data-barter-cycle-filter]').forEach(button=>button.onclick=()=>{barterCadenceFilter=button.dataset.barterCycleFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-barter-direction-filter]').forEach(button=>button.onclick=()=>{barterDirectionFilter=button.dataset.barterDirectionFilter;updateBarterRouteVisibility()});
       document.querySelectorAll('[data-plan-route]').forEach(button=>button.onclick=()=>{const route=BARTER_ROUTES.find(item=>item.id===button.dataset.planRoute);if(!route)return;const stateKey=barterPlanStateKey(route.id);const next=Math.max(0,Math.min(BARTER_PLAN_TARGET,barterPlanValue(route.id)+Number(button.dataset.delta)));state[stateKey]=next;save();syncWrite(ACCOUNT_ROLE_RECORD,'路線計畫｜'+route.id,'常駐',next,BARTER_PLAN_TARGET);render()});
