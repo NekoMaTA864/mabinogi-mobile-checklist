@@ -18,6 +18,18 @@ const CONFIG = {
   headerName: '重置日'
 };
 
+// Legacy labels remain readable while role IDs stay fixed across class/name changes.
+const ROLE_ID_BY_LEGACY_NAME = {
+  '貓又老師(魔法師)': 'main',
+  '貓又老師z(電擊術士)': 'z',
+  '貓又老師zz(長弓兵)': 'zz',
+  '貓又老師o(樂師)': 'o',
+  '貓又老師p(祭司)': 'p',
+  '貓又老師oo(修道士)': 'oo',
+  '帳號共用': 'account'
+};
+function syncRoleId_(id, name) { return text_(id) || ROLE_ID_BY_LEGACY_NAME[text_(name)] || ''; }
+
 function setSyncToken() {
   const ui = SpreadsheetApp.getUi();
   const result = ui.prompt(
@@ -70,6 +82,7 @@ function readCurrent_() {
     items.push({
       resetDate: date,
       role: text_(row[header.cols['角色']]),
+      roleId: syncRoleId_(header.cols['角色 ID'] === undefined ? '' : row[header.cols['角色 ID']], row[header.cols['角色']]),
       task: text_(row[header.cols['任務名稱']]),
       cycle: cycle,
       progress: number_(row[header.cols['進度']]),
@@ -84,6 +97,7 @@ function saveItem_(p) {
   const cycle = text_(p.cycle);
   if (cycle !== '每日' && cycle !== '每週' && cycle !== '常駐') throw new Error('週期只能是每日、每週或常駐。');
   const role = text_(p.role);
+  const roleId = syncRoleId_(p.roleId, role);
   const task = text_(p.task);
   if (!role || !task) throw new Error('角色與任務名稱不可空白。');
   const target = Math.max(1, number_(p.target));
@@ -97,11 +111,13 @@ function saveItem_(p) {
     if (!sheet) throw new Error('找不到歷史紀錄工作表。');
     const values = sheet.getDataRange().getValues();
     const header = findHeader_(values);
-    const key = resetDate + '\u0000' + role + '\u0000' + task;
+    const key = resetDate + '\u0000' + (roleId || role) + '\u0000' + task;
     let targetRow = -1;
     for (let i = header.row; i < values.length; i++) {
       const row = values[i];
-      const rowKey = dateText_(row[header.cols['重置日']]) + '\u0000' + text_(row[header.cols['角色']]) + '\u0000' + text_(row[header.cols['任務名稱']]);
+      const existingRole = text_(row[header.cols['角色']]);
+      const existingId = syncRoleId_(header.cols['角色 ID'] === undefined ? '' : row[header.cols['角色 ID']], existingRole);
+      const rowKey = dateText_(row[header.cols['重置日']]) + '\u0000' + (existingId || existingRole) + '\u0000' + text_(row[header.cols['任務名稱']]);
       if (rowKey === key && text_(row[header.cols['週期']]) === cycle) {
         targetRow = i + 1;
         break;
@@ -111,6 +127,7 @@ function saveItem_(p) {
       const output = [];
       output[header.cols['重置日']] = resetDate;
       output[header.cols['角色']] = role;
+      if (header.cols['角色 ID'] !== undefined) output[header.cols['角色 ID']] = roleId;
       output[header.cols['任務名稱']] = task;
       output[header.cols['週期']] = cycle;
       output[header.cols['進度']] = progress;
@@ -123,11 +140,12 @@ function saveItem_(p) {
       sheet.getRange(targetRow, header.cols['進度'] + 1).setValue(progress);
       sheet.getRange(targetRow, header.cols['目標'] + 1).setValue(target);
       sheet.getRange(targetRow, header.cols['完成'] + 1).setValue(complete);
+      if (header.cols['角色 ID'] !== undefined && roleId) sheet.getRange(targetRow, header.cols['角色 ID'] + 1).setValue(roleId);
     }
   } finally {
     lock.releaseLock();
   }
-  return { ok: true, resetDate: resetDate, role: role, task: task, cycle: cycle, progress: progress, target: target, complete: complete };
+  return { ok: true, resetDate: resetDate, role: role, roleId: roleId, task: task, cycle: cycle, progress: progress, target: target, complete: complete };
 }
 
 function findHeader_(values) {
