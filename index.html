@@ -349,7 +349,7 @@
     .kb-frame-note { color:var(--muted); font-size:.8rem; line-height:1.5; }
     .kb-choices { display:flex; flex-wrap:wrap; }
   </style>
-  <link rel="stylesheet" href="design.css?v=desktop-20261016" />
+  <link rel="stylesheet" href="design.css?v=knowledge-20261016" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -383,12 +383,12 @@
 
     // sheetRole is a legacy display label for existing Sheet formulas and old Apps Script deployments; id is the stable sync key.
     const roles=[
-      {id:'main',name:'貓又老師',sheetRole:'貓又老師(魔法師)',job:'魔法師',store:'礦物加工',detail:'礦石、銅礦、煤炭、金屬錠、分解零件',rule:'本尊兼共通匯點；可轉移稀缺材料與跨角色備料優先留存。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
-      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',job:'電擊術士',store:'木材加工',detail:'原木、高級原木、樹液、高級／最高級木材',rule:'木材線由此角色管理；藍色伐木斧只在確實安排伐木時投入。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
-      {id:'zz',name:'貓又老師zz',sheetRole:'貓又老師zz(長弓兵)',job:'吟遊詩人',store:'皮革加工',detail:'一般／高級生皮、皮革與皮革加工品',rule:'狩獵掉落及交換生皮歸此線；成品依實際配方需求轉出。'},
-      {id:'o',name:'貓又老師o',sheetRole:'貓又老師o(樂師)',job:'樂師',store:'布料加工',detail:'羊毛、蜘蛛絲、線、布料、絲綢與染料',rule:'紡織原料與加工品歸此線；配方會跨線取料。'},
-      {id:'p',name:'貓又老師p',sheetRole:'貓又老師p(祭司)',job:'祭司',store:'藥品製作',detail:'藥草、蘑菇、花粉、藥水與煉金材料',rule:'藥草與藥品／煉金產物歸此線；只按實際藥品需求備料。'},
-      {id:'oo',name:'貓又老師oo',sheetRole:'貓又老師oo(修道士)',job:'修道士',store:'食材加工',detail:'肉、奶、蛋、蔬果、油鹽糖、麵粉與料理成品',rule:'食材與料理歸此線；角色限購先按本尊和跨職業配方需求規劃。'}
+      {id:'main',name:'河原木桃香',sheetRole:'貓又老師(魔法師)',store:'礦物加工',detail:'礦石、銅礦、煤炭、金屬錠、分解零件',rule:'本尊兼共通匯點；可轉移稀缺材料與跨角色備料優先留存。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
+      {id:'z',name:'貓又老師z',sheetRole:'貓又老師z(電擊術士)',store:'木材加工',detail:'原木、高級原木、樹液、高級／最高級木材',rule:'木材線由此角色管理；藍色伐木斧只在確實安排伐木時投入。',daily:['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'],weekly:[['不詳的召喚結界',7],['黑色坑洞',14],['野外首領週戰利品',1],['每週任務',1],['生活材料商店：本週採購',1],['魔物討伐證明週商店／交換',1],['深淵通關戰利品',3],['白魅魔通關戰利品',1],['格里斯貝恩',1]]},
+      {id:'zz',name:'貓又老師zz',sheetRole:'貓又老師zz(長弓兵)',store:'皮革加工',detail:'一般／高級生皮、皮革與皮革加工品',rule:'狩獵掉落及交換生皮歸此線；成品依實際配方需求轉出。'},
+      {id:'o',name:'貓又老師o',sheetRole:'貓又老師o(樂師)',store:'布料加工',detail:'羊毛、蜘蛛絲、線、布料、絲綢與染料',rule:'紡織原料與加工品歸此線；配方會跨線取料。'},
+      {id:'p',name:'貓又老師p',sheetRole:'貓又老師p(祭司)',store:'藥品製作',detail:'藥草、蘑菇、花粉、藥水與煉金材料',rule:'藥草與藥品／煉金產物歸此線；只按實際藥品需求備料。'},
+      {id:'oo',name:'貓又老師oo',sheetRole:'貓又老師oo(修道士)',store:'食材加工',detail:'肉、奶、蛋、蔬果、油鹽糖、麵粉與料理成品',rule:'食材與料理歸此線；角色限購先按本尊和跨職業配方需求規劃。'}
     ];
     const WEEKLY_ROLE_BARTER_TASK='以物易物交換（每週確認）';
     const baseDaily=['每日任務','週幾地下城','兼職：聖水／重要兼職','銀幣清理（狩獵場／地下城）','每日限購／免費商品檢查','黑色坑洞：每日保底','魔族供品清理→深層地下城'];
@@ -400,9 +400,9 @@
     });
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
-    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-10-16","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","character":"貓又老師","role":"main_current","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","character":"貓又老師z","role":"alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"bard","name_zh_tw":"吟遊詩人","character":"貓又老師zz","role":"utility_alt","description":"團隊支援以紅、綠、藍樂想管理增益與治療；2／3／4 手動維持循環。","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"先沿用千把劍。3022 文章採靈魂收割者；目前台服整理仍列千把劍，暫不另投武器資源。"},"armor":{"T0":["戰慄樂想","岩石巨人","魔力激流（循環確認後）","猛烈驟雨（可選）","銀色尖塔（觸發確認後）"],"T1":["戰慄樂想","岩石巨人","穩定","領悟","陰險一擊"]},"accessory":{"T0":["和弦","嘲弄","機智"],"T1":["和弦","嘲弄","自然掉落的有效第三顆"]},"badge":{"T0":["睿智（團隊增益）／絢爛（兼顧輸出）"],"T1":["冷酷／俐落（現有先沿用）"]},"unordered_slots":["armor"],"slot_notes":{"armor":"戰慄樂想與岩石巨人為先沿用的核心；魔力激流依循環驗證。驟雨與銀色尖塔為後續選項，尖塔需先確認治療隊友或寵物可觸發。"},"t1_note":"防具與徽章可先沿用已擁有的有效符文，依組隊循環逐步替換。","build_notes":["支援循環採 2／3／4 手動管理樂想；1、5 可自動，但不視為完整自動。技能強化 3 → 2 → 4 至 30，1 技先到 10。","藍化石飾品順序：和弦 → 嘲弄 → 機智；紫／粉自然掉落先測試，每次只補當下優先缺口。","戰慄樂想需組隊才有職業增益。魔力激流先觀察循環層數；驟雨、銀色尖塔為後續選項，銀色尖塔需先驗證治療觸發。","徽章先沿用冷酷／俐落；循環穩定後再依團隊增益或個人輸出比較睿智、絢爛。"],"stop_line":"和弦＋嘲弄＋機智到位，能用 2／3／4 維持核心團隊增益與治療即可"},{"id":"musician","name_zh_tw":"樂師","character":"貓又老師o","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0_速奏流":["終章","共鳴","速奏"],"T0_二重奏流":["終章","共鳴","二重奏"]},"badge":{"T0":["絢爛"],"T1":["冷酷（絢爛下位）／睿智（冷卻取向）"]},"stop_line":"終章＋共鳴＋速奏／二重奏其一；兩種第三格依手法取捨","description":"樂師是定點輸出砲手；目前台服 S0 以第 3 樂章八連砲與終章高潮為主力。終章＋共鳴固定，第三格選速奏或二重奏，屬同級操作分支。","unordered_slots":["armor","accessory"],"slot_notes":{"armor":"列出的防具符文是候選組合，原文沒有指定第 1 至第 5 件的固定順序。","accessory":"這是三個飾品符文的流派組合，不代表遊戲裝備欄位順序。"},"t1_note":"目前來源沒有支持一套獨立的 T1 飾品三格。先以終章為核心；共鳴未到手時暫用已擁有的有效符文過渡，不把較早的博愛配置標作現行 T1。","build_notes":["武器：千把劍、千錘百鍊都列為可用；驚異是作者提到的特殊減少空窗玩法。千把劍仍受角色自身 Lv40 劍職條件影響。","飾品：終章＋共鳴為核心，第三格選速奏或二重奏。作者自己的 S0 測試中，速奏約多放 20% 第 3 樂章，二重奏約多放 20% 高潮且漸強銜接較寬鬆；作者偏好速奏，差距不是通用保證。","防具：小格套方向為毀滅烙印＋共鳴水晶；攻擊向候選有狙擊、穩定、岩石巨人、魔力激流、戰慄樂想、紅色盟約、陰險一擊。原文沒有提供唯一五件順序，依手上符文與效果組合。","徽章：絢爛為作者主選；冷酷是下位選項，睿智偏冷卻取向。","屬性與寶石：作者機體把爆擊堆到約 3000 後再補其他屬性，詞條寫作爆擊＞連擊＝技能威力；寶石偏技能威力，標籤方向為干擾（全技）、連擊（第 3 技）、強擊（高潮）。數字是作者機體截面，不是通用門檻。"]},{"id":"priest","name_zh_tw":"祭司","character":"貓又老師p","role":"utility_alt","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","character":"貓又老師oo","role":"alt","description":"本表以輸出向列 T0：驚異＋；治療／防護向改用千把劍（該分支核心，不是低階替代）。","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"輸出向以報應為優先核心，再追驚異＋、因果、業火；治療／防護向以千把劍為武器核心。"}],"roleClassIds":{"main":["mage"],"z":["lightning_mage"],"zz":["bard"],"o":["musician"],"p":["priest"],"oo":["monk"]}};
+    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-10-16","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"bard","name_zh_tw":"吟遊詩人","description":"團隊支援以紅、綠、藍樂想管理增益與治療；2／3／4 手動維持循環。","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"先沿用千把劍。3022 文章採靈魂收割者；目前台服整理仍列千把劍，暫不另投武器資源。"},"armor":{"T0":["戰慄樂想","岩石巨人","魔力激流（循環確認後）","猛烈驟雨（可選）","銀色尖塔（觸發確認後）"],"T1":["戰慄樂想","岩石巨人","穩定","領悟","陰險一擊"]},"accessory":{"T0":["和弦","嘲弄","機智"],"T1":["和弦","嘲弄","自然掉落的有效第三顆"]},"badge":{"T0":["睿智（團隊增益）／絢爛（兼顧輸出）"],"T1":["冷酷／俐落（現有先沿用）"]},"unordered_slots":["armor"],"slot_notes":{"armor":"戰慄樂想與岩石巨人為先沿用的核心；魔力激流依循環驗證。驟雨與銀色尖塔為後續選項，尖塔需先確認治療隊友或寵物可觸發。"},"t1_note":"防具與徽章可先沿用已擁有的有效符文，依組隊循環逐步替換。","build_notes":["支援循環採 2／3／4 手動管理樂想；1、5 可自動，但不視為完整自動。技能強化 3 → 2 → 4 至 30，1 技先到 10。","藍化石飾品順序：和弦 → 嘲弄 → 機智；紫／粉自然掉落先測試，每次只補當下優先缺口。","戰慄樂想需組隊才有職業增益。魔力激流先觀察循環層數；驟雨、銀色尖塔為後續選項，銀色尖塔需先驗證治療觸發。","徽章先沿用冷酷／俐落；循環穩定後再依團隊增益或個人輸出比較睿智、絢爛。"],"stop_line":"和弦＋嘲弄＋機智到位，能用 2／3／4 維持核心團隊增益與治療即可"},{"id":"musician","name_zh_tw":"樂師","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0_速奏流":["終章","共鳴","速奏"],"T0_二重奏流":["終章","共鳴","二重奏"]},"badge":{"T0":["絢爛"],"T1":["冷酷（絢爛下位）／睿智（冷卻取向）"]},"stop_line":"終章＋共鳴＋速奏／二重奏其一；兩種第三格依手法取捨","description":"樂師是定點輸出砲手；目前台服 S0 以第 3 樂章八連砲與終章高潮為主力。終章＋共鳴固定，第三格選速奏或二重奏，屬同級操作分支。","unordered_slots":["armor","accessory"],"slot_notes":{"armor":"列出的防具符文是候選組合，原文沒有指定第 1 至第 5 件的固定順序。","accessory":"這是三個飾品符文的流派組合，不代表遊戲裝備欄位順序。"},"t1_note":"目前來源沒有支持一套獨立的 T1 飾品三格。先以終章為核心；共鳴未到手時暫用已擁有的有效符文過渡，不把較早的博愛配置標作現行 T1。","build_notes":["武器：千把劍、千錘百鍊都列為可用；驚異是作者提到的特殊減少空窗玩法。千把劍仍受角色自身 Lv40 劍職條件影響。","飾品：終章＋共鳴為核心，第三格選速奏或二重奏。作者自己的 S0 測試中，速奏約多放 20% 第 3 樂章，二重奏約多放 20% 高潮且漸強銜接較寬鬆；作者偏好速奏，差距不是通用保證。","防具：小格套方向為毀滅烙印＋共鳴水晶；攻擊向候選有狙擊、穩定、岩石巨人、魔力激流、戰慄樂想、紅色盟約、陰險一擊。原文沒有提供唯一五件順序，依手上符文與效果組合。","徽章：絢爛為作者主選；冷酷是下位選項，睿智偏冷卻取向。","屬性與寶石：作者機體把爆擊堆到約 3000 後再補其他屬性，詞條寫作爆擊＞連擊＝技能威力；寶石偏技能威力，標籤方向為干擾（全技）、連擊（第 3 技）、強擊（高潮）。數字是作者機體截面，不是通用門檻。"]},{"id":"priest","name_zh_tw":"祭司","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","description":"本表以輸出向列 T0：驚異＋；治療／防護向改用千把劍（該分支核心，不是低階替代）。","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"輸出向以報應為優先核心，再追驚異＋、因果、業火；治療／防護向以千把劍為武器核心。"}]};
     // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
-    const RUNE_ROLE_CLASS_IDS=RUNE_GUIDE_DATA.roleClassIds;
+    const CURRENT_CLASS_BY_ROLE_ID={"main":"mage","z":"lightning_mage","zz":"bard","o":"musician","p":"priest","oo":"monk"};
 
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
     const ACCOUNT_ROLE='帳號共用';
@@ -523,15 +523,6 @@
       {id:'food-shop-strawberry',group:'食材店目錄',region:'各城鎮',npc:'食材店／雜貨店（位置待核對）',product:'草莓',cost:'舊 Tracker：1,200G；台服待核對',limit:'舊 Tracker：30；週期待核對',cycle:'資訊',scope:'資訊',target:0,track:false,catalogTier:'conditional',evidence:'公開 Tracker／台服待核對',note:'主要對應冰草莓汁；沒有安排該料理時不需固定採購。',source:DCINSIDE_SHEET_URL},
       {id:'food-shop-ice',group:'食材店目錄',region:'各城鎮',npc:'食材店／雜貨店（位置待核對）',product:'冰',cost:'舊 Tracker：600G；台服待核對',limit:'舊 Tracker：30；週期待核對',cycle:'資訊',scope:'資訊',target:0,track:false,catalogTier:'conditional',evidence:'公開 Tracker／台服待核對',note:'主要對應冰草莓汁；目前只作查詢，不列入六角色週課。',source:DCINSIDE_SHEET_URL}
     ];
-    const MATERIAL_KEEP_LIST=['蜘蛛網','羊毛／高級羊毛','原木／高級原木','生皮／高級生皮','布料','麵粉','煤炭','鐵礦石','鋼錠','單寧粉末','高級絲綢','特殊鋼錠','銅礦石','耐熱繃帶'];
-    const PROCUREMENT_PRIORITY_IDS=new Set(['gilmor-highest-leather','gilmor-highest-spider-web','cat-shop-mine-magic-stone','cat-shop-wilderness-magic-stone']);
-    const PROCUREMENT_GUIDE=[
-      {tone:'priority',title:'稀缺優先｜每角色先檢查',materials:['最高級生皮','最高級蜘蛛網','礦山的魔力石','曠野的魔力石'],note:'最高級生皮／蜘蛛網有每角色每週 30 次限購；兩種魔力石則有每角色每週 3 次限購，但需 65 等級以上與喵幣，六角色都養成時建議優先檢查。',source:OFFICIAL_UPDATE_URL},
-      {tone:'recommend',title:'生活用途週限購｜有做再買',materials:['清淡的肉','辣椒粉','白蘿蔔','傷痕花','傷痕花粉末','增幅蘑菇','增幅蘑菇汁液'],note:'班克爾新增的角色週限購材料；對料理／加工有需求時值得買，但目前不把它們一律判定成六角色必買。',source:OFFICIAL_UPDATE_URL},
-      {tone:'recommend',title:'料理常備｜高頻但不強制買滿',materials:['肉','鹽','高麗菜','胡椒','糖','蘋果','大蒜','檸檬','食用油','蛤蜊'],note:'公開 Tracker 的配方表中反覆出現的基礎材料。適合放進巡店路線，但目前沒有足夠台服資料支持設定成每角色固定週目標。',source:DCINSIDE_SHEET_URL},
-      {tone:'reference',title:'需求補買｜高價或用途較窄',materials:['番茄','蘆筍','豌豆','草莓','冰'],note:'公開 Tracker 主要把這些材料放在單一或少數配方；其中番茄、蘆筍、豌豆舊表價格較高。沒有安排料理時不建議六角色盲買。',source:DCINSIDE_SHEET_URL},
-      {tone:'reference',title:'一般材料｜只作庫存參考',materials:['一般生皮','高麗菜','番茄'],note:'一般生皮、高麗菜、番茄目前都只作查詢／常備提醒，不假設為每角色固定每週必買，也不計入採購完成度。',source:BOBO_MATERIALS_URL}
-    ];
     const COMMUNITY_TOOLS=[
       {category:'以物易物查詢',title:'以物換物反查資料庫',href:'https://mabinogimobile.nipponhashi.com/barter/',description:'可從手上材料或目標產物反查交換項目，並按城鎮與推薦分類篩選。資料由社群整理，官方沒有公布完整交換表，台服實際內容仍以遊戲內為準。'},
       {category:'以物易物資料',title:'瑪奇 Mobile 繁中交換資料庫',href:'https://mabi.yenyen.dev/',description:'整理投入材料、產物、NPC、地區與建議次數；玩家資料僅作路線參考，台服狀態以遊戲內為準。'},
@@ -604,17 +595,11 @@
       const tone=PROCUREMENT_PRIORITY_IDS.has(item.id)?'priority':item.catalogTier==='frequent'?'cooking':item.catalogTier==='conditional'?'conditional':item.track?'limited':'reference';
       return '<span class="evidence '+tone+'">'+procurementPriority(item)+'</span>'
     }
-    function procurementGuideHtml(){
-      return '<details class="exchange-source procurement-guide-details"><summary>採購分類說明</summary><div class="procurement-guide">'+PROCUREMENT_GUIDE.map(item=>'<article class="procurement-guide-card '+item.tone+'"><h4>'+escapeHtml(item.title)+'</h4><p>'+escapeHtml(item.note)+'</p><div class="material-chips">'+item.materials.map(material=>'<span class="material-chip">'+escapeHtml(material)+'</span>').join('')+'</div><a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">查看依據</a></article>').join('')+'</div></details>'
-    }
     function communityToolsHtml(){
       const embedded=new Set(KB_EMBED_TOOLS.map(tool=>tool.url));
       const referenced=new Set(PRACTICAL_REFERENCES.map(item=>item.url));
       const cards=COMMUNITY_TOOLS.filter(tool=>!embedded.has(tool.href)&&!referenced.has(tool.href)).map(tool=>'<article class="external-tool-card"><span class="external-tool-category">'+escapeHtml(tool.category)+'</span><h4><a href="'+escapeHtml(tool.href)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(tool.title)+' ↗</a></h4><p>'+escapeHtml(tool.description)+'</p></article>').join('');
-      return '<details class="exchange-source"><summary>其他社群工具</summary><div class="external-tool-grid">'+cards+'</div></details>'
-    }
-    function procurementSourcesHtml(){
-      return '<details class="exchange-source"><summary>資料來源與使用規則</summary><p>已確認的台服限購才會進入同步追蹤；料理與一般食材目錄只作採購參考，不會影響六角色完成度，也不會寫入 LocalStorage／Google Sheets。</p><p>資料採「台服官方更新 ＞ 台服玩家實測／整理 ＞ 舊 Tracker」的順序；公開 Tracker 的舊價格、庫存數、城鎮／NPC 位置與刷新週期，不直接視為目前台服規則。</p><ul><li><a href="'+escapeHtml(OFFICIAL_UPDATE_URL)+'" target="_blank" rel="noreferrer">台服官方 9/9 更新公告</a>：班克爾商店與交換的主要依據。</li><li><a href="'+escapeHtml(MABITW_DAILY_URL)+'" target="_blank" rel="noreferrer">MabiTW 日常工具</a>：重置時間與日／週項目交叉參考。</li><li><a href="'+escapeHtml(MABITW_LIFE_URL)+'" target="_blank" rel="noreferrer">MabiTW 生活內容</a>：紫色生活材料與週限購的玩家整理。</li><li><a href="'+escapeHtml(BAHA_BANKOR_URL)+'" target="_blank" rel="noreferrer">巴哈班克爾 NPC 整理</a>：查詢用，數量與刷新請回遊戲核對。</li><li><a href="'+escapeHtml(DCINSIDE_SHEET_URL)+'" target="_blank" rel="noreferrer">公開 Tracker Sheet</a>：料理材料候選與配方頻率參考；舊表數值不當作台服規則。</li></ul><p><a href="'+escapeHtml(BOBO_MATERIALS_URL)+'" target="_blank" rel="noreferrer">多用途材料保留提醒</a>（玩家整理）：</p><div class="material-chips">'+MATERIAL_KEEP_LIST.map(item=>'<span class="material-chip">'+escapeHtml(item)+'</span>').join('')+'</div></details>'
+      return '<section class="community-section"><h3>其他社群工具</h3><div class="external-tool-grid">'+cards+'</div></section>'
     }
     function barterRouteHtml(route){
       const evidenceTone=route.evidence?.includes('官方')?'official':'player';
@@ -1092,7 +1077,7 @@
       const value=item.track?purchaseValue(item,stateRole):0;const plan=item.track?purchasePlan(item,stateRole):0;const done=item.track&&plan>0&&value>=plan;
       const control=item.track&&item.target===1?`<label class="exchange-control"><input type="checkbox" ${done?'checked':''} data-purchase-check="${item.id}" aria-label="完成 ${escapeHtml(item.product)}"></label>`:item.track?`<div class="exchange-control"><div class="stepper"><button aria-label="減少 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="-1">−</button><output>${value}</output><button aria-label="增加 ${escapeHtml(item.product)}" data-purchase-step="${item.id}" data-delta="1">＋</button></div></div>`:'<span class="pill exchange-control">參考</span>';
       const planEditor=item.track&&item.cycle==='每週'?`<label class="exchange-note">本週計畫 <input type="number" min="0" max="${item.target}" step="1" inputmode="numeric" value="${plan}" data-purchase-plan="${item.id}" aria-label="${escapeHtml(item.product)} 本週計畫量"> ／上限 ${item.target}；已買 ${value}</label>`:'';
-      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)} · ${item.scope==='帳號'?'帳號限額':'角色限額'}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${planEditor}${item.note?`<div class="exchange-note">${escapeHtml(item.note)} <a href="${escapeHtml(item.source)}" target="_blank" rel="noreferrer">來源</a></div>`:''}</article>`
+      return `<article class="exchange-card ${done?'done':''}"><div><div class="exchange-product">${escapeHtml(item.product)}</div><div class="exchange-route">${escapeHtml(item.group)} · ${item.scope==='帳號'?'帳號限額':'角色限額'}</div><div class="exchange-meta"><span>需要：${escapeHtml(item.cost)}</span><span>${escapeHtml(item.limit)}</span>${exchangeEvidence(item)}</div></div>${control}${planEditor}<div class="exchange-note">${item.note?escapeHtml(item.note)+' · ':''}<a href="${escapeHtml(item.source)}" target="_blank" rel="noopener noreferrer">來源 ↗</a></div></article>`
     }
     function exchangeCardAll(item){
       const accountOnly=item.scope==='帳號';
@@ -1100,7 +1085,7 @@
       const allDone=item.track&&(accountOnly?purchaseDone(item,'account'):roles.every(role=>purchaseDone(item,role.id)));
       const statuses=item.track?'<div class="exchange-role-grid">'+trackedRoles.map(role=>{const value=purchaseValue(item,role.stateRole),plan=purchasePlan(item,role.stateRole),done=plan>0&&value>=plan,status=plan>0?`${value}/${plan}（上限 ${item.target}）`:'未規劃';return '<button class="exchange-role-progress '+(done?'done':'')+'" type="button" data-exchange-select-role="'+role.id+'" aria-label="'+escapeHtml(role.name+' '+item.product+' '+status+'，切換角色以調整')+'"><span>'+escapeHtml(role.name)+'</span><b>'+escapeHtml(status)+'</b></button>'}).join('')+'</div>':'';
       const routeScope=accountOnly?'帳號共通限購':'角色個別限購';
-      return '<article class="exchange-card exchange-card-all '+(allDone?'done':'')+'"><div><div class="exchange-product">'+escapeHtml(item.product)+'</div><div class="exchange-route">'+escapeHtml(item.group)+' · '+routeScope+'</div><div class="exchange-meta"><span>需要：'+escapeHtml(item.cost)+'</span><span>'+escapeHtml(item.limit)+'</span>'+exchangeEvidence(item)+'</div></div>'+statuses+(item.note?'<div class="exchange-note">'+escapeHtml(item.note)+' <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noreferrer">來源</a></div>':'')+'</article>'
+      return '<article class="exchange-card exchange-card-all '+(allDone?'done':'')+'"><div><div class="exchange-product">'+escapeHtml(item.product)+'</div><div class="exchange-route">'+escapeHtml(item.group)+' · '+routeScope+'</div><div class="exchange-meta"><span>需要：'+escapeHtml(item.cost)+'</span><span>'+escapeHtml(item.limit)+'</span>'+exchangeEvidence(item)+'</div></div>'+statuses+'<div class="exchange-note">'+(item.note?escapeHtml(item.note)+' · ':'')+'<a href="'+escapeHtml(item.source)+'" target="_blank" rel="noopener noreferrer">來源 ↗</a></div></article>'
     }
     function renderExchange(role){
       const items=PROCUREMENT_ITEMS.filter(exchangeMatchesFilter).filter(item=>!exchangePendingOnly||exchangeItemPending(item,role.id));const regions=new Map();items.forEach(item=>{if(!regions.has(item.region))regions.set(item.region,new Map());const vendors=regions.get(item.region);if(!vendors.has(item.npc))vendors.set(item.npc,[]);vendors.get(item.npc).push(item)});
@@ -1117,7 +1102,7 @@
       const emptyTitle=exchangePendingOnly?'這個分類目前沒有待處理項目':'這個分類目前沒有資料';
       const emptyHtml='<div class="exchange-empty"><h3>'+emptyTitle+'</h3><p>請切換其他分類查看。</p></div>';
       const subnav='<nav class="exchange-subnav" aria-label="採購工具分頁"><button type="button" data-exchange-subview="purchase" class="'+(exchangeSubView==='purchase'?'active':'')+'" aria-pressed="'+(exchangeSubView==='purchase')+'">採購清單</button><button type="button" data-exchange-subview="routes" class="'+(exchangeSubView==='routes'?'active':'')+'" aria-pressed="'+(exchangeSubView==='routes')+'">交換路線</button></nav>';
-      const purchaseView='<nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+rareSummary+scopeNote+(groupsHtml||emptyHtml)+procurementGuideHtml()+procurementSourcesHtml();
+      const purchaseView='<nav class="exchange-filters" aria-label="採購資料分類">'+filterButtons+'</nav>'+scopeButtons+rareSummary+scopeNote+(groupsHtml||emptyHtml);
       const content=exchangeSubView==='routes'?barterFinderHtml():purchaseView;
       return subnav+content
     }
@@ -1202,7 +1187,6 @@
       const cards=PRACTICAL_REFERENCES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
       return '<section class="bahamut-guide-panel"><div class="section-title"><h2>實用資料庫與生活效率</h2><small>依日常查詢與養成效益排序 · '+PRACTICAL_REFERENCES.length+' 項</small></div><div class="guide-list">'+cards+'</div></section>'
     }
-    function runeRoleLabel(role){return role==='main_current'?'本尊目前':role==='main_planned'?'本尊轉職目標':role==='utility_alt'?'功能分身':'分身'}
     function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜替代選項（防具・徽章）'}
     function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
     function runeSlotCount(slot){return RUNE_GUIDE_DATA.meta.rune_slots[slot]||1}
@@ -1304,16 +1288,14 @@
       return '<section class="rune-operations"><h4 class="rune-operations-heading">核心概念・手操速查</h4><div class="rune-operations-body"><div class="rune-operation-item"><b>核心概念</b><p>'+escapeHtml(guide.core)+'</p></div>'+priority+'<div class="rune-operation-item rune-operation-cycle"><b>照著按</b><p>'+escapeHtml(guide.cycle)+'</p></div><div class="rune-operation-item"><b>補充</b><p>'+escapeHtml(guide.note)+'</p></div><p class="rune-operation-source">參考：'+sources+'</p></div></section>'
     }
     function runeClassHtml(classGuide){
-      const roleText=runeRoleLabel(classGuide.role);
       const cardId='rune-class-'+classGuide.id;
       const description=classGuide.description?'<p class="rune-class-description">'+escapeHtml(classGuide.description)+'</p>':'';
-      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><h3>'+escapeHtml(classGuide.name_zh_tw)+'｜'+escapeHtml(classGuide.character)+'</h3><span class="rune-role-tag">'+escapeHtml(roleText)+'</span></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
+      return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><h3>'+escapeHtml(classGuide.name_zh_tw)+'</h3></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
     }
     function renderRuneGuide(role){
-      const classIds=RUNE_ROLE_CLASS_IDS[role.id]||[];
-      const classGuides=classIds.map(id=>RUNE_GUIDE_DATA.classes.find(item=>item.id===id)).filter(Boolean);
-      const cards=classGuides.map(runeClassHtml).join('');
-      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>符文</h2><small>'+escapeHtml(role.name)+'</small></div>'+cards+'</div>'
+      const classId=CURRENT_CLASS_BY_ROLE_ID[role.id];
+      const guide=RUNE_GUIDE_DATA.classes.find(item=>item.id===classId);
+      return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>符文指南</h2><small>'+escapeHtml(role.name)+'</small></div>'+(guide?runeClassHtml(guide):'<p class="kb-empty">目前沒有對應的職業指南。</p>')+'</div>'
     }
 
     function rotationRole(){
@@ -1371,7 +1353,7 @@
       const cards=roles.map(role=>{
         const daily=dailyRoleProgress(role),weekly=weeklyRoleProgress(role),challenge=challengeRoleProgress(role),isFocus=focus?.id===role.id;
         const challengeProgress=challenge.total?'<div class="overview-progress challenge"><span>深淵／高難＋小格通關</span><b>'+challenge.done+' / '+challenge.total+' 次</b><progress value="'+challenge.done+'" max="'+challenge.total+'"></progress></div>':'';
-        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.job)+' · '+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+challengeProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
+        return '<article class="overview-card '+(isFocus?'focus':'')+'"><div class="overview-card-head"><div><h3>'+String(roles.indexOf(role)+1).padStart(2,'0')+' · '+escapeHtml(role.name)+'</h3><small>'+escapeHtml(role.store)+'</small></div>'+(isFocus?'<span class="overview-badge">今日值日</span>':'')+'</div><div class="overview-progress"><span>今日待辦</span><b>'+daily.done+' / '+daily.total+'</b><progress value="'+daily.done+'" max="'+daily.total+'"></progress></div><div class="overview-progress"><span>本週必做</span><b>'+weekly.done+' / '+weekly.total+'</b><progress value="'+weekly.done+'" max="'+weekly.total+'"></progress></div>'+challengeProgress+'<div class="overview-actions"><button data-overview-go="'+role.id+'" data-overview-view="daily">今日清單</button><button class="primary" data-overview-go="'+role.id+'" data-overview-view="weekly">本週清單</button></div></article>'
       }).join('');
       return '<div class="section-title"><h2>六角色總覽</h2></div>'+sharedWeekly+'<div class="overview-grid">'+cards+'</div>'
     }
@@ -1404,11 +1386,6 @@
       barter:'https://starmoon.game-db.tw/game-data/special-shops/',
       recipe:'https://pokeasou.github.io/mabi-backpack-helper/items.html'
     };
-    const KNOWLEDGE_NOTES=[
-      {title:'牛奶 → 麵包 → 聖水',tags:'牛奶 凱琳 麵包 安黛莉 聖水',body:'凱琳以牛奶 ×10 交換麵包 ×3；安黛莉的聖水 ×10 路線需要麵包 ×10。兩段各自核對角色／伺服器額度。',source:KNOWLEDGE_SOURCES.barter,status:'社群表'},
-      {title:'艾爾文高級木材',tags:'炒蔬菜 高級木材 艾爾文',body:'玩家資料對炒蔬菜投入數量列 ×1 或 ×2，先在台服遊戲內確認。下方交換路線保留雙版本提示，不把其中一個當成定案。',source:KNOWLEDGE_SOURCES.barter,status:'待核對'},
-      {title:'加工台 3 級設計圖',tags:'設計圖 加工台 煤炭 幼蟲 布料',body:'金屬、木材、皮革等設計圖是一次性需求；先查交換路線，再按實際缺的製作台準備材料。',source:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1181',status:'玩家整理'}
-    ];
     const KB_FASHION=[
       {type:'傳說時裝',current:'古樹統治者',end:'11/25 05:59',next:'神聖光輝（韓服下一代，暫譯）',confidence:'韓服順序推測'},
       {type:'全套套組',current:'皇家交響',end:'11/25 05:59',next:'領主騎士（韓服下一代，暫譯）',confidence:'韓服順序推測'},
@@ -1419,14 +1396,12 @@
       return '<article class="kb-card"><div class="kb-card-head"><h3>'+escapeHtml(title)+'</h3><span class="kb-status">'+escapeHtml(status)+'</span></div><p>'+escapeHtml(body)+'</p><small>'+kbSource(source)+'</small></article>'
     }
     function kbMaterialsHtml(role){
-      return '<div class="page-heading"><div><span class="page-eyebrow">材料資料庫</span><h2>材料與交換</h2><p>採購清單與交換路線共用同一份資料；路線計畫會用六倉庫存估算缺料。</p></div><button type="button" class="page-link" data-open-storage>查看六倉庫存 ↗</button></div>'+renderExchange(role)+'<details class="kb-reference"><summary>已核對的交換備註</summary><div class="kb-results">'+KNOWLEDGE_NOTES.map(n=>kbCard(n.title,n.body,n.status,n.source)).join('')+'</div></details>'
+      return '<div class="page-heading"><div><span class="page-eyebrow">材料資料庫</span><h2>材料與交換</h2><p>採購清單與交換路線共用同一份資料；路線計畫會用六倉庫存估算缺料。</p></div><button type="button" class="page-link" data-open-storage>查看六倉庫存 ↗</button></div>'+renderExchange(role)
     }
     function kbRolesHtml(){
-      const selector='<div class="kb-quick">'+roles.map(r=>'<button type="button" data-kb-role="'+r.id+'" class="'+(r.id===active?'active':'')+'">'+escapeHtml(r.name)+'｜'+escapeHtml(r.job)+'</button>').join('')+'</div>';
-      const extra=active==='main'?'<div class="kb-note"><b>本尊目前：</b>岩石巨人／魔力激流／毀滅烙印／共鳴水晶／超自然均 +10；前 1～2 排詞條已略作整理，技能特化尚未全點。比較火炬前先補完技能特化與武器／飾品投資的成本效益。未來騎士轉職僅為個人規劃。</div>':
-        active==='z'?'<div class="kb-note"><b>個人規劃：</b>電擊術士後續可能轉暗黑術士；台服日期未公告。</div>':
-        active==='zz'?'<div class="kb-note"><b>職業核對：</b>此角色是吟遊詩人（支援）；貓又老師o 才是樂師（輸出）。兩者符文與操作循環分開。</div>':'';
-      return '<div class="kb-intro"><h2>六角色配裝</h2><p>個人配置與台服 S0 指南；轉職時保留角色固定 ID。</p>'+selector+'</div>'+extra+renderRuneGuide(roles.find(r=>r.id===active))
+      const selector='<div class="role-selector" role="group" aria-label="依順序選擇角色">'+roles.map((r,index)=>'<button type="button" data-kb-role="'+r.id+'" class="'+(r.id===active?'active':'')+'" aria-pressed="'+(r.id===active)+'"><span class="role-number">'+String(index+1).padStart(2,'0')+'</span><span>'+escapeHtml(r.name)+'</span></button>').join('')+'</div>';
+      const extra=active==='main'&&CURRENT_CLASS_BY_ROLE_ID.main==='mage'?'<div class="kb-note"><b>目前裝備：</b>岩石巨人／魔力激流／毀滅烙印／共鳴水晶／超自然均 +10；前 1～2 排詞條已略作整理，技能特化尚未全點。</div>':'';
+      return '<div class="page-heading"><div><span class="page-eyebrow">六角色</span><h2>角色配裝</h2></div></div>'+selector+extra+renderRuneGuide(roles.find(r=>r.id===active))
     }
     function kbFashionHtml(){
       return '<div class="kb-intro"><h2>時裝順序</h2><p>台服已公告的本期販售至 11/25 05:59；以下「下一批」只按韓服上架順序列候選，沒有台服開賣日期。台服曾提前或跳輪。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,KNOWLEDGE_SOURCES.krFashion)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
@@ -1453,9 +1428,9 @@
     function kbUpdatesHtml(){return '<div class="page-heading"><div><span class="page-eyebrow">情報與推測</span><h2>時裝與更新</h2><p>台服公告、韓服順序與個人推測分開標示。</p></div></div><section class="updates-section">'+kbFashionHtml()+'</section><section class="updates-section">'+kbRoadmapHtml()+'</section>'}
     function render(){
       resetStaleDailyState();resetStaleWeeklyState();
-      const app=document.querySelector('.app');app.dataset.view=view;app.dataset.appSection=appSection;app.dataset.exchangeSubview=exchangeSubView;
-      const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map(x=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${x.name}</button>`).join('');
-      document.querySelector('#identity').innerHTML=`<strong>${role.name} <span style="color:#607487;font-weight:500">｜${role.job}</span></strong>`;
+      const app=document.querySelector('.app');app.dataset.view=view;app.dataset.appSection=appSection;app.dataset.craftTool=craftTool;app.dataset.exchangeSubview=exchangeSubView;
+      const role=roles.find(x=>x.id===active);document.querySelector('#rolebar').innerHTML=roles.map((x,index)=>`<button class="role ${x.id===active?'active':''}" data-role="${x.id}">${String(index+1).padStart(2,'0')} · ${x.name}</button>`).join('');
+      document.querySelector('#identity').innerHTML=`<strong>${role.name}</strong>`;
       document.querySelector('#focus-banner').innerHTML=focusBannerHtml();
       document.querySelectorAll('[data-destination]').forEach(button=>{
         const current=button.dataset.destination===(appSection==='items'?craftTool:'progress');
