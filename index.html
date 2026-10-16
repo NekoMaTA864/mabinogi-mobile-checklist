@@ -1425,11 +1425,11 @@
       const q=query.trim().toLocaleLowerCase();
       const match=text=>!q||String(text).toLocaleLowerCase().includes(q);
       const notes=KNOWLEDGE_NOTES.filter(n=>match(n.title+' '+n.tags+' '+n.body)).map(n=>kbCard(n.title,n.body,n.status,n.source));
-      const routes=BARTER_ROUTES.filter(r=>match(r.npc+' '+r.region+' '+r.input+' '+r.output)).slice(0,50).map(r=>kbCard(
+      const routes=(q?BARTER_ROUTES.filter(r=>!r.tracked&&match(r.npc+' '+r.region+' '+r.input+' '+r.output)):[]).slice(0,50).map(r=>kbCard(
         r.output+'｜'+r.npc,r.region+' · 投入 '+r.input+' → '+r.output+' · '+r.cycle+' · '+r.limit+(r.note?'。'+r.note:''),r.evidence||'社群資料',r.source));
-      const shops=PROCUREMENT_ITEMS.filter(item=>match(item.product+' '+item.npc+' '+item.region+' '+item.cost)).slice(0,35).map(item=>kbCard(
+      const shops=(q?PROCUREMENT_ITEMS.filter(item=>match(item.product+' '+item.npc+' '+item.region+' '+item.cost)):[]).slice(0,35).map(item=>kbCard(
         item.product+'｜'+item.npc,item.region+' · '+item.cost+' · '+item.cycle+' · '+(item.note||''),item.evidence||'採購資料',item.source));
-      const inventory=MATERIAL_CATALOG.filter(item=>match(item.name)).map(item=>kbCard(
+      const inventory=(q?MATERIAL_CATALOG.filter(item=>match(item.name)):[]).map(item=>kbCard(
         item.name+'｜六倉 '+inventoryTotal(item.id), '保管角色：'+(roles.find(role=>role.id===item.defaultRole)?.name||'未指定')+'。數量可在「進度與庫存 → 倉庫」修改。','個人庫存',KNOWLEDGE_SOURCES.barter));
       const result=[...notes,...inventory,...routes,...shops];
       return result.length?result.join(''):'<p class="kb-empty">目前沒有符合的站內資料；可以換 NPC、材料或產物名稱搜尋。</p>'
@@ -1445,13 +1445,14 @@
       return '<div class="kb-intro"><h2>六角色配裝</h2><p>個人配置與台服 S0 指南；轉職時保留角色固定 ID。</p>'+selector+'</div>'+extra+renderRuneGuide(roles.find(r=>r.id===active))
     }
     function kbFashionHtml(){
-      return '<div class="kb-intro"><h2>時裝順序</h2><p>台服已公告的本期販售至 11/25 05:59；以下「下一批」只按韓服上架順序列候選，沒有台服開賣日期。台服曾提前或跳輪。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,item.confidence==='韓服順序推測'?KNOWLEDGE_SOURCES.krFashion:KNOWLEDGE_SOURCES.twShop)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
+      return '<div class="kb-intro"><h2>時裝順序</h2><p>台服已公告的本期販售至 11/25 05:59；以下「下一批」只按韓服上架順序列候選，沒有台服開賣日期。台服曾提前或跳輪。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,KNOWLEDGE_SOURCES.krFashion)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
     }
     function kbRoadmapHtml(){
       return '<div class="kb-intro"><h2>官方更新目標</h2><p>「章節」與「可轉職的職業」分開看；月份是 Showcase 的規劃，正式日期以日後台服公告為準。</p></div><div class="kb-results">'+[
         kbCard('11 月｜第三章「聖騎士」','台港澳 Showcase 預告新章節及相關地區、副本。這是章節名稱，不能據此認定「騎士職業」11 月開放。','官方規劃',KNOWLEDGE_SOURCES.showcase),
         kbCard('12 月｜新職業','Showcase 預告年底新職業，但未在此明指職業名稱。暗黑術士是按韓服推出先後的合理候選，尚非台服正式公告。','官方月份／職業待公布',KNOWLEDGE_SOURCES.showcase),
-        kbCard('韓服參考｜暗黑術士與騎士','暗黑術士在韓服 2025/10/16 更新；騎士在韓服 2026/04/23 更新。台服可調整先後與時程。','跨服參考',KNOWLEDGE_SOURCES.krKnight)
+        kbCard('韓服參考｜暗黑術士','韓服於 2025/10/16 加入暗黑術士；台服 12 月新職業是否是它仍待公告。','跨服參考',KNOWLEDGE_SOURCES.krDark),
+        kbCard('韓服參考｜騎士','韓服於 2026/04/23 加入騎士職業；台服 11 月聖騎士章節不等於已公布騎士職業。','跨服參考',KNOWLEDGE_SOURCES.krKnight)
       ].join('')+'</div><div class="kb-note">截至 2026/10/16 台服最新維護內容含地獄 6（10/19 開放），尚未公布上述新職業確切日期。'+kbSource(KNOWLEDGE_SOURCES.twUpdate,'台服維護公告')+'</div>'
     }
     function kbSourcesHtml(){
