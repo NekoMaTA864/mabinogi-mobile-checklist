@@ -349,7 +349,7 @@
     .kb-frame-note { color:var(--muted); font-size:.8rem; line-height:1.5; }
     .kb-choices { display:flex; flex-wrap:wrap; }
   </style>
-  <link rel="stylesheet" href="design.css?v=knowledge-20261016" />
+  <link rel="stylesheet" href="design.css?v=runes-20261023" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -366,6 +366,8 @@
       
     </main>
   </div>
+  <script src="rune-guide.js?v=20261023"></script>
+  <script src="role-runes.js?v=20261023"></script>
   <script>
     // OAuth Client ID 是公開識別資訊，可放在 GitHub Pages；Client Secret 絕對不能放在前端。
     const GOOGLE_OAUTH_CLIENT_ID = '976329781353-fq4medc7itckkh4203vr8uu2o8s20brk.apps.googleusercontent.com';
@@ -400,9 +402,8 @@
     });
     const WEEKLY_ROTATION_ROLE_IDS=['main','z','zz','o','p','oo'];
 
-    const RUNE_GUIDE_DATA={"meta":{"schema_version":1,"version":"2026-10-16","region":"TMS","content_pool":"S0","balance_reference":"TMS post-2026-09-09","exclude_kms_s2_only_runes":true,"tier_definition":{"T0":"目前台服高難/單王輸出向最優先解","T1":"核心機制完整的小畢業解；所有角色先追 T0、T1 次之，分身可依資源在此停損"},"rune_slots":{"weapon":1,"armor":5,"accessory":3,"badge":1}},"classes":[{"id":"mage","name_zh_tw":"魔法師","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["超自然＋","毀滅烙印","共鳴水晶","魔力激流","岩石巨人"],"T1":["超自然＋","魔力激流","岩石巨人","火炬","穩定"]},"accessory":{"T0":["隕石","冰刺","山崩"],"T1":["隕石","增幅","山崩"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"本尊，可追完整 T0"},{"id":"lightning_mage","name_zh_tw":"電擊術士","weapon":{"T0":["千把劍"],"T1":["千錘百鍊 +15"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","碎冰","超自然","火炬"],"T1":["碎冰","超自然","火炬","魔力激流","岩石巨人"]},"accessory":{"T0":["霹靂","導管","力場"],"T1":["雷霆","導管","力場"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"導管＋力場＋霹靂/雷霆完成即可"},{"id":"bard","name_zh_tw":"吟遊詩人","description":"團隊支援以紅、綠、藍樂想管理增益與治療；2／3／4 手動維持循環。","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"先沿用千把劍。3022 文章採靈魂收割者；目前台服整理仍列千把劍，暫不另投武器資源。"},"armor":{"T0":["戰慄樂想","岩石巨人","魔力激流（循環確認後）","猛烈驟雨（可選）","銀色尖塔（觸發確認後）"],"T1":["戰慄樂想","岩石巨人","穩定","領悟","陰險一擊"]},"accessory":{"T0":["和弦","嘲弄","機智"],"T1":["和弦","嘲弄","自然掉落的有效第三顆"]},"badge":{"T0":["睿智（團隊增益）／絢爛（兼顧輸出）"],"T1":["冷酷／俐落（現有先沿用）"]},"unordered_slots":["armor"],"slot_notes":{"armor":"戰慄樂想與岩石巨人為先沿用的核心；魔力激流依循環驗證。驟雨與銀色尖塔為後續選項，尖塔需先確認治療隊友或寵物可觸發。"},"t1_note":"防具與徽章可先沿用已擁有的有效符文，依組隊循環逐步替換。","build_notes":["支援循環採 2／3／4 手動管理樂想；1、5 可自動，但不視為完整自動。技能強化 3 → 2 → 4 至 30，1 技先到 10。","藍化石飾品順序：和弦 → 嘲弄 → 機智；紫／粉自然掉落先測試，每次只補當下優先缺口。","戰慄樂想需組隊才有職業增益。魔力激流先觀察循環層數；驟雨、銀色尖塔為後續選項，銀色尖塔需先驗證治療觸發。","徽章先沿用冷酷／俐落；循環穩定後再依團隊增益或個人輸出比較睿智、絢爛。"],"stop_line":"和弦＋嘲弄＋機智到位，能用 2／3／4 維持核心團隊增益與治療即可"},{"id":"musician","name_zh_tw":"樂師","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["毀滅烙印","共鳴水晶","岩石巨人","戰慄樂想","魔力激流"],"T1":["戰慄樂想","岩石巨人","魔力激流","穩定","陰險一擊等有效輸出符"]},"accessory":{"T0_速奏流":["終章","共鳴","速奏"],"T0_二重奏流":["終章","共鳴","二重奏"]},"badge":{"T0":["絢爛"],"T1":["冷酷（絢爛下位）／睿智（冷卻取向）"]},"stop_line":"終章＋共鳴＋速奏／二重奏其一；兩種第三格依手法取捨","description":"樂師是定點輸出砲手；目前台服 S0 以第 3 樂章八連砲與終章高潮為主力。終章＋共鳴固定，第三格選速奏或二重奏，屬同級操作分支。","unordered_slots":["armor","accessory"],"slot_notes":{"armor":"列出的防具符文是候選組合，原文沒有指定第 1 至第 5 件的固定順序。","accessory":"這是三個飾品符文的流派組合，不代表遊戲裝備欄位順序。"},"t1_note":"目前來源沒有支持一套獨立的 T1 飾品三格。先以終章為核心；共鳴未到手時暫用已擁有的有效符文過渡，不把較早的博愛配置標作現行 T1。","build_notes":["武器：千把劍、千錘百鍊都列為可用；驚異是作者提到的特殊減少空窗玩法。千把劍仍受角色自身 Lv40 劍職條件影響。","飾品：終章＋共鳴為核心，第三格選速奏或二重奏。作者自己的 S0 測試中，速奏約多放 20% 第 3 樂章，二重奏約多放 20% 高潮且漸強銜接較寬鬆；作者偏好速奏，差距不是通用保證。","防具：小格套方向為毀滅烙印＋共鳴水晶；攻擊向候選有狙擊、穩定、岩石巨人、魔力激流、戰慄樂想、紅色盟約、陰險一擊。原文沒有提供唯一五件順序，依手上符文與效果組合。","徽章：絢爛為作者主選；冷酷是下位選項，睿智偏冷卻取向。","屬性與寶石：作者機體把爆擊堆到約 3000 後再補其他屬性，詞條寫作爆擊＞連擊＝技能威力；寶石偏技能威力，標籤方向為干擾（全技）、連擊（第 3 技）、強擊（高潮）。數字是作者機體截面，不是通用門檻。"]},{"id":"priest","name_zh_tw":"祭司","weapon":{"T0":["千把劍"],"T1":["千錘百鍊"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["巨人之臂","神聖修養","魔力激流","岩石巨人","銀色尖塔"],"T1":["岩石巨人","神聖修養","魔力激流","超自然","穩定"]},"accessory":{"T0":["聖戰","車輪","連結"],"T1":["車輪","羽翼","光束"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"聖戰＋車輪＋任一有效第三顆","description":"防具第 5 格依流派選擇；本表列銀色尖塔（T0）／穩定（T1）。飾品第 3 格連結偏輸出，光束較易操作；羽翼偏輔助。"},{"id":"monk","name_zh_tw":"修道士","description":"本表以輸出向列 T0：驚異＋；治療／防護向改用千把劍（該分支核心，不是低階替代）。","weapon":{"T0":["驚異＋"],"T1":["千把劍"],"condition_note":"千把劍層數依角色自身符合條件的 Lv40 劍職數量計算。"},"armor":{"T0":["魔力激流","平原流浪者","神聖修養","巨人之臂","岩石巨人"],"T1":["共鳴水晶","毀滅烙印","岩石巨人","神聖修養","魔力激流/平原流浪者"]},"accessory":{"T0":["報應","因果","業火"],"T1":["報應","光輝/淨化","業火"]},"badge":{"T0":["絢爛"],"T1":["睿智"]},"stop_line":"輸出向以報應為優先核心，再追驚異＋、因果、業火；治療／防護向以千把劍為武器核心。"}]};
     // 角色對應來自 Notion YAML；符文指南是唯讀參考，不寫入 LocalStorage／Google Sheets。
-    const CURRENT_CLASS_BY_ROLE_ID={"main":"mage","z":"lightning_mage","zz":"bard","o":"musician","p":"priest","oo":"monk"};
+    const CURRENT_CLASS_BY_ROLE_ID={"main":"mage","z":"lightning_mage","zz":"longbow","o":"musician","p":"priest","oo":"monk"};
 
     // 保留舊陣列與索引，讓既有 LocalStorage／Google Sheets 歷史資料仍可讀取。
     const ACCOUNT_ROLE='帳號共用';
@@ -1189,7 +1190,7 @@
       const cards=PRACTICAL_REFERENCES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
       return '<section class="bahamut-guide-panel"><div class="section-title"><h2>實用資料庫與生活效率</h2><small>依日常查詢與養成效益排序 · '+PRACTICAL_REFERENCES.length+' 項</small></div><div class="guide-list">'+cards+'</div></section>'
     }
-    function runeTierLabel(tier){return tier==='T0'?'T0｜全角色優先追求':'T1｜替代選項（防具・徽章）'}
+    function runeTierLabel(tier){return tier==='T0'?'目標配置｜依流派與條件選擇':'過渡與替代｜防具・徽章'}
     function runeSlotLabel(slot){return slot==='weapon'?'武器':slot==='armor'?'防具':slot==='accessory'?'飾品':'徽章'}
     function runeSlotCount(slot){return RUNE_GUIDE_DATA.meta.rune_slots[slot]||1}
     function runeTierGroups(classGuide,tier,slot){
@@ -1295,7 +1296,7 @@
       return '<article class="rune-class-card" id="'+escapeHtml(cardId)+'"><div class="rune-class-head"><h3>'+escapeHtml(classGuide.name_zh_tw)+'</h3></div>'+description+runeTierHtml(classGuide,'T0')+'<section class="rune-tier-secondary"><h4>T1 小畢業方向</h4>'+runeTierHtml(classGuide,'T1')+'</section>'+runeBuildNotesHtml(classGuide)+'<div class="rune-stopline"><b>停止線</b>'+escapeHtml(classGuide.stop_line)+'</div>'+runeOperationsHtml(classGuide)+'</article>'
     }
     function renderRuneGuide(role){
-      const classId=CURRENT_CLASS_BY_ROLE_ID[role.id];
+      const classId=PERSONAL_RUNE_DATA.roles[role.id]?.targetClassId||CURRENT_CLASS_BY_ROLE_ID[role.id];
       const guide=RUNE_GUIDE_DATA.classes.find(item=>item.id===classId);
       return '<div class="rune-guide" id="rune-guide"><div class="section-title"><h2>符文指南</h2><small>'+escapeHtml(role.name)+'</small></div>'+(guide?runeClassHtml(guide):'<p class="kb-empty">目前沒有對應的職業指南。</p>')+'</div>'
     }
@@ -1400,13 +1401,35 @@
     function kbMaterialsHtml(role){
       return '<div class="page-heading"><div><span class="page-eyebrow">材料資料庫</span><h2>材料與交換</h2><p>採購清單與交換路線共用同一份資料；路線計畫會用六倉庫存估算缺料。</p></div><button type="button" class="page-link" data-open-storage>查看六倉庫存 ↗</button></div>'+renderExchange(role)
     }
+    function personalLoadoutHtml(loadout){
+      const cells=[['武器',loadout.weapon||'未另記錄'],['徽章',loadout.badge||'未另記錄'],['飾品',loadout.accessory||[]],['防具',loadout.armor||[]]];
+      return '<dl class="personal-loadout">'+cells.map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+(Array.isArray(value)?value.map(item=>'<span class="personal-rune">'+escapeHtml(item)+'</span>').join(''):escapeHtml(value))+'</dd></div>').join('')+'</dl>'
+    }
+    function runeBudgetSummary(plan){
+      const keys=['blue','red','raid'];
+      const costs=Object.fromEntries(keys.map(key=>[key,plan.purchases.reduce((sum,item)=>sum+(item[key]||0),0)]));
+      const remaining=Object.fromEntries(keys.map(key=>[key,plan.budget[key]===null?null:plan.budget[key]-costs[key]]));
+      return {costs,remaining}
+    }
+    function personalRunePlanHtml(role){
+      const plan=PERSONAL_RUNE_DATA.roles[role.id];
+      if(!plan)return '';
+      const budget=runeBudgetSummary(plan);
+      const currencies=[['blue','藍化石'],['red','紅化石'],['raid','小格證明']];
+      const funds=currencies.map(([key,label])=>'<div class="rune-fund"><span>'+label+'</span><b>'+(plan.budget[key]===null?'未更新':plan.budget[key])+'</b><small>本輪 '+budget.costs[key]+' → '+(budget.remaining[key]===null?'餘額待確認':budget.remaining[key]<0?'尚缺 '+Math.abs(budget.remaining[key]):'剩 '+budget.remaining[key])+'</small></div>').join('');
+      const shopping=plan.purchases.length?'<ul class="rune-shopping">'+plan.purchases.map(item=>'<li><b>'+escapeHtml(item.name)+'</b><span>'+currencies.filter(([key])=>item[key]).map(([key,label])=>item[key]+' '+label).join('＋')+'</span></li>').join('')+'</ul>':'<p class="personal-muted">本輪沒有新增確定購買項目。</p>';
+      const status=plan.plannedClass?plan.className+' → '+plan.plannedClass+'（規劃）':plan.className;
+      return '<section class="personal-rune-plan" data-personal-role="'+role.id+'"><div class="personal-plan-head"><div><span class="page-eyebrow">'+escapeHtml(plan.status)+'</span><h3>'+escapeHtml(status)+'</h3><p>現況紀錄 '+plan.recorded+' · 規劃 '+PERSONAL_RUNE_DATA.version+'</p></div><a class="page-link" href="'+PERSONAL_RUNE_DATA.source+'" target="_blank" rel="noopener noreferrer">Notion 紀錄 ↗</a></div><div class="personal-next"><span>下一步</span><strong>'+escapeHtml(plan.next)+'</strong></div><div class="personal-loadout-grid"><article class="personal-panel"><h4>目前裝備</h4>'+personalLoadoutHtml(plan.current)+'</article><article class="personal-panel personal-target"><h4>依建議完成後 <small>尚未視為已兌換</small></h4>'+personalLoadoutHtml(plan.target)+'</article></div><section class="personal-budget"><h4>本輪資源安排</h4><div class="rune-funds">'+funds+'</div>'+(plan.budgetNote?'<p class="personal-muted">'+escapeHtml(plan.budgetNote)+'</p>':'')+shopping+(plan.later?'<p class="personal-later"><b>後續再補：</b>'+escapeHtml(plan.later)+'</p>':'')+'</section><details class="personal-history"><summary>原先配置 · '+escapeHtml(plan.before.date)+'</summary>'+personalLoadoutHtml(plan.before)+'</details><details class="personal-history"><summary>換裝條件與保留事項</summary><ul>'+plan.notes.map(note=>'<li>'+escapeHtml(note)+'</li>').join('')+'</ul></details></section>'
+    }
     function kbRolesHtml(){
       const selector='<div class="role-selector" role="group" aria-label="依順序選擇角色">'+roles.map((r,index)=>'<button type="button" data-kb-role="'+r.id+'" class="'+(r.id===active?'active':'')+'" aria-pressed="'+(r.id===active)+'"><span class="role-number">'+String(index+1).padStart(2,'0')+'</span><span>'+escapeHtml(r.name)+'</span></button>').join('')+'</div>';
-      const extra=active==='main'&&CURRENT_CLASS_BY_ROLE_ID.main==='mage'?'<div class="kb-note"><b>目前裝備：</b>岩石巨人／魔力激流／毀滅烙印／共鳴水晶／超自然均 +10；前 1～2 排詞條已略作整理，技能特化尚未全點。</div>':'';
-      return '<div class="page-heading"><div><span class="page-eyebrow">六角色</span><h2>角色配裝</h2></div></div>'+selector+extra+renderRuneGuide(roles.find(r=>r.id===active))
+      const role=roles.find(r=>r.id===active);
+      const rewardNotes='<details class="personal-history"><summary>共用獎勵安排 · 自選箱與＋10卷</summary><ul>'+PERSONAL_RUNE_DATA.rewards.map(note=>'<li>'+escapeHtml(note)+'</li>').join('')+'</ul></details>';
+      return '<div class="page-heading"><div><span class="page-eyebrow">六角色 · '+PERSONAL_RUNE_DATA.version+'</span><h2>角色配裝</h2><p>先看手上裝備與下一步；完成目標需分期投入。此處是回報快照，不會自動扣除遊戲內資源。</p></div></div>'+selector+personalRunePlanHtml(role)+rewardNotes+'<details class="personal-reference"><summary>展開'+(PERSONAL_RUNE_DATA.roles[active]?.plannedClass?'預計職業的':'')+'通用配裝與手操指南</summary>'+renderRuneGuide(role)+'</details>'
     }
     function kbFashionHtml(){
-      return '<div class="kb-intro"><h2>時裝順序</h2><p>台服已公告的本期販售至 11/25 05:59；以下「下一批」只按韓服上架順序列候選，沒有台服開賣日期。台服曾提前或跳輪。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,KNOWLEDGE_SOURCES.krFashion)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
+      const pass='<section class="kb-intro"><h2>通行證時裝</h2><p><b>個人持有：</b>電法分身已換青蛙裝，預計染色；修道士是否追加仍在考慮。</p><p>青蛙後續通行證款式與台服日期尚未核實，不把商城幸運箱或韓服候選當成下一期通行證。</p><p>'+kbSource(KNOWLEDGE_SOURCES.twFashion,'台服時裝時間軸')+'　'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時裝時間軸')+'</p></section>';
+      return pass+'<div class="kb-intro"><h2>商城時裝順序</h2><p>以下商品資料核對於 10/16；本次不代表已重新確認所有販售內容。已記錄本期販售至 11/25 05:59；「下一批」只按韓服順序列候選，沒有台服開賣日期。</p></div><div class="kb-results">'+KB_FASHION.map(item=>kbCard(item.type+'｜'+item.current,'本期截至 '+item.end+'。候選：'+item.next,item.confidence,KNOWLEDGE_SOURCES.krFashion)).join('')+'</div><div class="kb-note">台服本期：'+kbSource(KNOWLEDGE_SOURCES.twShop,'官方商品公告')+'　韓服順序：'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時間軸')+'</div>'
     }
     function kbRoadmapHtml(){
       return '<div class="kb-intro"><h2>官方更新目標</h2><p>「章節」與「可轉職的職業」分開看；月份是 Showcase 的規劃，正式日期以日後台服公告為準。</p></div><div class="kb-results">'+[
@@ -1414,7 +1437,7 @@
         kbCard('12 月｜新職業','Showcase 預告年底新職業，但未在此明指職業名稱。暗黑術士是按韓服推出先後的合理候選，尚非台服正式公告。','官方月份／職業待公布',KNOWLEDGE_SOURCES.showcase),
         kbCard('韓服參考｜暗黑術士','韓服於 2025/10/16 加入暗黑術士；台服 12 月新職業是否是它仍待公告。','跨服參考',KNOWLEDGE_SOURCES.krDark),
         kbCard('韓服參考｜騎士','韓服於 2026/04/23 加入騎士職業；台服 11 月聖騎士章節不等於已公布騎士職業。','跨服參考',KNOWLEDGE_SOURCES.krKnight)
-      ].join('')+'</div><div class="kb-note">截至 2026/10/16 台服最新維護內容含地獄 6（10/19 開放），尚未公布上述新職業確切日期。'+kbSource(KNOWLEDGE_SOURCES.twUpdate,'台服維護公告')+'</div>'
+      ].join('')+'</div><div class="kb-note">以上路線圖內容核對於 2026/10/16，並非即時更新。10/21 維護公告已發布，完整內容請查看官方；未重新核實的新職業日期不補寫為定案。'+kbSource('https://tw.nexon.com/mabinogimobile/home/news/notice/3566954','10/21維護公告')+'　'+kbSource(KNOWLEDGE_SOURCES.twUpdate,'先前維護公告')+'</div>'
     }
     const KB_EMBED_TOOLS=[
       {id:'recipes',title:'配方與取得',url:'https://pokeasou.github.io/mabi-backpack-helper/items.html'},

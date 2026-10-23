@@ -22,7 +22,9 @@ const memory = new Map();
 const localStorage = {getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,String(v)),removeItem:k=>memory.delete(k)};
 const document = {querySelectorAll:()=>[],querySelector:()=>null};
 const context = {document,localStorage,window:{},location:{},console,setTimeout:()=>0,clearTimeout:()=>{},Date,URL,URLSearchParams};
-vm.runInNewContext(script,context,{timeout:5000});
+vm.createContext(context);
+for (const file of ['rune-guide.js','role-runes.js']) vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context);
+vm.runInContext(script,context,{timeout:5000});
 if (context.__name !== '貓又老師') throw Error('wrong main role name');
 for (const [name,markup] of Object.entries(context.__views)) {
   if (!markup || !markup.includes('data-exchange-subview')) throw Error(name+' failed to render');
