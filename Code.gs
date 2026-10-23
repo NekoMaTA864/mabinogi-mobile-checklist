@@ -17,12 +17,15 @@ const CONFIG = {
   timeZone: 'Asia/Taipei',
   headerName: '重置日'
 };
+const SYNC_API_VERSION = '2026-10-23';
 
 // Legacy labels remain readable while role IDs stay fixed across class/name changes.
 const ROLE_ID_BY_LEGACY_NAME = {
   '貓又老師(魔法師)': 'main',
   '貓又老師z(電擊術士)': 'z',
+  '貓又老師z(舞者)': 'z',
   '貓又老師zz(長弓兵)': 'zz',
+  '貓又老師zz(吟遊詩人)': 'zz',
   '貓又老師o(樂師)': 'o',
   '貓又老師p(祭司)': 'p',
   '貓又老師oo(修道士)': 'oo',
@@ -52,7 +55,7 @@ function doGet(e) {
     let result;
     if (p.action === 'read') result = readCurrent_();
     else if (p.action === 'save') result = saveItem_(p);
-    else if (p.action === 'ping') result = { ok: true, service: 'mabinogi-mobile-checklist' };
+    else if (p.action === 'ping') result = { ok: true, service: 'mabinogi-mobile-checklist', version: SYNC_API_VERSION, capabilities: ['role-id', 'permanent-state'] };
     else throw new Error('未知的 action。');
     return output_(result, callback);
   } catch (err) {
@@ -87,10 +90,10 @@ function readCurrent_() {
       cycle: cycle,
       progress: number_(row[header.cols['進度']]),
       target: number_(row[header.cols['目標']]),
-      complete: Boolean(row[header.cols['完成']]) || text_(row[header.cols['完成']]).toUpperCase() === 'TRUE'
+      complete: row[header.cols['完成']] === true || text_(row[header.cols['完成']]).toUpperCase() === 'TRUE'
     });
   }
-  return { ok: true, gameDate: gameDate, weeklyResetDate: weeklyDate, items: items };
+  return { ok: true, version: SYNC_API_VERSION, gameDate: gameDate, weeklyResetDate: weeklyDate, items: items };
 }
 
 function saveItem_(p) {
@@ -145,7 +148,7 @@ function saveItem_(p) {
   } finally {
     lock.releaseLock();
   }
-  return { ok: true, resetDate: resetDate, role: role, roleId: roleId, task: task, cycle: cycle, progress: progress, target: target, complete: complete };
+  return { ok: true, version: SYNC_API_VERSION, resetDate: resetDate, role: role, roleId: roleId, task: task, cycle: cycle, progress: progress, target: target, complete: complete };
 }
 
 function findHeader_(values) {
@@ -165,16 +168,14 @@ function findHeader_(values) {
 }
 
 function gameDate_() {
-  const now = new Date();
-  const local = new Date(Utilities.formatDate(now, CONFIG.timeZone, "yyyy/MM/dd HH:mm:ss"));
-  if (local.getHours() < 6) local.setDate(local.getDate() - 1);
-  return Utilities.formatDate(local, CONFIG.timeZone, 'yyyy-MM-dd');
+  // 先減六小時再以台北日期格式化，不依賴專案／執行環境的時區。
+  return Utilities.formatDate(new Date(Date.now() - 6 * 60 * 60 * 1000), CONFIG.timeZone, 'yyyy-MM-dd');
 }
 
 function weekStart_(dateText) {
-  const d = new Date(dateText + 'T12:00:00');
-  const mondayOffset = (d.getDay() + 6) % 7;
-  d.setDate(d.getDate() - mondayOffset);
+  const d = new Date(dateText + 'T12:00:00Z');
+  const mondayOffset = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - mondayOffset);
   return Utilities.formatDate(d, CONFIG.timeZone, 'yyyy-MM-dd');
 }
 

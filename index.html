@@ -773,13 +773,13 @@
     async function syncReadLegacy(){
       if(!syncReady()){syncStatus='請先儲存備援同步網址與密鑰';render();return}
       syncStatus='讀取 Google Sheets 中…';render();
-      try{await syncWriteQueue;const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');applyItems(result.items);syncStatus=`Token 備援已同步：${result.items.length} 筆（${result.gameDate}）`;render()}
+      try{await syncWriteQueue;const result=await jsonp({action:'read'});if(!result.ok)throw new Error(result.error||'讀取失敗');applyItems(result.items);syncStatus=`Token 備援已同步：${result.items.length} 筆（${result.gameDate}）· 部署版本 ${result.version||'舊版未標示'}`;render()}
       catch(err){syncStatus='Token 備援讀取失敗：'+err.message;render()}
     }
 
     async function syncWriteLegacy(r,task,cycle,progress,target){
       if(!syncReady())return;
-      try{await jsonp({action:'save',role:r.sheetRole,roleId:r.id||'',task,cycle,progress,target});syncStatus='已由 Token 備援同步至 Google Sheets';if(view==='sync')render()}
+      try{const result=await jsonp({action:'save',role:r.sheetRole,roleId:r.id||'',task,cycle,progress,target});if(!result.ok)throw new Error(result.error||'寫入失敗');syncStatus='已由 Token 備援同步至 Google Sheets · 部署版本 '+(result.version||'舊版未標示');if(view==='sync')render()}
       catch(err){syncStatus='Token 備援寫入失敗：'+err.message;if(view==='sync')render()}
     }
 

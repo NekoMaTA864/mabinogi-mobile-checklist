@@ -47,3 +47,12 @@ assert.ok(get('active="p";kbRolesHtml()').includes('陰影逼近'));
 assert.ok(get('kbFashionHtml()').includes('通行證時裝'));
 assert.equal(get('roles.find(r=>r.id==="main").name'),'貓又老師');
 console.log('Role snapshots, budget arithmetic, planned classes, history and read-only rendering passed.');
+// A JSONP transport response can succeed while the server rejects the save.
+(async()=>{
+  await get('syncConfig.url="https://example.invalid/exec";syncConfig.token="test-only-token";jsonp=async()=>({ok:false,error:"同步密鑰不正確。"});render=()=>{};syncWriteLegacy(roles[2],"兼職","每日",1,1)');
+  assert.ok(get('syncStatus').includes('寫入失敗'));
+  assert.ok(!get('syncStatus').includes('已由 Token 備援同步'));
+  await get('jsonp=async()=>({ok:true,version:"2026-10-23"});syncWriteLegacy(roles[2],"兼職","每日",1,1)');
+  assert.ok(get('syncStatus').includes('部署版本 2026-10-23'));
+  console.log('Frontend rejects failed saves and reports the deployed API version.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

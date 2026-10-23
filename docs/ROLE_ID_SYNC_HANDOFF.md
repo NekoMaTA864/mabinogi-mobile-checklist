@@ -4,6 +4,9 @@
 
 ## 目前狀態
 
+- 10/23 Pages 配裝更新已發布並在正式頁面驗證。同步程式新增版本回報、台北06:00重置的時區獨立計算、文字 FALSE 判讀及未來職業別名相容；讀寫與角色隔離已由 `tests/sync-api.cjs` 驗證。
+- **目前實際阻擋：正式 Sheet 在雲端瀏覽器要求重新登入 Google。尚未讀取綁定的 Apps Script 專案，未覆蓋任何正式專案檔案、未重新部署。** GitHub 的程式與正式部署仍分開標示，登入後需先盤點專案再更新原部署。
+
 - 工具網站：[GitHub Pages](https://nekomata864.github.io/mabinogi-mobile-checklist/)；原始碼在本儲存庫的 `index.html`、`Code.gs`。
 - [正式 Google Sheet](https://docs.google.com/spreadsheets/d/1j_cvx66Lov33ctQ5inba3sBn56qhLqWf0_gOlC_Rt8g/edit) 已在 `歷史紀錄!I4` 加入「角色 ID」，162 筆既有紀錄已補 ID；`角色設定!G4:G10` 有對照。修改前的[備份](https://docs.google.com/spreadsheets/d/1pKvVAUfwpLnT1SM6vgFkHkafE9LWsondNkSxwwHn6eU/edit)已建立。
 - 網站 OAuth 同步以固定 ID 對應角色；舊紀錄或舊版 Token 回傳沒有 ID 時，仍可用舊名稱對應。六角色分頁的今日／本週 FILTER 以 ID 篩選，ID 空白時回退到舊名稱。
