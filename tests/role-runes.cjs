@@ -17,19 +17,19 @@ for (const file of ['rune-guide.js', 'role-runes.js']) {
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace(/\s+render\(\);\s+scheduleGameDayRefresh\(\);\s*$/, '');
 vm.runInContext(script, context, {timeout:5000});
 const get = expression => vm.runInContext(expression,context);
-assert.equal(get('CURRENT_CLASS_BY_ROLE_ID.zz'), 'longbow');
-assert.equal(get('CURRENT_CLASS_BY_ROLE_ID.z'), 'lightning_mage');
+assert.equal(get('CURRENT_CLASS_BY_ROLE_ID.zz'), 'bard');
+assert.equal(get('CURRENT_CLASS_BY_ROLE_ID.z'), 'dancer');
 assert.equal(get('PERSONAL_RUNE_DATA.roles.zz.targetClassId'), 'bard');
 assert.equal(get('PERSONAL_RUNE_DATA.roles.z.targetClassId'), 'dancer');
 assert.ok(get('RUNE_GUIDE_DATA.classes.some(c=>c.id==="dancer")'));
 assert.equal(get('PERSONAL_RUNE_DATA.roles.p.current.armor.filter(v=>v==="吸血").length'),2);
-assert.ok(get('PERSONAL_RUNE_DATA.roles.o.current.armor.includes("無盡活力")'));
-assert.ok(!get('PERSONAL_RUNE_DATA.roles.o.current.armor.includes("魔力激流")'));
-assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.o).remaining.blue'),300);
+assert.ok(!get('PERSONAL_RUNE_DATA.roles.o.current.armor.includes("無盡活力")'));
+assert.ok(get('PERSONAL_RUNE_DATA.roles.o.current.armor.includes("魔力激流")'));
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.o).remaining.blue'),330);
 assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.o).remaining.red'),600);
-assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.z).remaining.raid'),0);
-assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.zz).remaining.blue'),330);
-assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.oo).remaining.blue'),null);
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.z).remaining.raid'),10);
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.zz).remaining.blue'),345);
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.oo).remaining.blue'),30);
 const stateBefore=get('JSON.stringify(state)');
 for (const id of ['main','z','zz','o','p','oo']) {
   const plan=get('PERSONAL_RUNE_DATA.roles.'+id);
@@ -37,7 +37,7 @@ for (const id of ['main','z','zz','o','p','oo']) {
   assert.equal(plan.target.armor.length,5,id+' target armor slots');
   assert.equal(plan.current.accessory.length,3,id+' current accessories');
   const markup=get('active='+JSON.stringify(id)+';kbRolesHtml()');
-  for(const text of ['目前裝備','依建議完成後','尚未視為已兌換','原先配置','本輪資源安排','自選箱與＋10卷']) assert.ok(markup.includes(text),id+' missing '+text);
+  for(const text of ['目前裝備','依建議完成後','尚未視為已兌換','原先配置','現有資源與購買預覽','共用獎勵與武器卷狀態']) assert.ok(markup.includes(text),id+' missing '+text);
   for(const value of Object.values(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.'+id+').remaining'))) assert.ok(value===null||value>=0,id+' overspent');
 }
 assert.equal(get('JSON.stringify(state)'),stateBefore,'reading plans must not mutate progress');
@@ -56,3 +56,15 @@ console.log('Role snapshots, budget arithmetic, planned classes, history and rea
   assert.ok(get('syncStatus').includes('部署版本 2026-10-23'));
   console.log('Frontend rejects failed saves and reports the deployed API version.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
+
+assert.equal(get('PERSONAL_RUNE_DATA.allocation.blue + PERSONAL_RUNE_DATA.allocation.bags * PERSONAL_RUNE_DATA.allocation.perBag'),730);
+assert.equal(255+255+40+36*5,730);
+assert.equal(345+550-600,295);
+assert.equal(600-(345+36*5),75);
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.p).remaining.blue'),330);
+assert.equal(get('runeBudgetSummary(PERSONAL_RUNE_DATA.roles.p).remaining.raid'),18);
+assert.ok(get('active="z";kbRolesHtml()').includes('粉喝采'));
+assert.ok(get('active="z";kbRolesHtml()').includes('來臨'));
+assert.ok(get('active="zz";kbRolesHtml()').includes('224'));
+assert.ok(get('PERSONAL_RUNE_DATA.roles.oo.current.armor.includes("風暴")'));
+console.log('730 allocation, both redemption constraints, actual balances and player guides passed.');
