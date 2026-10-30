@@ -350,7 +350,7 @@
     .kb-choices { display:flex; flex-wrap:wrap; }
   .allocation-card{margin:1rem 0;padding:1rem;border:1px solid #c3d9d3;border-radius:14px;background:#f2f8f5}.allocation-card h3{margin:.25rem 0}.allocation-card p{font-size:.83rem;line-height:1.6;color:#486476}.allocation-option{margin:.8rem 0;padding:.8rem;background:#fff;border:1px solid #d9e6e1;border-radius:10px}.allocation-option h4{margin:0 0 .6rem}.allocation-scroll{overflow-x:auto}.allocation-card table{width:100%;border-collapse:collapse;font-size:.8rem}.allocation-card th,.allocation-card td{text-align:left;padding:.55rem;border-bottom:1px solid #e2ece8;vertical-align:top;min-width:70px}.allocation-card th{background:#edf5f1}.allocation-foot{font-weight:650}
   </style>
-  <link rel="stylesheet" href="design.css?v=runes-20261023" />
+  <link rel="stylesheet" href="design.css?v=disclosure-20261030" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -1515,7 +1515,7 @@
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
         root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。同步庫存與交換計畫前，請先更新並重新部署最新版 Code.gs。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
-      // 將原生 details 轉成明確按鈕，避免內嵌瀏覽器無法啟動 summary。
+      // 使用瀏覽器原生核取控制折疊，避免依賴內嵌瀏覽器的自訂點擊事件。
       let disclosureIndex=0;
       Array.from(root.querySelectorAll('details')).reverse().forEach(details=>{
         const summary=Array.from(details.children).find(child=>child.tagName==='SUMMARY');
@@ -1525,28 +1525,26 @@
         Array.from(details.attributes).forEach(attribute=>{
           if(attribute.name!=='class'&&attribute.name!=='open')wrapper.setAttribute(attribute.name,attribute.value);
         });
-        const isOpen=details.open;
-        if(isOpen)wrapper.dataset.open='true';
-        const button=document.createElement('button');
-        button.type='button';
-        button.className='disclosure-toggle';
-        button.innerHTML=summary.innerHTML;
+        const panelId='mabi-disclosure-'+disclosureIndex;
+        const toggle=document.createElement('input');
+        toggle.type='checkbox';
+        toggle.className='disclosure-state';
+        toggle.id=panelId+'-toggle';
+        toggle.checked=details.open;
+        toggle.setAttribute('aria-controls',panelId);
+        toggle.setAttribute('aria-label',summary.textContent.trim());
+        const label=document.createElement('label');
+        label.className='disclosure-toggle';
+        label.htmlFor=toggle.id;
+        label.innerHTML=summary.innerHTML;
         const panel=document.createElement('div');
         panel.className='disclosure-content';
-        panel.id='mabi-disclosure-'+(disclosureIndex++);
-        panel.hidden=!isOpen;
-        button.setAttribute('aria-expanded',String(isOpen));
-        button.setAttribute('aria-controls',panel.id);
+        panel.id=panelId;
         let node=summary.nextSibling;
         while(node){const next=node.nextSibling;panel.appendChild(node);node=next}
-        wrapper.append(button,panel);
+        wrapper.append(toggle,label,panel);
         details.replaceWith(wrapper);
-        button.onclick=()=>{
-          const open=button.getAttribute('aria-expanded')!=='true';
-          button.setAttribute('aria-expanded',String(open));
-          panel.hidden=!open;
-          if(open)wrapper.dataset.open='true';else delete wrapper.dataset.open;
-        };
+        disclosureIndex++;
       });
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
