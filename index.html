@@ -531,8 +531,7 @@
       {category:'料理規劃',title:'料理採購規劃器',href:'https://starmoon.game-db.tw/tools/cooking-planner/',description:'依想做的料理整理 NPC 採買額度、加工食材與其他原料。規劃器以單一帳號計算；六角色的限額請再按遊戲內範圍核對。'},
       {category:'製作規劃',title:'製造物加工時間一覽',href:'https://starmoon.game-db.tw/tools/crafting/',description:'展開製作鏈、基礎素材與加工時間，適合安排長時間製作。資料站標示蕾拉伺服器，材料與數值請以台服遊戲內資訊為準。'},
       {category:'職業養成',title:'精靈痕跡計算機',href:'https://starmoon.game-db.tw/tools/spirit-trace/',description:'估算職業等級規劃所需的精靈痕跡。'},
-      {category:'日週追蹤',title:'MabiRoutine 日課・週課・交換追蹤器',href:'https://mabiroutine.vercel.app/',description:'可參考材料展開成採買清單的流程；也支援離線與 JSON 匯入／匯出。角色進度不會與本網站同步，任務追蹤功能與本站重疊。'},
-      {category:'台服資料',title:'MabiTW 台服工具箱',href:'https://mabitw-tracker.pages.dev/',description:'最多六角色的自訂日週清單，並整理台服更新與韓服版本差異；適合交叉查資料，進度不會與本站同步。'},
+      {category:'台服資料',title:'MabiTW 台服工具箱',href:'https://mabitw-tracker.pages.dev/',description:'有自訂日週清單，也整理台服更新與韓服版本差異；本站已提供日週進度，保留這裡作版本資料交叉參考。進度不會與本站同步。'},
       {category:'Windows 桌面工具',title:'MMH／米列希安 Mobile 小助手',href:'https://nigeeeee.github.io/mabi-assistant-website/',description:'可查角色裝備、背包與保管箱物品，並追蹤每日／每週進度。它是獨立的 Windows x64 程式；即時遊戲資料需在本機安裝 Npcap，無法嵌入本站或與本站進度同步。'}
     ];
     const BARTER_DATABASE_URL='https://mabi.yenyen.dev/';
@@ -1428,10 +1427,9 @@
     }
 
     function runeAllocationHtml(){
-      const a=PERSONAL_RUNE_DATA.allocation;
-      if(!a)return '';
-      const plans=a.plans.map(p=>'<article class="allocation-option"><h4>'+escapeHtml(p.title)+'</h4><div class="allocation-scroll"><table><thead><tr><th>角色</th><th>領取安排</th><th>可用藍</th><th>目標</th><th>購買後</th></tr></thead><tbody>'+p.rows.map(row=>'<tr>'+row.map(cell=>'<td>'+escapeHtml(cell)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div><p>'+escapeHtml(p.note)+'</p></article>').join('');
-      return '<section class="allocation-card"><span class="page-eyebrow">待分配・尚未執行</span><h3>550藍＋36袋：730化石怎麼用</h3><p>'+escapeHtml(a.assumption)+'</p>'+plans+'<p class="allocation-foot">資源目標：先補舞者岩石巨人與吟遊和弦 → 吟遊機智／舞者魔力激流 → 修道神聖修養按週累積。祭司先用自身930藍與88小格；本尊與樂師升橘延後。</p></section>';
+      const resource=PERSONAL_RUNE_DATA.sharedResources;
+      if(!resource)return '';
+      return '<section class="allocation-card"><span class="page-eyebrow">帳號共用資源・'+escapeHtml(resource.updated)+'</span><h3>活動藍化石剩餘 '+escapeHtml(String(resource.activityBlueRemaining))+'</h3><p>已開出 '+escapeHtml(String(resource.activityBlueOpened))+' 枚。化石袋暫不納入分配或追蹤；此活動餘額與各角色既有餘額、本尊經驗預留分開計算。</p></section>';
     }
 
     function classLevelPlanHtml(){
@@ -1517,6 +1515,14 @@
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
         root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。同步庫存與交換計畫前，請先更新並重新部署最新版 Code.gs。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
+      // 明確處理 disclosure 點擊，確保內嵌瀏覽器也能切換原生 details。
+      root.querySelectorAll('details > summary').forEach(summary=>{
+        summary.onclick=event=>{
+          event.preventDefault();
+          const details=summary.parentElement;
+          if(details&&details.tagName==='DETAILS')details.open=!details.open;
+        };
+      });
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
       document.querySelectorAll('[data-overview-go]').forEach(button=>button.onclick=()=>{active=button.dataset.overviewGo;view=button.dataset.overviewView;render()});
 
