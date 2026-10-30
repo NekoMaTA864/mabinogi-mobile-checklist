@@ -1517,10 +1517,13 @@
       }
       // 明確處理 disclosure 點擊，確保內嵌瀏覽器也能切換原生 details。
       root.querySelectorAll('details > summary').forEach(summary=>{
-        summary.onclick=event=>{
-          event.preventDefault();
+        summary.onclick=()=>{
           const details=summary.parentElement;
-          if(details&&details.tagName==='DETAILS')details.open=!details.open;
+          if(!details||details.tagName!=='DETAILS')return;
+          const wasOpen=details.open;
+          window.setTimeout(()=>{
+            if(details.isConnected&&details.open===wasOpen)details.open=!wasOpen;
+          },0);
         };
       });
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
