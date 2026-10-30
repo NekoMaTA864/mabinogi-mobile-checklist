@@ -1434,11 +1434,15 @@
       return '<section class="allocation-card"><span class="page-eyebrow">待分配・尚未執行</span><h3>550藍＋36袋：730化石怎麼用</h3><p>'+escapeHtml(a.assumption)+'</p>'+plans+'<p class="allocation-foot">資源目標：先補舞者岩石巨人與吟遊和弦 → 吟遊機智／舞者魔力激流 → 修道神聖修養按週累積。祭司先用自身930藍與88小格；本尊與樂師升橘延後。</p></section>';
     }
 
+    function classLevelPlanHtml(){
+      return '<details class="allocation-card"><summary>全能天才｜大改前副職等級計畫</summary><p>以 2026/10/30 討論的 938／975 為試算起點，五隻分身合計再增加 37 級。本尊祭司與暗黑術士另作預留，不列入這 37 級。</p><div class="allocation-scroll"><table><thead><tr><th>角色</th><th>副職目標</th><th>增加等級</th><th>預估痕跡</th></tr></thead><tbody><tr><td>舞者 z</td><td>冰霜術士 40 → 48</td><td>+8</td><td>7,543</td></tr><tr><td>吟遊詩人 zz</td><td>弓手 40 → 48；弩手維持 48</td><td>+8</td><td>7,543</td></tr><tr><td>樂師 o</td><td>盜賊 40 → 48</td><td>+8</td><td>7,543</td></tr><tr><td>祭司 p</td><td>火焰術士 46 → 51</td><td>+5</td><td>7,986</td></tr><tr><td>修道士 oo</td><td>雙刀客 40 → 46；格鬥家 44 → 46</td><td>+8</td><td>6,965</td></tr><tr><th>五分身合計</th><th>938 → 975</th><th>+37</th><th>37,580</th></tr></tbody></table></div><p>試算假設各職業目前等級經驗為 0；已有經驗可減少支出。實際成就進度及各職業最高等級請以遊戲內為準，若祭司等級已提升，需重算。痕跡估算僅供規劃，不會自動扣除或同步。</p><p>本尊預留：祭司及暗黑術士各假設 1 → 45 約 7,873，共 15,746；不計入上述全能天才進度。已練過的祭司應按實際等級重算；暗黑術士暫假設經驗表相同。</p><p><a href="https://starmoon.game-db.tw/tools/spirit-trace/" target="_blank" rel="noopener noreferrer">開啟精靈痕跡計算機</a></p></details>';
+    }
+
     function kbRolesHtml(){
       const selector='<div class="role-selector" role="group" aria-label="依順序選擇角色">'+roles.map((r,index)=>'<button type="button" data-kb-role="'+r.id+'" class="'+(r.id===active?'active':'')+'" aria-pressed="'+(r.id===active)+'"><span class="role-number">'+String(index+1).padStart(2,'0')+'</span><span>'+escapeHtml(r.name)+'</span></button>').join('')+'</div>';
       const role=roles.find(r=>r.id===active);
       const rewardNotes='<details class="personal-history"><summary>共用獎勵與武器卷狀態</summary><ul>'+PERSONAL_RUNE_DATA.rewards.map(note=>'<li>'+escapeHtml(note)+'</li>').join('')+'</ul></details>';
-      return '<div class="page-heading"><div><span class="page-eyebrow">六角色 · '+PERSONAL_RUNE_DATA.version+'</span><h2>角色配裝</h2><p>先看手上裝備與下一步；完成目標需分期投入。此處是回報快照，不會自動扣除遊戲內資源。</p></div></div>'+selector+runeAllocationHtml()+personalRunePlanHtml(role)+runeOperationsHtml({id:PERSONAL_RUNE_DATA.roles[active].targetClassId})+rewardNotes+'<details class="personal-reference"><summary>展開'+(PERSONAL_RUNE_DATA.roles[active]?.plannedClass?'預計職業的':'')+'通用配裝與手操指南</summary>'+renderRuneGuide(role)+'</details>'
+      return '<div class="page-heading"><div><span class="page-eyebrow">六角色 · '+PERSONAL_RUNE_DATA.version+'</span><h2>角色配裝</h2><p>先看手上裝備與下一步；完成目標需分期投入。此處是回報快照，不會自動扣除遊戲內資源。</p></div></div>'+selector+classLevelPlanHtml()+runeAllocationHtml()+personalRunePlanHtml(role)+runeOperationsHtml({id:PERSONAL_RUNE_DATA.roles[active].targetClassId})+rewardNotes+'<details class="personal-reference"><summary>展開'+(PERSONAL_RUNE_DATA.roles[active]?.plannedClass?'預計職業的':'')+'通用配裝與手操指南</summary>'+renderRuneGuide(role)+'</details>'
     }
     function kbFashionHtml(){
       const pass='<section class="kb-intro"><h2>通行證時裝</h2><p><b>個人持有：</b>舞者分身已換青蛙裝，預計染色；修道士是否追加仍在考慮。</p><p>青蛙後續通行證款式與台服日期尚未核實，不把商城幸運箱或韓服候選當成下一期通行證。</p><p>'+kbSource(KNOWLEDGE_SOURCES.twFashion,'台服時裝時間軸')+'　'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時裝時間軸')+'</p></section>';
