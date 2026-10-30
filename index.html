@@ -1189,6 +1189,65 @@
       const cards=PRACTICAL_REFERENCES.map(item=>'<article class="guide-card"><span class="guide-tag">'+escapeHtml(item.category)+'</span><div><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(item.title)+' ↗</a><p>'+escapeHtml(item.description)+'</p></div></article>').join('');
       return '<section class="bahamut-guide-panel"><div class="section-title"><h2>實用資料庫與生活效率</h2><small>依日常查詢與養成效益排序 · '+PRACTICAL_REFERENCES.length+' 項</small></div><div class="guide-list">'+cards+'</div></section>'
     }
+    const RUNE_OPERATION_GUIDES={
+      mage:{
+        core:'短冷卻技能不用等整輪；依火球、冰刺、雷電的優先序連續輸出。山崩 4 技負責補易傷與增傷。',
+        priority:'火球（2） > 冰刺（3） > 雷電（1）',
+        cycle:'山崩增傷快結束時補 4 → 2 → 3 → 1；其他技能亮起後，照優先序接續。',
+        note:'4 技不用每輪固定插；山崩效果還在時，先打可用的輸出技。',
+        sources:[{label:'魔法師 S0 配裝與循環參考',url:'https://mabinogimobile.nipponhashi.com/guides/mage-s0-build/'}]
+      },
+      lightning_mage:{
+        core:'雷法先管魔力再堆過載層數：2／3 完整引導回魔，1 落雷主攻並疊層。5 開啟約 34 秒過載並提高耗魔；魔力見底會中斷。超越期間不耗魔，開 6 前先把層數疊好。',
+        priority:'高魔力或觸發免費蓄力時優先蓄滿 1；魔力偏低時完整引導 2／3 回魔；過載中的 5（破壞的閃光）直接施放。',
+        cycle:'① 開場：5 → 444 → 131 → 21（展開：5 → 4×3 → 1蓄滿 → 3 → 1蓄滿 → 2 → 1蓄滿）。\n② 疊層：513 → 512 → 5；5 點放、1 蓄滿，若 2／3 觸發免費秒蓄就直接給 1。魔力不足時插入 2／3，約 16–18 層再準備超越。\n③ 爆發：6 → 2 → 1111 → 4 → 5；超越期間連放 1、以 4 補光線，結束後趁回魔窗口重開 5。',
+        note:'這是巴哈圖卡的單王操作範例：5 開場後變成破壞的閃光，2／3 依力場、導管配置回魔。魔力快耗盡時多補 2／3；約 16–18 層是參考值，依符文、改造與實戰魔力調整。放電／雷霆範圍流的循環不同，不能照搬。',
+        sources:[
+          {label:'巴哈｜電擊術士技能圖解與三階循環',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2784'},
+          {label:'巴哈｜電擊術士資源控制與蓄力研究',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2894'}
+        ]
+      },
+      dancer:{
+        core:'鍵位：1右轉步、2風車、3前進步、4迴旋、5即興演出、6終曲。看熱情／優雅，累積5層節奏進拍；二拍子結束的收拍不追怪，需補位。',
+        priority:'目前橘蝴蝶＋粉喝采＋橘來臨：日常自動先用。手動可沿用來臨，不必先買清爽；清爽流需要接後續普攻，第三顆可先用掉落紫／粉練習。',
+        cycle:'一般：優雅時利用1／4各疊2層，熱情時利用2／3各疊2層；5通常2層、雙狀態可3層。換拍重新看狀態。\n手動終曲：第一段6開二拍子 → 中間五次技能 → 二拍子內打完第二段6。\n清爽配置的木樁示範：6 → 1 → 5 → 4 → 普攻×4 → 1 → 1 → 6 → 5。',
+        note:'先練不漏終曲第二段與收拍命中，再追插滿技能；王快無敵、轉場時保留爆發。清爽軸來自單一玩家，不適用目前來臨配置的固定按鍵軸；依冷卻與改造調整。一般技能可自動，練爆發時手動控制6及插招；這是練習建議，非最優AI設定。',
+        sources:[{label:'巴哈｜舞者實戰與手動／自動分流',url:'https://forum.gamer.com.tw/C.php?bsn=32564&last=1&snA=2937&tnum=1'}]
+      },
+      bard:{
+        core:'目前已是吟遊，但超音波、集中還是長弓飾品；先和弦、再機智。支援流靠樂想、2／3／4管理團隊增益與治療，不能把目前一顆嘲弄視為完整支援套。',
+        priority:'技能改造以234支援方向；強化3 → 2 → 4，先到30，1先到10。千把劍與俐落先用；戰慄樂想需組隊。核心完成後再比較睿智，不先追純輸出整套。',
+        cycle:'和弦＋嘲弄到位後：先以224 → 2324作基礎練習，觀察樂想與增益。\n機智到位後：隊友大量失血或機制時，以5取得反擊樂想救場；不把5冷卻好了就丟。\n現階段：先補和弦，暫不硬照完整機智流循環。',
+        note:'234是本頁採用的治癒支援方向；134／即興等偏個人輸出，另成一支，不為了日常自動立即改買第三套。日常可自動清理；團本手動管234與5救場，練習時先關閉5自動避免浪費救場。2242324為玩家基礎軸，依冷卻、改造及樂想調整。',
+        sources:[{label:'巴哈｜治癒型吟遊機智流與基礎循環',url:'https://forum.gamer.com.tw/Co.php?bPage=0&bsn=32564&sn=12518&subbsn=3'},{label:'巴哈｜吟遊支援機制',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=3022'}]
+      },
+      musician:{
+        core:'情緒值以 50 為平衡軸；每次從一側跨到另一側，下一招增傷。下排 1／2／3 增加情緒，上排 4／5 降低情緒，讓情緒來回跨線。',
+        cycle:'起手 1 → 3 → 3 → 4 → 3 → 5 → 4 → 1；後續 3 → 3 → 5（4 還在冷卻就先按 5）→ 4 → 3 → 5 → 4 → 1。',
+        note:'附圖作者偏好速奏軸。普攻穿插補情緒；3 技第二樂章看 4 的冷卻，未好就唱完、已好可移動取消；1 技弱化剩約 30% 時補。此軸不排 2。',
+        sources:[
+          {label:'巴哈｜第 3 樂章八連砲與速奏循環',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=2562'},
+          {label:'巴哈精華｜二重終章技能與情緒機制',url:'https://forum.gamer.com.tw/G2.php?bsn=32564&sn=76'}
+        ]
+      },
+      priest:{
+        core:'5 聖矛是主要輸出；4 聖域負責佈場並回復神聖力，目標是在安全時多打出聖矛。',
+        priority:'4 聖域佈場／補能 → 安全窗口放 5 聖矛 → 2／3 填空與管理資源。',
+        cycle:'4 → 安全時讀 5 → 用 2／3 填空 → 4 快結束時補上。',
+        note:'首領準備移動或出紅招時先閃，別為了完成讀條站樁；此循環依聖矛／聖戰方向。',
+        sources:[{label:'巴哈｜祭司 S0 技能與聖矛方向',url:'https://forum.gamer.com.tw/C.php?bsn=32564&gothis=14310&page=1&snA=2920'}]
+      },
+      monk:{
+        core:'5 化身是主要輸出窗口；趁窗口接 1 奔襲與 2 霹靂擊／強化霹靂掌。4 治癒裝上業火後變成攻擊兼周圍治療。千把劍＋睿智與驚異＋是不同冷卻路線。',
+        priority:'5 化身開窗後接 1、2；2 技依化身／報應狀態使用霹靂擊或強化霹靂掌。4 是同一技能欄：裝業火時可照循環施放。冷卻空窗穿插普攻；3 守護陣按需求使用。',
+        cycle:'5 → 1 → 2（霹靂掌） → 4（業火） → 2（霹靂擊） → 4（治癒／業火） → 1 → 2（霹靂掌） → 3（守護陣）。',
+        note:'依巴哈 9/28 更新的接法。鍵位：1 奔襲、2 霹靂擊（化身／報應狀態下可打出霹靂掌）、3 守護陣、4 治癒（業火符文改造後為業火）、5 化身、6 信念要塞。你目前的千把劍＋睿智可先測這套順序；睿智可走 1／2／4 改造，但不會取得驚異＋普攻命中使全技能冷卻縮短的效果。千把劍替代路線以光輝＋和睿智補化身冷卻，需看實際飾品；記錄 5 的空窗。守護陣若只追輸出可略過。',
+        sources:[
+          {label:'巴哈｜修道士驚異＋、業火完整接法',url:'https://forum.gamer.com.tw/C.php?bsn=32564&snA=1857'},
+          {label:'Nipponhashi｜修道士符文與冷卻分支',url:'https://mabinogimobile.nipponhashi.com/guides/monk-s0-build/'}
+        ]
+      }
+    };
     function runeOperationsHtml(classGuide){
       const guide=RUNE_OPERATION_GUIDES[classGuide.id];
       if(!guide)return '';
