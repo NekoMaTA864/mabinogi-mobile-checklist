@@ -169,3 +169,38 @@ button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible {
   .inventory-quantities { grid-template-columns:repeat(3,minmax(0,1fr)); }
   .rune-slot-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+
+/* Explicit disclosure buttons keep collapsible sections operable in embedded browsers. */
+.disclosure-toggle {
+  display:flex; align-items:center; justify-content:space-between; width:100%; min-width:0;
+  margin:0; padding:0; border:0; background:transparent; color:inherit; font:inherit;
+  text-align:left; cursor:pointer;
+}
+.disclosure-toggle:focus-visible { outline:3px solid #86c2b6; outline-offset:2px; }
+.disclosure-content[hidden] { display:none !important; }
+.task-group > .disclosure-toggle {
+  padding:.68rem .8rem; background:#edf4f8; border:1px solid var(--line);
+  border-radius:12px 12px 0 0; color:#31566d; font-weight:750; font-size:.86rem;
+}
+.task-group > .disclosure-toggle::after { content:'⌄'; color:#6d8494; font-size:1rem; transform:rotate(0deg); transition:transform .15s; }
+.task-group:not([data-open]) > .disclosure-toggle { border-radius:12px; }
+.task-group:not([data-open]) > .disclosure-toggle::after { transform:rotate(-90deg); }
+.inventory-group > .disclosure-toggle {
+  gap:.5rem; min-height:2.8rem; padding:.62rem .72rem; border:1px solid var(--line);
+  border-radius:12px; background:#edf4f8; color:#31566d; font-size:.82rem; font-weight:750;
+}
+.inventory-group[data-open] > .disclosure-toggle { border-radius:12px 12px 0 0; }
+.inventory-group > .disclosure-toggle small { color:#6d8494; font-size:.7rem; font-weight:500; }
+.personal-history > .disclosure-toggle,
+.personal-reference > .disclosure-toggle {
+  justify-content:flex-start; color:var(--navy); font-size:.88rem; font-weight:750;
+}
+.personal-history .disclosure-content { padding-top:.8rem; }
+.personal-reference .disclosure-content { margin-top:1rem; }
+.personal-reference .disclosure-content > .rune-guide { margin-top:0; }
+.legacy-sync > .disclosure-toggle { justify-content:flex-start; color:#245675; font-size:inherit; font-weight:700; }
+.legacy-sync .disclosure-content { padding-top:.8rem; }
+.allocation-card > .disclosure-toggle { justify-content:flex-start; gap:.45rem; color:var(--navy); font-weight:750; }
+.allocation-card > .disclosure-toggle::before { content:'▸'; color:var(--blue); }
+.allocation-card[data-open] > .disclosure-toggle::before { content:'▾'; }
+.exchange-source > .disclosure-toggle { justify-content:flex-start; color:#245675; font-weight:750; }

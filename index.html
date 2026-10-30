@@ -1515,15 +1515,37 @@
         const oauthButton=oauthConfigured()?'':'disabled';const account=oauthSignedIn()?`<div class="oauth-account">目前帳戶：<b>${escapeHtml(oauth.user.email)}</b></div>`:'<div class="oauth-account">尚未登入 Google</div>';
         root.innerHTML=`<div class="sync-panel"><h2>Google OAuth 同步</h2>${account}<div class="sync-actions"><button class="primary" data-oauth-login ${oauthButton}>使用 Google 登入</button><button data-oauth-read ${oauthSignedIn()?'':'disabled'}>重新讀取 Sheets</button><button data-oauth-logout ${oauthSignedIn()?'':'disabled'}>登出</button></div><div class="sync-status">${escapeHtml(syncStatus)}</div><details class="legacy-sync"><summary>備援：Token／Apps Script 同步版</summary><p>OAuth 尚未設定或暫時無法使用時，仍可使用原本的 Apps Script Web App。網址與密鑰只存於此瀏覽器。同步庫存與交換計畫前，請先更新並重新部署最新版 Code.gs。</p><label for="sync-url">Apps Script 網頁應用程式網址（/exec）</label><input id="sync-url" type="url" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(syncConfig.url||'')}"><label for="sync-token">同步密鑰</label><input id="sync-token" type="password" placeholder="建立 Apps Script 時設定的密鑰" value="${escapeHtml(syncConfig.token||'')}"><div class="sync-actions"><button data-sync-save>儲存備援設定</button><button data-sync-read>從 Google Sheets 讀取</button></div></details></div>`;
       }
-      // 明確處理 disclosure 點擊，確保內嵌瀏覽器也能切換原生 details。
-      root.querySelectorAll('details > summary').forEach(summary=>{
-        summary.onclick=()=>{
-          const details=summary.parentElement;
-          if(!details||details.tagName!=='DETAILS')return;
-          const wasOpen=details.open;
-          window.setTimeout(()=>{
-            if(details.isConnected&&details.open===wasOpen)details.open=!wasOpen;
-          },0);
+      // 將原生 details 轉成明確按鈕，避免內嵌瀏覽器無法啟動 summary。
+      let disclosureIndex=0;
+      Array.from(root.querySelectorAll('details')).reverse().forEach(details=>{
+        const summary=Array.from(details.children).find(child=>child.tagName==='SUMMARY');
+        if(!summary)return;
+        const wrapper=document.createElement('div');
+        wrapper.className=details.className;
+        Array.from(details.attributes).forEach(attribute=>{
+          if(attribute.name!=='class'&&attribute.name!=='open')wrapper.setAttribute(attribute.name,attribute.value);
+        });
+        const isOpen=details.open;
+        if(isOpen)wrapper.dataset.open='true';
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='disclosure-toggle';
+        button.innerHTML=summary.innerHTML;
+        const panel=document.createElement('div');
+        panel.className='disclosure-content';
+        panel.id='mabi-disclosure-'+(disclosureIndex++);
+        panel.hidden=!isOpen;
+        button.setAttribute('aria-expanded',String(isOpen));
+        button.setAttribute('aria-controls',panel.id);
+        let node=summary.nextSibling;
+        while(node){const next=node.nextSibling;panel.appendChild(node);node=next}
+        wrapper.append(button,panel);
+        details.replaceWith(wrapper);
+        button.onclick=()=>{
+          const open=button.getAttribute('aria-expanded')!=='true';
+          button.setAttribute('aria-expanded',String(open));
+          panel.hidden=!open;
+          if(open)wrapper.dataset.open='true';else delete wrapper.dataset.open;
         };
       });
       document.querySelectorAll('[data-role]').forEach(button=>button.onclick=()=>{active=button.dataset.role;render()});
