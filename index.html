@@ -1359,10 +1359,46 @@
       const cells=[['武器',loadout.weapon||'未另記錄'],['徽章',loadout.badge||'未另記錄'],['飾品',loadout.accessory||[]],['防具',loadout.armor||[]]];
       return '<dl class="personal-loadout">'+cells.map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+(Array.isArray(value)?value.map(item=>'<span class="personal-rune">'+escapeHtml(item)+'</span>').join(''):escapeHtml(value))+'</dd></div>').join('')+'</dl>'
     }
+    function personalSourceLinkHtml(source){
+      return '<a href="'+escapeHtml(source.url)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(source.label)+'</a>'
+    }
+    function personalBuildDetailsHtml(build){
+      const note=build.note?'<p class="personal-build-note">'+escapeHtml(build.note)+'</p>':'';
+      const sources=Array.isArray(build.sources)&&build.sources.length?'<p class="personal-build-sources">韓服參考：'+build.sources.map(personalSourceLinkHtml).join('　')+'</p>':'';
+      return note+sources
+    }
+    function personalBuildPanelHtml(title,build,extraClass,subtitle){
+      return '<article class="personal-panel '+(extraClass||'')+'"><h4>'+escapeHtml(title)+(subtitle?'<small>'+escapeHtml(subtitle)+'</small>':'')+'</h4>'+personalLoadoutHtml(build)+personalBuildDetailsHtml(build)+'</article>'
+    }
+    function personalRuneScopeHtml(){
+      const twSource=personalSourceLinkHtml({url:'https://tw.nexon.com/mabinogimobile/20261125s1/',label:'台服官方 S1 更新頁'});
+      const krSource=personalSourceLinkHtml({url:'https://theqoo.net/mabinogi/4087117159',label:'韓服 S1 玩家問卷指南'});
+      const runeDb=personalSourceLinkHtml({url:'https://mabimo.inven.co.kr/db/rune',label:'韓服 S1 符文資料庫（Inven）'});
+      return '<p class="personal-plan-scope">台服官方預告 Season 1 於 2026/11/25 更新。這裡以韓服 S1 歷史配法作預計參考；玩家問卷於 2025/12–2026/01 蒐集、共 95 人，原作者提醒答案有分歧且多數內容在 S2 已過時，因此只借用 S1 快照，不當成現行韓服答案。台服開服後再核對中文名稱、職業限制與可用性。'+twSource+'　'+krSource+'　'+runeDb+'</p>'
+    }
+    function personalS0InvestmentHtml(){
+      const season='https://tw.nexon.com/mabinogimobile/20261125s1/';
+      const carry='https://mabinogimobile.nipponhashi.com/ko/season/carryover/';
+      const reset='https://mabinogimobile.nexon.com/Support/FAQ/2752968';
+      const spec='https://mabinogimobile.nexon.com/Info/Guide/2751056';
+      const gems='https://mabinogimobile.nexon.com/Info/Guide/3428479';
+      return '<section class="kb-intro personal-preseason-note"><h2>S0 尾聲｜分身投資建議</h2><p><b>截至 2026/11/16，距台服 S1 預告更新約九天。建議分身先停稀有材料的大額投入：</b>刻印重設會消耗符文重設稜鏡；符文技能特化要用金幣反覆重抽。等 S1 核心符文與飾品組合落定後，再把稜鏡和特化金幣投到會長期穿用的部位。</p><p><b>技能改造和技能特化是兩個系統：</b>本頁的 123／135 等數字是韓服配置的技能改造選擇；符文技能特化則是重新分配符文強化哪些技能。現在先按下方記錄目標即可，不需為了 S0 結尾追滿。</p><p><b>寶石可繼續用現有好石。</b>韓服 S0→S1 前例是舊寶石仍有效、階級往上延伸；有餘材可升級會長期留用的主力寶石，但不必追短期完美三線。技能標籤交換會一併影響角色持有的所有寶石，因此等每角 S1 標籤確認後再花金幣調整。升級卡片若現在就升級，照下方長期屬性方向選即可。</p><p>韓服換季規則是參考前例，不代表台服一定完全相同；S1 實裝後再核對。'+personalSourceLinkHtml({url:season,label:'台服官方 S1 日期'})+'　'+personalSourceLinkHtml({url:carry,label:'韓服 S0→S1 過渡整理'})+'　'+personalSourceLinkHtml({url:reset,label:'官方刻印重設說明'})+'　'+personalSourceLinkHtml({url:spec,label:'官方技能特化說明'})+'　'+personalSourceLinkHtml({url:gems,label:'官方寶石標籤說明'})+'</p></section>'
+    }
+    function personalGrowthPanelHtml(title,growth,sources,subtitle){
+      if(!growth)return '';
+      const fields=[['S0 尾聲投入',growth.investment],['刻印詞條',growth.engraving],['技能特化／改造',growth.skills],['寶石雕琢',growth.gems],['升級卡片',growth.cards]];
+      const cards=fields.map(([label,body])=>'<article class="personal-panel personal-growth-card"><h4>'+escapeHtml(label)+'</h4><p>'+escapeHtml(body||'尚待核對')+'</p></article>').join('');
+      const sourceLinks=Array.isArray(sources)&&sources.length?'<p class="personal-build-sources">韓服參考：'+sources.map(personalSourceLinkHtml).join('　')+'</p>':'';
+      return '<section class="personal-rune-growth"><div class="section-title"><h3>'+escapeHtml(title)+'</h3><small>'+escapeHtml(subtitle||'韓服 S1 參考')+'</small></div><div class="personal-loadout-grid">'+cards+'</div>'+sourceLinks+'</section>'
+    }
     function personalRunePlanHtml(role){
       const plan=PERSONAL_RUNE_DATA.roles[role.id];
       if(!plan)return '';
-      return '<section class="personal-rune-plan"><div class="section-title"><h2>符文配置</h2><small>'+escapeHtml(role.name)+'｜'+escapeHtml(plan.className)+'</small></div><div class="personal-loadout-grid"><article class="personal-panel"><h4>現在裝備的符文</h4>'+personalLoadoutHtml(plan.current)+'</article><article class="personal-panel personal-target"><h4>預計裝備的符文 <small>S1 推出後於此更新</small></h4>'+personalLoadoutHtml(plan.target)+'</article></div></section>'
+      const target=personalBuildPanelHtml('台服 S1 預計配置',plan.target,'personal-target','韓服 S1 參考');
+      const future=plan.futureTarget?personalBuildPanelHtml('本尊未來轉職目標｜'+plan.futureTarget.className,plan.futureTarget,'personal-target personal-future','額外目標，不列入六角色'): '';
+      const growth=personalGrowthPanelHtml(plan.className+'｜S1 養成與卡片',plan.growth,plan.target.sources);
+      const futureGrowth=plan.futureTarget?personalGrowthPanelHtml(plan.futureTarget.className+'｜後續養成與卡片',plan.futureTarget.growth,plan.futureTarget.sources,'本尊轉職目標'): '';
+      return '<section class="personal-rune-plan"><div class="section-title"><h2>符文配置</h2><small>'+escapeHtml(role.name)+'｜'+escapeHtml(plan.className)+'</small></div><div class="personal-loadout-grid">'+personalBuildPanelHtml('現在裝備的符文',plan.current,'','')+target+future+'</div>'+growth+futureGrowth+'</section>'
     }
 
     const ALL_ROUND_GENIUS_PLANS={
@@ -1387,7 +1423,7 @@
       const role=roles.find(r=>r.id===active);
       const plan=PERSONAL_RUNE_DATA.roles[role.id];
       const manual=plan?runeOperationsHtml({id:plan.targetClassId||CURRENT_CLASS_BY_ROLE_ID[role.id]}):'';
-      return '<div class="page-heading"><div><span class="page-eyebrow">六角色</span><h2>角色配裝</h2><p>預計符文配置於 S1 推出後更新。</p></div></div>'+selector+personalRunePlanHtml(role)+classLevelPlanHtml(role)+manual
+      return '<div class="page-heading"><div><span class="page-eyebrow">六角色</span><h2>角色配裝</h2><p>六角先依韓服 S1 資料整理台服預計配置；正式版本以台服開服內容核對，並補上 S0 尾聲投入與升級卡片方向。</p></div></div>'+selector+personalRuneScopeHtml()+personalS0InvestmentHtml()+personalRunePlanHtml(role)+classLevelPlanHtml(role)+manual
     }
         function kbFashionHtml(){
       const pass='<section class="kb-intro"><h2>通行證時裝</h2><p><b>個人持有：</b>舞者分身已換青蛙裝，預計染色；修道士是否追加仍在考慮。</p><p>青蛙後續通行證款式與台服日期尚未核實，不把商城幸運箱或韓服候選當成下一期通行證。</p><p>'+kbSource(KNOWLEDGE_SOURCES.twFashion,'台服時裝時間軸')+'　'+kbSource(KNOWLEDGE_SOURCES.krFashion,'韓服時裝時間軸')+'</p></section>';
