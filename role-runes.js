@@ -128,14 +128,14 @@ const PERSONAL_RUNE_DATA = {
       "targetClassId": "bard",
       "current": {
         "weapon": "千把劍",
-        "badge": "俐落",
+        "badge": "絢爛",
         "accessory": [
           "嘲弄（橘）",
           "超音波（橘）",
           "集中（粉）"
         ],
         "armor": [
-          "風暴",
+          "巨人之臂",
           "戰礫樂想",
           "岩石巨人",
           "平原流浪者",
@@ -229,11 +229,11 @@ const PERSONAL_RUNE_DATA = {
           "羽翼（粉）"
         ],
         "armor": [
-          "冷酷勝負師",
-          "陰影逼近",
-          "吸血",
-          "無進活力",
-          "吸血"
+          "魔力激流",
+          "神聖修養",
+          "毀滅烙印",
+          "共鳴水晶",
+          "陰影逼近"
         ]
       },
       "target": {
@@ -268,8 +268,8 @@ const PERSONAL_RUNE_DATA = {
       "className": "修道士",
       "targetClassId": "monk",
       "current": {
-        "weapon": "驚異",
-        "badge": "睿智",
+        "weapon": "驚異＋",
+        "badge": "絢爛",
         "accessory": [
           "因果（橘）",
           "報應（橘）",
@@ -279,7 +279,7 @@ const PERSONAL_RUNE_DATA = {
           "岩石巨人",
           "平原流浪者",
           "巨人之臂",
-          "風暴",
+          "神聖修養",
           "魔力激流"
         ]
       },
