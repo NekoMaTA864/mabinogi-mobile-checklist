@@ -1,4 +1,5 @@
-// 六角色現況與台服 S1 預計配置；S1 建議參照韓服資料，開服後再核對。\nconst PERSONAL_RUNE_DATA = {
+// 六角色現況與台服 S1 預計配置；S1 建議參照韓服資料，開服後再核對。
+const PERSONAL_RUNE_DATA = {
   "roles": {
     "main": {
       "className": "魔法師",
@@ -388,4 +389,4 @@
       }
     }
   }
-};\n
+};
