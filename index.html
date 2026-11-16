@@ -1372,8 +1372,9 @@
     }
     function personalRuneScopeHtml(){
       const twSource=personalSourceLinkHtml({url:'https://tw.nexon.com/mabinogimobile/20261125s1/',label:'台服官方 S1 更新頁'});
-      const krSource=personalSourceLinkHtml({url:'https://theqoo.net/mabinogi/4087117159',label:'韓服 S1 社群指南'});
-      return '<p class="personal-plan-scope">台服官方預告 Season 1 於 2026/11/25 更新。以下先用韓服 S1 資料作開服前配置參考；韓服社群指南是玩家整理且流派有分歧，不代表韓服 S2 現行答案。開服後再逐項核對符文名稱、職業限制與可用性。'+twSource+'　'+krSource+'</p>'
+      const krSource=personalSourceLinkHtml({url:'https://theqoo.net/mabinogi/4087117159',label:'韓服 S1 玩家問卷指南'});
+      const runeDb=personalSourceLinkHtml({url:'https://mabimo.inven.co.kr/db/rune',label:'韓服 S1 符文資料庫（Inven）'});
+      return '<p class="personal-plan-scope">台服官方預告 Season 1 於 2026/11/25 更新。這裡以韓服 S1 歷史配法作預計參考；玩家問卷於 2025/12–2026/01 蒐集、共 95 人，原作者提醒答案有分歧且多數內容在 S2 已過時，因此只借用 S1 快照，不當成現行韓服答案。台服開服後再核對中文名稱、職業限制與可用性。'+twSource+'　'+krSource+'　'+runeDb+'</p>'
     }
     function personalRunePlanHtml(role){
       const plan=PERSONAL_RUNE_DATA.roles[role.id];
